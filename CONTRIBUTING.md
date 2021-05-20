@@ -67,11 +67,11 @@ void looper(void) {
     }
 }
 
-/*
+/**
  * Sums a 3-long array of ints.
  *
- * int nums[static 3]: a 3+ long array of ints
- * return:             nums[0] + nums[1] + nums[2]
+ * @param nums A 3+ long array of ints
+ * @return     nums[0] + nums[1] + nums[2]
  */
 int three_sum(int nums[static 3]) {
     return nums[0] + nums[1] + nums[2];
@@ -134,7 +134,17 @@ char* allocd = (char*) calloc(
 * Typedefs for non-struct / non-union types are all in lowercase, and can optionally have the `_t` suffix.
 * Typedefs for struct / union / function pointer types (and struct / union types in general) are written in `PascalCase`.
 * Structs and unions are always `typedef`-ed (to spare one from needing the `struct` and `union` keyword everywhere).
-* Pointers are associated with the type, so `int* iptr` and not `int *ptr` nor `int * iptr`. Exception is given for multiple declarations.
+* Pointers are associated with the variable, so `int *iptr` and not `int* ptr` nor `int * iptr`.
+    * However, do not mix pointers and non-pointers in the same declaration:
+
+```
+// OK
+int a, b;
+int *c, *d;
+
+// NOT OK
+int a, b, *c, *d;
+```
 
 ### Commenting
 * No inline comments. Only comments preceding lines.
@@ -165,7 +175,7 @@ int func(int a, int b) {
 ```c
 typedef int (*IntMapper)(int);
 
-void mapInt(int* ints, size_t amt, IntMapper mapper) {
+void mapInt(int *ints, size_t amt, IntMapper mapper) {
     for (size_t i = 0; i < amt; ++i) {
         ints[i] = mapper(ints[i]);
     }
@@ -230,3 +240,13 @@ if (cond1) {
 * Use `do { ... } while (1)` loops instead of `while (1) { ... }` loops as they convey your intention a little better.
 * Due to the nature of `a[b]` expanding to `*(a + b)`, always make sure `a` is a pointer and `b` is a suitable indexer (e.g. `int` or `size_t`).
 * If possible, avoid `*(a + b)` entirely.
+* When writing array initialisers, the size can be omitted:
+
+```c
+// Both are OK
+
+int ints[5] = { 1, 2, 4, 6, 7 };
+int nums[] = { 1, 2, 4, 6, 7 };
+```
+
+* `goto` is allowed for breaking out of nested loops and for error handling.
