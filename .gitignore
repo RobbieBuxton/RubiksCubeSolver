@@ -33,3 +33,6 @@ assemble
 *.nav
 *.toc
 
+#ignore doxygen-generated documentation
+/doc/html/*
+
