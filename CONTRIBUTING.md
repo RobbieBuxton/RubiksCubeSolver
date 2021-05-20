@@ -23,23 +23,23 @@ typedef union {
     float f;
 } Real;
 
-/*
+/**
  * Function that adds a and b
  *
- * int a:  left hand value
- * int b:  right hand value
- * return: a + b
+ * @param a left hand value
+ * @param b right hand value
+ * @return  a + b
  */
 int add_func(int a, int b) {
     // Adds a and b
     return a + b;
 }
 
-/*
+/**
  * Prints something different depending on the given number.
  *
- * int i: Decider number for printing
- * s.e.:  Prints "This number is (large|small)" to the stdout
+ * @param i Decider number for printing
+ * @remark  Prints "This number is (large|small)" to the stdout
  */
 void conditional_printer(int i) {
     if (i > 100) {
@@ -49,7 +49,7 @@ void conditional_printer(int i) {
     }
 }
 
-/*
+/**
  * Does nothing important.
  */
 void looper(void) {
@@ -140,12 +140,22 @@ char* allocd = (char*) calloc(
 * No inline comments. Only comments preceding lines.
 
 ### Documentation Comments
-* C-style `/* */` comments are used for documentation on functions.
-* When writing documentation, the following can be used after the main text of the comment:
-    * [type] [parameter name]: [description of what the parameter expects]
-    * return: [description of what the function returns (if non-void)]
-    * s.e.: [description of possible side effects]
-* Documentation tags (as above) need to have their descriptions aligned (see code snippet).
+* We are using Doxygen to generate documentation files. Hence we will use a format allowed by doxygen; Javadoc-style comments:
+
+```c
+/**
+ * Multiplies two ints together and returns their result.
+ *
+ * @param a Multiplicand
+ * @param b Multiplier
+ * @return  a * b
+ */
+int func(int a, int b) {
+    return a * b;
+}
+```
+
+* For more information on the useable tags, see [the official Doxygen documentation](https://www.doxygen.nl/manual/commands.html).
 
 ### Function Parameters
 * Functions that have no parameters must have a `void` in its parameter list: `void f(void) { }`.
