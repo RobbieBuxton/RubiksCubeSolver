@@ -26,9 +26,9 @@ typedef union {
 /**
  * Function that adds a and b
  *
- * @param a left hand value
- * @param b right hand value
- * @return  a + b
+ * @param  a left hand value
+ * @param  b right hand value
+ * @return   a + b
  */
 int add_func(int a, int b) {
     // Adds a and b
@@ -38,8 +38,8 @@ int add_func(int a, int b) {
 /**
  * Prints something different depending on the given number.
  *
- * @param i Decider number for printing
- * @remark  Prints "This number is (large|small)" to the stdout
+ * @param  i Decider number for printing
+ * @remark   Prints "This number is (large|small)" to the stdout
  */
 void conditional_printer(int i) {
     if (i > 100) {
@@ -70,8 +70,8 @@ void looper(void) {
 /**
  * Sums a 3-long array of ints.
  *
- * @param nums A 3+ long array of ints
- * @return     nums[0] + nums[1] + nums[2]
+ * @param  nums A 3+ long array of ints
+ * @return      nums[0] + nums[1] + nums[2]
  */
 int three_sum(int nums[static 3]) {
     return nums[0] + nums[1] + nums[2];
@@ -156,15 +156,18 @@ int a, b, *c, *d;
 /**
  * Multiplies two ints together and returns their result.
  *
- * @param a Multiplicand
- * @param b Multiplier
- * @return  a * b
+ * @param  a Multiplicand
+ * @param  b Multiplier
+ * @return   a * b
  */
 int func(int a, int b) {
     return a * b;
 }
 ```
 
+* The descriptions for @-tags must be vertically aligned.
+* The parameters for `@param` tags must be vertically aligned.
+* There must be room between the largest @-tag name and the parameters for `@param` tags.
 * For more information on the useable tags, see [the official Doxygen documentation](https://www.doxygen.nl/manual/commands.html).
 
 ### Function Parameters
