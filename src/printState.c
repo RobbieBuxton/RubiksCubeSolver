@@ -21,9 +21,12 @@ void printState(State *state) {
     
     //Print the memory
     printf("Non-zero memory:\n");
-    for (i = 0; i < MAX_MEMORY_LOCATION; i++)
+    for (i = 0; i < MAX_MEMORY_LOCATION; i += 4)
     {
-        contents = state->memory[i];
+        contents = state->memory[i] << 24u;
+        contents += state->memory[i + 1] << 16u;
+        contents += state->memory[i + 2] << 8u;
+        contents += state->memory[i + 3];
         if (contents) {
             printf("0x%08x: 0x%08x\n", i, contents);
         }
