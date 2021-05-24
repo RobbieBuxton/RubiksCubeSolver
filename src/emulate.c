@@ -27,6 +27,7 @@ int main(int argc, char **argv) {
 }
 
 StatusCode execute(State *machineState) {
+  // cond checked here no need to do it in ur indiviudal function!
     switch (machineState->decoded.type) {
         case DP:
             return dp_execute(machineState);
