@@ -20,3 +20,19 @@ int main(int argc, char **argv) {
     return EXIT_FAILURE;
   }
 }
+
+statusCode execute(State *machineState) {
+  switch (machineState->decoded.type)
+  {
+  case DP:
+    return DPExecute(machineState);
+  case M:
+    return MExecute(machineState);
+  case SDT:
+    return SDTExecute(machineState);
+  case B:
+    return BExecute(machineState);
+  default:
+    return FAILURE;
+  }
+}
