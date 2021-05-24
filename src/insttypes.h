@@ -169,6 +169,14 @@ typedef struct {
     char *memory;
     uint fetched;
     Instruction decoded;
+    uint CPSR;
 } State;
+
+typedef enum {
+    CONTINUE = 0,
+    HALT = 1,
+    FAILURE = 2
+} statusCode;
+
 
 #endif  // __INSTTYPES_H__
