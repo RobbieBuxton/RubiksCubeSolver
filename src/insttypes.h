@@ -183,6 +183,6 @@ typedef enum {
     CONTINUE = 0, /**< Carry on execution. */
     HALT = 1,     /**< Program exited cleanly. */
     FAILURE = 2   /**< Error during execution, exit program. */
-} statusCode;
+} StatusCode;
 
 #endif  // __INSTTYPES_H__
