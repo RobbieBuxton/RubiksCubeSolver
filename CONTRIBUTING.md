@@ -185,6 +185,43 @@ void mapInt(int *ints, size_t amt, IntMapper mapper) {
 }
 ```
 
+### Header Files
+* Include guards must be used:
+
+```h
+#ifndef __HEADERNAME_H__
+#define __HEADERNAME_H__
+
+// Header file contents
+
+#endif  // __HEADERNAME_H__
+```
+
+* If defining function prototypes in *header* files, parameter names must be given:
+
+```h
+/* In doubler.h */
+// Skipping header guards...
+void doubleAll(int *arr, size_t n);
+
+// In local C source files that are implementing functions in header files, parameter names can be skipped in function pointers.
+
+/* In doubler.c */
+#include "doubler.h"
+
+int double(int);
+
+void doubleAll(int *arr, size_t n) {
+    for (int *i = arr; i < arr + n; ++i) {
+        *i = double(*i);
+    }
+}
+
+int double(int i) {
+    return i + i;
+}
+```
+
 ### Miscellaneous
 * Multiple declarations are allowed, provided that they are sensible. E.g. `int i = 0, j = 0;` when looping over a two-dimensional array.
 * For-Loops are allowed to omit any of their three statements, provided that suitable substitutes are given:
