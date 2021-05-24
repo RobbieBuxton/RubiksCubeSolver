@@ -65,6 +65,9 @@ typedef enum {
     PC   = 0b1111,
 } Register;
 
+// Maximum memory location in main memory.
+#define MAX_MEMORY_LOCATION 65536
+
 /**
  * Enum defining the used instruction types.
  */
@@ -149,6 +152,17 @@ typedef struct {
 } BInst;
 
 /**
+ * Instruction union.
+ * Allows more compact instruction data storage.
+ */
+typedef union {
+    DPInst dp;   /**< Data Processing instruction member. */
+    MInst m;     /**< Multiply instruction member. */
+    SDTInst sdt; /**< Single Data Transfer instruction member. */
+    BInst b;     /**< Branch instruction member. */
+} __InstUnion__;
+
+/**
  * Instruction struct.
  * Formed by composing the specific instruction type with this struct.
  * Use type to differentiate during execution.
@@ -156,12 +170,7 @@ typedef struct {
 typedef struct {
     Cond condition;       /**< Condition to execute the instruction in. */
     InstructionType type; /**< Type of instruction. */
-    union {
-        DPInst dp;
-        MInst m;
-        SDTInst sdt;
-        BInst b;
-    } inst;               /**< Union holding the specific instruction. Use type to check what is inside. */
+    __InstUnion__ inst;   /**< Union holding the specific instruction. Use type to check what is inside. */
 } Instruction;
 
 /**
