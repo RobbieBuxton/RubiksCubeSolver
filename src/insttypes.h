@@ -164,4 +164,11 @@ typedef struct {
     } inst;               /**< Union holding the specific instruction. Use type to check what is inside. */
 } Instruction;
 
+typedef struct {
+    uint *registers;
+    char *memory;
+    uint fetched;
+    Instruction decoded;
+} State;
+
 #endif  // __INSTTYPES_H__
