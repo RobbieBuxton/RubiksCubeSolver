@@ -1,6 +1,8 @@
 #include "insttypes.h"
 #include "executefuncs.h"
 
+#include <string.h>
+
 StatusCode b_execute(State *state) {
     // Assuming the decoder already took care of LE -> BE...
     // We just need to extract the lower 24 bits.
@@ -31,7 +33,10 @@ StatusCode b_execute(State *state) {
     if (state->registers[PC] >= MAX_MEMORY_LOCATION) {
         return FAILURE;
     } else {
-        return SUCCESS;
+        state->fetched = 0u;
+        memset(&(state->decoded), 0, sizeof(Instruction));
+
+        return CONTINUE;
     }
 }
 
