@@ -147,7 +147,7 @@ int a, b, *c, *d;
 ```
 
 ### Commenting
-* No inline comments. Only comments preceding lines.
+* No inline comments. Only comments preceding lines. Exception is given for Doxygen comments.
 
 ### Documentation Comments
 * We are using Doxygen to generate documentation files. Hence we will use a format allowed by doxygen; Javadoc-style comments:
