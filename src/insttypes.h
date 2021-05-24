@@ -1,8 +1,10 @@
 #ifndef __INSTTYPES_H__
 #define __INSTTYPES_H__
 
+#include <stdint.h>
+
 // Simplifying typedef.
-typedef unsigned int uint;
+typedef uint32_t uint;
 
 /**
  * Enum for encoding the various CPSR flag combinations.
