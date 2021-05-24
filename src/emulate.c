@@ -5,6 +5,8 @@
 #include "insttypes.h"
 #include "executefuncs.h"
 
+StatusCode execute(State *);
+
 int main(int argc, char **argv) {
     StatusCode code;
     State *machineState = initialiseState();
@@ -18,7 +20,7 @@ int main(int argc, char **argv) {
         case HALT:
             return EXIT_SUCCESS;
         case FAILURE:
-            printf("Error")
+            printf("Error");
         default:
             return EXIT_FAILURE;
     }
@@ -26,15 +28,15 @@ int main(int argc, char **argv) {
 
 StatusCode execute(State *machineState) {
     switch (machineState->decoded.type) {
-    case DP:
-        return dp_execute(machineState);
-    case M:
-        return m_execute(machineState);
-    case SDT:
-        return sdt_execute(machineState);
-    case B:
-        return b_execute(machineState);
-    default:
-        return FAILURE;
-    }
+        case DP:
+            return dp_execute(machineState);
+        case M:
+            return m_execute(machineState);
+        case SDT:
+            return sdt_execute(machineState);
+        case B:
+            return b_execute(machineState);
+        default:
+            return FAILURE;
+        }
 }
