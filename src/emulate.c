@@ -17,6 +17,8 @@ int main(int argc, char **argv) {
         fetch(machineState);
     }
 
+    printState(machineState);
+
     switch (code) {
         case HALT:
             return EXIT_SUCCESS;
@@ -25,8 +27,6 @@ int main(int argc, char **argv) {
         default:
             return EXIT_FAILURE;
     }
-
-    printState(machineState);
 }
 
 StatusCode execute(State *machineState) {
