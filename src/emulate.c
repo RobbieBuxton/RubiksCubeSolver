@@ -4,6 +4,7 @@
 
 #include "insttypes.h"
 #include "executefuncs.h"
+#include "printState.h"
 
 StatusCode execute(State *);
 
@@ -24,6 +25,8 @@ int main(int argc, char **argv) {
         default:
             return EXIT_FAILURE;
     }
+
+    printState(machineState);
 }
 
 StatusCode execute(State *machineState) {
