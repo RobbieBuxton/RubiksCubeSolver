@@ -10,14 +10,14 @@ void printState(State *state) {
     for (i = 0; i < 13; i++)
     {
         contents = state->registers[i];
-        printf("$%-3d:%11d (0x%8x)\n", i, contents, contents);
+        printf("$%-3d:%11d (0x%08x)\n", i, contents, contents);
     }
 
     //Print the PC and CPSR registers
     contents = state->registers[PC];
-    printf("PC  :%11d (0x%8x)\n", contents, contents);
+    printf("PC  :%11d (0x%08x)\n", contents, contents);
     contents = state->CPSR;
-    printf("CPSR:%11d (0x%8x)\n", contents, contents);
+    printf("CPSR:%11d (0x%08x)\n", contents, contents);
     
     //Print the memory
     printf("Non-zero memory:\n");
@@ -25,7 +25,7 @@ void printState(State *state) {
     {
         contents = state->memory[i];
         if (contents) {
-            printf("0x%8x: 0x%8x\n", i, contents);
+            printf("0x%08x: 0x%08x\n", i, contents);
         }
     }
 }
