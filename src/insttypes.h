@@ -164,19 +164,25 @@ typedef struct {
     } inst;               /**< Union holding the specific instruction. Use type to check what is inside. */
 } Instruction;
 
+/**
+ * Emulator state struct.
+ * Keeps track of the current state of the ARM emulator. Registers and memory are allocated at runtime.
+ */
 typedef struct {
-    uint *registers;
-    char *memory;
-    uint fetched;
-    Instruction decoded;
-    uint CPSR;
+    uint *registers;     /**< The sixteen accessible registers from an instruction. */
+    char *memory;        /**< The 65536 memory slots of the system. */
+    uint fetched;        /**< Raw fetched instruction to be executed after decoded. */
+    Instruction decoded; /**< Next decoded instruction to be executed. */
+    uint CPSR;           /**< Status flags register. */
 } State;
 
+/**
+ * Runtime status codes for the emulator.
+ */
 typedef enum {
-    CONTINUE = 0,
-    HALT = 1,
-    FAILURE = 2
+    CONTINUE = 0, /**< Carry on execution. */
+    HALT = 1,     /**< Program exited cleanly. */
+    FAILURE = 2   /**< Error during execution, exit program. */
 } statusCode;
-
 
 #endif  // __INSTTYPES_H__
