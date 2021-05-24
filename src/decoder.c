@@ -54,7 +54,7 @@ StatusCode decode(State *state) {
         state->decoded.inst.sdt.Rn = (translated & RndMASK) >> 16u;
         state->decoded.inst.sdt.Rd = (translated & RdnMASK) >> 12u;
 
-        state->decoded.inst.sdt.offset = translated & ((1 << 12) - 1);
+        state->decoded.inst.sdt.offset = translated & OPR2_OR_OFFSET;
     } else if ((typemasked & 0b110000) == 0) {
         // Data Processing
         state->decoded.type = DP;
@@ -63,7 +63,7 @@ StatusCode decode(State *state) {
         state->decoded.inst.dp.Rn = (translated & RndMASK) >> 16u;
         state->decoded.inst.dp.Rd = (translated & RdnMASK) >> 12u;
 
-        state->decoded.inst.dp.operand2 = translated & ((1 << 12) - 1);
+        state->decoded.inst.dp.operand2 = translated & OPR2_OR_OFFSET;
     } else {
         // Undefined instruction
         return FAILURE;
