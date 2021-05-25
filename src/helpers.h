@@ -29,4 +29,23 @@ uint select_bits(uint value, uint bitmask, uint offset, char rshift_back);
  */
 uint swap_endianness(uint value);
 
+/**
+ * Load four bytes from the machine state memory into register.
+ * 
+ * @param address       starting address of word in memory (lowest address).
+ * @param destination   pointer to register to be loaded into.
+ * @return              Code reflecting whether load was successful.
+ */
+StatusCode load_word(uint address, uint *destination);
+
+/**
+ * Store four bytes into the machine state memory, usually from a register.
+ * 
+ * @param address   Starting address of where to store word.
+ * @param data      Word to be stored.
+ * @return          Code reflecting whether load was successful.
+ */
+StatusCode store_word(uint address, uint data);
+
+
 #endif  // __HELPERS_H__
