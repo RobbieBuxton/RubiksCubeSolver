@@ -2,29 +2,63 @@
 #include "executefuncs.h"
 #include "helpers.h"
 
-StatusCode sdt_execute(State* state) {
+StatusCode sdt_execute(State *state) {
     // Retrieve components of instruction
     uint bits_ipuasl = state->decoded.inst.sdt.bits_ipuasl;
-    SDTInst *instr = &(state->decoded.inst.sdt);
-    Register base_register = state->decoded.inst.sdt.Rn;
-    Register dest_register = state->decoded.inst.sdt.Rd;
+    SDTInst *inst = &(state->decoded.inst.sdt);
+    Register base_register = inst->Rn;
+    Register dest_register = inst->Rd;
     Register shifted_register;
     uint offset;
 
     // If I is set, Offset is a shifted register.
     // Else, it is a 12 bit unsigned offset
     if (bits_ipuasl & BIT_I) {
-        // Rotates the bits 7-0 of the opcode by bits 11-8 times 2.
-        uint rot = (instr->offset >> 8u) << 1u;
-        uint imm = instr->offset & 255u;
-        offset = (imm << rot) | (imm >> (11u - rot));
+        uint offset = machineState->registers[(inst->offset & 15)];
+        uint shift_info = inst->offset >> 4u;
+        uint shift;
 
         // Base register cannot be the same as the shifted register in a post-indexing SDT.
-        if (!(bits_ipuasl & BIT_P) && base_register == shifted_register) {
+        if (!(bits_ipuasl & BIT_P) && base_register == (inst->offset & 15)) {
             return FAILURE;
         }
+
+        // by the value of int 11-7 when bit 4 = 0
+        if (!(shift_info & 1)) {
+            shift = shift_info >> 3u;
+        // by the value of register 11-8 when bit 4 = 1 and bit 7 = 0.
+        } else if ((shift_info & 1) && !(shift_info & 8)) {
+            Register shift_by = shift_info >> 4u;
+            if (shift_by == PC) {
+                // throw tried to access PC error.
+                return FAILURE;
+            }
+            shift = machineState->registers[shift_by] & 15;
+        } else {
+            // throw unsupported instruction error
+            return FAILURE;
+        }
+
+        switch (select_bits(shift_info, 3, 1, true)) {
+            // in order: logical left, logical right, arithimetic right, rotate right.
+            case 0:
+                offset <<= shift;
+                break;
+            case 1:
+                offset >>= shift;
+                break;
+            case 2:
+                offset = uint ((int32_t) offset >> shift);
+                break;
+            case 3:
+                offset = (offset >> shift) | (offset << (sizeof(offset) - shift))
+                break;
+            default:
+                // should not reach this ever
+                return FAILURE;
+        }
     } else {
-        offset = state->decoded.inst.sdt.offset;
+        offset = inst->offset;
     }
 
     // Calculate memory address to be loaded from/stored to.
