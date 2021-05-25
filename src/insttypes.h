@@ -11,13 +11,13 @@ typedef uint32_t uint;
  * Enum used for conditionally executing instructions. A simple XOR can be used to check if the enums match.
  */
 typedef enum {
-    eq = 0b0000, /**< Z flag set; equal */
-    ne = 0b0001, /**< Z clear; not equal */
-    ge = 0b1010, /**< N equals V; greater-than-or-equal */
-    lt = 0b1011, /**< N not equal to V; less than */
-    gt = 0b1100, /**< Z clear AND (N equals V); greater than */
-    le = 0b1101, /**< Z set OR (N not equal to V); less than or equal */
-    al = 0b1110  /**< Unconditional execution */
+    eq = 0,  /**< Z flag set; equal */
+    ne = 1,  /**< Z clear; not equal */
+    ge = 10, /**< N equals V; greater-than-or-equal */
+    lt = 11, /**< N not equal to V; less than */
+    gt = 12, /**< Z clear AND (N equals V); greater than */
+    le = 13, /**< Z set OR (N not equal to V); less than or equal */
+    al = 14  /**< Unconditional execution */
 } Cond;
 
 /**
@@ -25,16 +25,16 @@ typedef enum {
  * Enum for encoding the various opcodes used in data processing instructions.
  */
 typedef enum {
-    dp_and = 0b0000, /**< Rn AND opr2 */
-    dp_eor = 0b0001, /**< Rn EOR opr2 */
-    dp_sub = 0b0010, /**< Rn - opr2 */
-    dp_rsb = 0b0011, /**< opr2 - Rn */
-    dp_add = 0b0100, /**< Rn + opr2 */
-    dp_tst = 0b1000, /**< and, but result not written */
-    dp_teq = 0b1001, /**< eor, but result not written */
-    dp_cmp = 0b1010, /**< sub, but result not written */
-    dp_orr = 0b1100, /**< Rn OR opr2 */
-    dp_mov = 0b1101  /**< opr2 (Rn is ignored) */
+    dp_and = 0,  /**< Rn AND opr2 */
+    dp_eor = 1,  /**< Rn EOR opr2 */
+    dp_sub = 2,  /**< Rn - opr2 */
+    dp_rsb = 3,  /**< opr2 - Rn */
+    dp_add = 4,  /**< Rn + opr2 */
+    dp_tst = 8,  /**< and, but result not written */
+    dp_teq = 9,  /**< eor, but result not written */
+    dp_cmp = 10, /**< sub, but result not written */
+    dp_orr = 12, /**< Rn OR opr2 */
+    dp_mov = 13  /**< opr2 (Rn is ignored) */
 } DPOpCode;
 
 // Register count (excluding CPSR)
@@ -50,22 +50,22 @@ typedef enum {
  * CPSR is the 4-byte register used for conditional instruction execution.
  */
 typedef enum {
-    R0   = 0b0000,
-    R1   = 0b0001,
-    R2   = 0b0010,
-    R3   = 0b0011,
-    R4   = 0b0100,
-    R5   = 0b0101,
-    R6   = 0b0110,
-    R7   = 0b0111,
-    R8   = 0b1000,
-    R9   = 0b1001,
-    R10  = 0b1010,
-    R11  = 0b1011,
-    R12  = 0b1100,
-    R13  = 0b1101,
-    R14  = 0b1110,
-    PC   = 0b1111,
+    R0   = 0,
+    R1   = 1,
+    R2   = 2,
+    R3   = 3,
+    R4   = 4,
+    R5   = 5,
+    R6   = 6,
+    R7   = 7,
+    R8   = 8,
+    R9   = 9,
+    R10  = 10,
+    R11  = 11,
+    R12  = 12,
+    R13  = 13,
+    R14  = 14,
+    PC   = 15,
 } Register;
 
 // Maximum memory location in main memory.
@@ -177,8 +177,8 @@ typedef struct {
 } Instruction;
 
 // State flags
-#define BIT_FETCHED 0b01
-#define BIT_DECODED 0b10
+#define BIT_FETCHED 1
+#define BIT_DECODED 2
 
 /**
  * Emulator state struct.
