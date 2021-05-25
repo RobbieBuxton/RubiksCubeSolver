@@ -3,8 +3,9 @@
 
 #include <stdint.h>
 
-// Simplifying typedef.
+// Simplifying typedefs.
 typedef uint32_t uint;
+typedef int32_t sint;
 
 /**
  * Enum for encoding the various CPSR flag combinations.

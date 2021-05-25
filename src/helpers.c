@@ -1,6 +1,8 @@
 #include "helpers.h"
 #include "insttypes.h"
 
+#include <string.h>
+
 uint select_bits(uint value, uint bitmask, uint offset, bool rshift_back) {
     uint masked = value & (bitmask << offset);
     return rshift_back ? (masked >> offset) : masked;
@@ -14,6 +16,23 @@ uint swap_endianness(uint value) {
     byte00to07 = select_bits(value, 255u,  0u, true);
 
     return (byte00to07 << 24u) | (byte08to15 << 16u) | (byte16to23 << 8u) | byte24to31;
+}
+
+sint to_twos_complement(uint unsigned_value, uint sign_bit_location) {
+    sint result;
+
+    if (sign_bit_location == 31u) {
+        // Safe copy with memcpy.
+        memcpy(&result, &unsigned_value, sizeof(sint));
+    } else {
+        // Extract sign and component.
+        uint sign = select_bits(unsigned_value, 1u, sign_bit_location, false);
+        uint component = unsigned_value ^ sign;
+
+        result |= (sign << 31u) | component;
+    }
+
+    return result;
 }
 
 StatusCode load_word(State *state, uint address, Register dest) {

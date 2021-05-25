@@ -32,6 +32,18 @@ uint select_bits(uint value, uint bitmask, uint offset, bool rshift_back);
 uint swap_endianness(uint value);
 
 /**
+ * Convert an unsigned number to a 2s complement signed number.
+ *
+ * Call with 31 as signed_bit_location for default conversion.
+ * Call with another value there for a smaller signed conversion.
+ *
+ * @param  unsigned_value    Value to convert
+ * @param  sign_bit_location Where the MSB of this value is
+ * @return                   The signed integer conversion
+ */
+sint to_twos_complement(uint unsigned_value, uint sign_bit_location);
+
+/**
  * Load four bytes from the machine state memory into register.
  * 
  * @param state     Machine in which to complete transfer
