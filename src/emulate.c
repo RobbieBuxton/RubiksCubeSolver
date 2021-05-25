@@ -1,3 +1,6 @@
+// Remember to #define NDEBUG when you want to not run the asserts.
+#include <assert.h>
+
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -64,7 +67,7 @@ void initialise_state(State *machine_state) {
 }
 
 void readFile(char *fileName, State *machine_state) {
-    FILE *file = fopen(fileName, "r");
+    FILE *file = fopen(fileName, "rb");
     fread(machine_state->memory, sizeof(uint), MAX_MEMORY_LOCATION, file);
 }
 
@@ -85,5 +88,5 @@ StatusCode execute(State *machine_state) {
             return b_execute(machine_state);
         default:
             return FAILURE;
-        }
+    }
 }
