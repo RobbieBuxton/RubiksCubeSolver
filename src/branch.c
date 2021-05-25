@@ -36,6 +36,9 @@ StatusCode b_execute(State *state) {
         state->fetched = 0u;
         memset(&(state->decoded), 0, sizeof(Instruction));
 
+        // Clear all flags
+        state->flags = 0u;
+
         return CONTINUE;
     }
 }

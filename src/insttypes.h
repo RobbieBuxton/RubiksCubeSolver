@@ -176,11 +176,16 @@ typedef struct {
     __InstUnion__ inst;   /**< Union holding the specific instruction. Use type to check what is inside. */
 } Instruction;
 
+// State flags
+#define BIT_FETCHED 0b01
+#define BIT_DECODED 0b10
+
 /**
  * Emulator state struct.
  * Keeps track of the current state of the ARM emulator. Registers and memory are allocated at runtime.
  */
 typedef struct {
+    char flags;          /**< Fetched and Decoded flags. Instructions are only executed if both flags are set. */
     uint *registers;     /**< The sixteen accessible registers from an instruction. */
     char *memory;        /**< The 65536 memory slots of the system. */
     uint fetched;        /**< Raw fetched instruction to be executed after decoded. */
