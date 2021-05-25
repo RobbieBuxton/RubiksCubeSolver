@@ -51,5 +51,15 @@ StatusCode load_word(State *state, uint address, Register dest);
  */
 StatusCode store_word(State *state, uint address, Register source);
 
+/**
+ * Checks whether or not the condition specified by the current decoded
+ * instruction is met.
+ *
+ * @param  state Current state of the machine.
+ * @return       A boolean indicating whether the condition specified by the
+ *               current decoded instruction is true.
+ */
+bool checkDecodedCond(State *state);
+
 
 #endif  // __HELPERS_H__

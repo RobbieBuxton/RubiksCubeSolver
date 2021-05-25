@@ -37,3 +37,30 @@ StatusCode store_word(State *state, uint address, Register source) {
     state->memory[address+2] = select_bits(data, 15, 16, true);
     state->memory[address+3] = select_bits(data, 15, 24, true);
 }
+
+bool condIsTrue(Cond cond, uint CPSRflags) {
+    switch (cond) {
+    case eq:
+        return (bool) select_bits(CPSRflags, 1u, 30, false);
+    case ne:
+        return !condIsTrue(eq, CPSRflags);
+    case ge:
+        uint N = select_bits(CPSRflags, 1u, 31, true);
+        uint V = select_bits(CPSRflags, 1u, 28, true);
+        return N == V;
+    case lt:
+        return !condIsTrue(ge, CPSRflags);
+    case gt:
+        return condIsTrue(ge, CPSRflags) & condIsTrue(ne, CPSRflags);
+    case le:
+        return !condIsTrue(gt, CPSRflags);
+    case al:
+        return true;
+    default:
+        break;
+    }
+}
+
+bool checkDecodedCond(State *state) {
+    return condIsTrue(state->decoded.condition, state->CPSR);
+}
