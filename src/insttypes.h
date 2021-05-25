@@ -117,7 +117,7 @@ typedef struct {
 } DPInst;
 
 /**
- * Multiple instruction struct.
+ * Multiply instruction struct.
  *
  * A set:   perform multiply-and-accumulate.
  * A unset: perform multiply only.
