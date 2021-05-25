@@ -6,6 +6,7 @@
 #include "insttypes.h"
 #include "decoder.h"
 #include "executefuncs.h"
+#include "printState.h"
 
 StatusCode execute(State *);
 
@@ -30,6 +31,8 @@ int main(int argc, char **argv) {
         decode(&machine_state);
         fetch(&machine_state);
     }
+
+    printState(machineState);
 
     switch (code) {
         case HALT:
