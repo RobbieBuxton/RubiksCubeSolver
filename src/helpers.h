@@ -61,5 +61,4 @@ StatusCode store_word(State *state, uint address, Register source);
  */
 bool checkDecodedCond(State *state);
 
-
 #endif  // __HELPERS_H__

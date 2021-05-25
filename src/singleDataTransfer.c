@@ -5,6 +5,7 @@
 StatusCode sdt_execute(State* state) {
     // Retrieve components of instruction
     uint bits_ipuasl = state->decoded.inst.sdt.bits_ipuasl;
+    SDTInst *instr = &(state->decoded.inst.sdt);
     Register base_register = state->decoded.inst.sdt.Rn;
     Register dest_register = state->decoded.inst.sdt.Rd;
     Register shifted_register;
@@ -14,8 +15,8 @@ StatusCode sdt_execute(State* state) {
     // Else, it is a 12 bit unsigned offset
     if (bits_ipuasl & BIT_I) {
         // Rotates the bits 7-0 of the opcode by bits 11-8 times 2.
-        uint rot = (instr->operand2 >> 8u) << 1u;
-        uint imm = instr->operand2 & 255u;
+        uint rot = (instr->offset >> 8u) << 1u;
+        uint imm = instr->offset & 255u;
         offset = (imm << rot) | (imm >> (11u - rot));
 
         // Base register cannot be the same as the shifted register in a post-indexing SDT.

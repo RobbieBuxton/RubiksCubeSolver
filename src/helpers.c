@@ -1,4 +1,5 @@
 #include "helpers.h"
+#include "insttypes.h"
 
 uint select_bits(uint value, uint bitmask, uint offset, bool rshift_back) {
     uint masked = value & (bitmask << offset);
@@ -24,18 +25,33 @@ StatusCode load_word(State *state, uint address, Register dest) {
     loaded += state->memory[address + 2] << 16u;
     loaded += state->memory[address + 3] << 24u;
 
+    // Check register validity
+    if (dest < R0 || dest > PC) {
+        return FAILURE;
+    }
+
     // Put result in destination.
     state->registers[dest] = loaded;
+
+    return CONTINUE;
 }
 
 StatusCode store_word(State *state, uint address, Register source) {
     // Retrieve data from register
     uint data = state->registers[source];
+
+    // Check address validity
+    if (address >= MAX_MEMORY_LOCATION - sizeof(uint)) {
+        return FAILURE;
+    }
+
     // Store data in little endian order
     state->memory[address] = select_bits(data, 15, 0, true);
     state->memory[address+1] = select_bits(data, 15, 8, true);
     state->memory[address+2] = select_bits(data, 15, 16, true);
     state->memory[address+3] = select_bits(data, 15, 24, true);
+
+    return CONTINUE;
 }
 
 bool condIsTrue(Cond cond, uint CPSRflags) {
@@ -45,9 +61,11 @@ bool condIsTrue(Cond cond, uint CPSRflags) {
     case ne:
         return !condIsTrue(eq, CPSRflags);
     case ge:
-        uint N = select_bits(CPSRflags, 1u, 31, true);
-        uint V = select_bits(CPSRflags, 1u, 28, true);
-        return N == V;
+        {
+            uint N = select_bits(CPSRflags, 1u, 31, true);
+            uint V = select_bits(CPSRflags, 1u, 28, true);
+            return N == V;
+        }
     case lt:
         return !condIsTrue(ge, CPSRflags);
     case gt:
