@@ -130,8 +130,8 @@ typedef struct {
 /**
  * Single Data Transfer instruction struct.
  *
- * I set:   operand2 is immediate.
- * I unset: operand2 is a shifted register.
+ * I set:   operand2 is a shifted register.
+ * I unset: operand2 is immediate. !! opposite order to DP Instruction.
  * P set:   [pre-index] offset added/subtracted to base register before transfer.
  * P unset: [post-index] offset added/subtracted to the base register after transfer.
  * U set:   offset added to base register.
