@@ -39,7 +39,9 @@ StatusCode decode(State *state) {
 
     // Detect instruction type
     uint typemasked = select_bits(translated, TYPEMASK, TYPEOFFSET, true);
-    if (select_bits(typemasked, BRANCHMASK, 0u, false) == BRANCHPATTERN) {
+    if (!raw) {
+        state->decoded.type = H;
+    } else if (select_bits(typemasked, BRANCHMASK, 0u, false) == BRANCHPATTERN) {
         // Branch
         state->decoded.type = B;
         state->decoded.inst.b.offset = translated & ((1u << 24u) - 1u);

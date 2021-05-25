@@ -86,6 +86,8 @@ StatusCode execute(State *machine_state) {
             return sdt_execute(machine_state);
         case B:
             return b_execute(machine_state);
+        case H:
+            return HALT;
         default:
             return FAILURE;
     }

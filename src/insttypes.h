@@ -78,7 +78,8 @@ typedef enum {
     DP,  /**< Data Processing */
     M,   /**< Multiply */
     SDT, /**< Single Data Transfer */
-    B    /**< Branch */
+    B,   /**< Branch */
+    H    /**< Halt */
 } InstructionType;
 
 // These definitions are for extracting the I P U A S L bits from an instruction
