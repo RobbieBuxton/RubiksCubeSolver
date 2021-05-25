@@ -37,12 +37,15 @@ typedef enum {
     dp_mov = 0b1101  /**< opr2 (Rn is ignored) */
 } DPOpCode;
 
+// Register count (excluding CPSR)
+#define REGISTER_COUNT 16
+
 /**
  * Register names and encodings.
  * Enum used for having convenient names for referring to the registers.
  *
  * R0-R12 are general use registers.
- * R13 is unused.
+ * R13-R14 are unused.
  * PC is the program counter.
  * CPSR is the 4-byte register used for conditional instruction execution.
  */
