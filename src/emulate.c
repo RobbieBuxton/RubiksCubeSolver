@@ -10,9 +10,11 @@
 
 #include "executefuncs.h"
 #include "printState.h"
+#include "helpers.h"
 
 StatusCode execute(State *);
 void initialise_state(State *);
+void readFile(char *, State *);
 
 // Memory contents for machine state.
 static char main_memory[MAX_MEMORY_LOCATION] = { 0u };
@@ -24,6 +26,10 @@ int main(int argc, char **argv) {
     // Create a brand new machine state
     State machine_state;
     initialise_state(&machine_state);
+
+    //Copy the contents of the file into the emulator's memory
+    assert(argc > 1);
+    readFile(argv[1], &machine_state);
 
     while (!code) {
         if (machine_state.flags & BIT_DECODED) {
@@ -57,8 +63,17 @@ void initialise_state(State *machine_state) {
     machine_state->registers = registers;
 }
 
+void readFile(char *fileName, State *machine_state) {
+    FILE *file = fopen(fileName, "r");
+    fread(machine_state->memory, sizeof(uint), MAX_MEMORY_LOCATION, file);
+}
+
 StatusCode execute(State *machine_state) {
-  // cond checked here no need to do it in ur indiviudal function!
+    // Current instruction is ignored if the condition is not met.
+    if (!checkDecodedCond(machine_state)) {
+        return CONTINUE;
+    }
+
     switch (machine_state->decoded.type) {
         case DP:
             return dp_execute(machine_state);

@@ -69,7 +69,7 @@ bool condIsTrue(Cond cond, uint CPSRflags) {
     case lt:
         return !condIsTrue(ge, CPSRflags);
     case gt:
-        return condIsTrue(ge, CPSRflags) & condIsTrue(ne, CPSRflags);
+        return condIsTrue(ge, CPSRflags) && condIsTrue(ne, CPSRflags);
     case le:
         return !condIsTrue(gt, CPSRflags);
     case al:
