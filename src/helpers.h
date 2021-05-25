@@ -1,6 +1,8 @@
 #ifndef __HELPERS_H__
 #define __HELPERS_H__
 
+#include <stdbool.h>
+
 #include "insttypes.h"
 
 /**
@@ -19,7 +21,7 @@
  * @param  rshift_back Rshift the results back?
  * @return             See "Output for example" above.
  */
-uint select_bits(uint value, uint bitmask, uint offset, char rshift_back);
+uint select_bits(uint value, uint bitmask, uint offset, bool rshift_back);
 
 /**
  * Swap the endianness of a number.

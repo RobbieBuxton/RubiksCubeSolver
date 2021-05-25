@@ -1,6 +1,6 @@
 #include "helpers.h"
 
-uint select_bits(uint value, uint bitmask, uint offset, char rshift_back) {
+uint select_bits(uint value, uint bitmask, uint offset, bool rshift_back) {
     uint masked = value & (bitmask << offset);
     return rshift_back ? (masked >> offset) : masked;
 }
