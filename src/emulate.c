@@ -19,15 +19,22 @@ static char main_memory[MAX_MEMORY_LOCATION] = { 0u };
 static uint registers[REGISTER_COUNT] = { 0u };
 
 int main(int argc, char **argv) {
-    StatusCode code;
+    StatusCode code = 0;
 
     // Create a brand new machine state
     State machine_state;
     initialise_state(&machine_state);
 
-    while (!(code = execute(&machine_state))) {
-        decode(&machine_state);
-        fetch(&machine_state);
+    while (!code) {
+        if (machine_state.flags & BIT_DECODED) {
+            code = execute(&machine_state);
+        }
+        if (!code && machine_state.flags & BIT_FETCHED) {
+            code = decode(&machine_state);
+        }
+        if (!code) {
+            code = fetch(&machine_state);
+        }
     }
 
     printState(&machine_state);

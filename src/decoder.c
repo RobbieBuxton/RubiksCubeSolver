@@ -69,5 +69,6 @@ StatusCode decode(State *state) {
         return FAILURE;
     }
 
+    state->flags |= BIT_DECODED;
     return CONTINUE;
 }

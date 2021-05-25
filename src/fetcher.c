@@ -17,5 +17,6 @@ StatusCode fetch(State *machineState) {
     machineState->fetched = fetched;
     // increment program counter
     machineState->registers[PC] = pc + 4;
+    machineState->flags |= BIT_FETCHED;
     return CONTINUE;
 }
