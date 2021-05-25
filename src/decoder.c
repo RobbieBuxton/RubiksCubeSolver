@@ -9,10 +9,14 @@
 #define TYPEMASK      ((1u << 7u) - 1u)
 #define TYPEOFFSET    22u
 
-#define RndMASK       (15u << 16u)
-#define RdnMASK       (15u << 12u)
-#define RsMASK        (15u << 8u)
-#define RmMASK        (15u)
+#define NIBBLEMASK    (15u)
+
+#define RndOFFSET     (16u)
+#define RdnOFFSET     (12u)
+#define RsOFFSET      (8u)
+
+// Unused. It is used as a reminder.
+#define RmOFFSET      (0u)
 
 #define BRANCHPATTERN (5u << 3u)
 #define BRANCHMASK    (15u)
@@ -44,17 +48,17 @@ StatusCode decode(State *state) {
         state->decoded.type = M;
         state->decoded.inst.m.bits_ipuasl = translated & BITS_IPUASL;
 
-        state->decoded.inst.m.Rd = (translated & RndMASK) >> 16u;
-        state->decoded.inst.m.Rn = (translated & RdnMASK) >> 12u;
-        state->decoded.inst.m.Rs = (translated & RsMASK) >> 8u;
-        state->decoded.inst.m.Rm = (translated & RmMASK);
+        state->decoded.inst.m.Rd = select_bits(translated, NIBBLEMASK, RndOFFSET, true);
+        state->decoded.inst.m.Rn = select_bits(translated, NIBBLEMASK, RdnOFFSET, true);
+        state->decoded.inst.m.Rs = select_bits(translated, NIBBLEMASK, RsOFFSET, true);
+        state->decoded.inst.m.Rm = (translated & NIBBLEMASK);
     } else if (select_bits(typemasked, SDTMASK, 0u, false) == SDTPATTERN) {
         // Single Data Transfer
         state->decoded.type = SDT;
         state->decoded.inst.sdt.bits_ipuasl = translated & BITS_IPUASL;
 
-        state->decoded.inst.sdt.Rn = (translated & RndMASK) >> 16u;
-        state->decoded.inst.sdt.Rd = (translated & RdnMASK) >> 12u;
+        state->decoded.inst.sdt.Rn = select_bits(translated, NIBBLEMASK, RndOFFSET, true);
+        state->decoded.inst.sdt.Rd = select_bits(translated, NIBBLEMASK, RdnOFFSET, true);
 
         state->decoded.inst.sdt.offset = translated & OPR2_OR_OFFSET;
     } else if (select_bits(typemasked, DPMASK, 0u, false) == 0u) {
@@ -62,8 +66,8 @@ StatusCode decode(State *state) {
         state->decoded.type = DP;
         state->decoded.inst.dp.bits_ipuasl = translated & BITS_IPUASL;
 
-        state->decoded.inst.dp.Rn = (translated & RndMASK) >> 16u;
-        state->decoded.inst.dp.Rd = (translated & RdnMASK) >> 12u;
+        state->decoded.inst.dp.Rn = select_bits(translated, NIBBLEMASK, RndOFFSET, true);
+        state->decoded.inst.dp.Rd = select_bits(translated, NIBBLEMASK, RdnOFFSET, true);
 
         state->decoded.inst.dp.operand2 = translated & OPR2_OR_OFFSET;
     } else {
