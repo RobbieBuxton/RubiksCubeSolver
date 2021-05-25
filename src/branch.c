@@ -9,16 +9,19 @@ StatusCode b_execute(State *state) {
 
     // Assuming 2s complement for this encoding.
     uint bits = state->decoded.inst.b.offset;
-    uint sign = bits & (1 << 24);
+    uint sign = bits & (1u << 24u);
 
     // Extract component and flip accordingly
     uint component = bits ^ sign;
 
     // If negative, -1 and flip bits...
     if (sign) {
-        component = ~(component - 1);
-        component &= (1 << 24) - 1;
+        component = ~(component - 1u);
+        component &= (1u << 24u) - 1u;
     }
+
+    // Shift-Left 2 bytes to make instruction alignment easier.
+    component <<= 2u;
 
     // Perform the jump.
     if (sign) {
@@ -34,7 +37,7 @@ StatusCode b_execute(State *state) {
         return FAILURE;
     } else {
         state->fetched = 0u;
-        memset(&(state->decoded), 0, sizeof(Instruction));
+        memset(&(state->decoded), 0u, sizeof(Instruction));
 
         // Clear all flags
         state->flags = 0u;
