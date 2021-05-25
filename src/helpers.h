@@ -1,6 +1,8 @@
 #ifndef __HELPERS_H__
 #define __HELPERS_H__
 
+#include <stdbool.h>
+
 #include "insttypes.h"
 
 /**
@@ -19,7 +21,7 @@
  * @param  rshift_back Rshift the results back?
  * @return             See "Output for example" above.
  */
-uint select_bits(uint value, uint bitmask, uint offset, char rshift_back);
+uint select_bits(uint value, uint bitmask, uint offset, bool rshift_back);
 
 /**
  * Swap the endianness of a number.
@@ -32,20 +34,22 @@ uint swap_endianness(uint value);
 /**
  * Load four bytes from the machine state memory into register.
  * 
- * @param address       starting address of word in memory (lowest address).
- * @param destination   pointer to register to be loaded into.
- * @return              Code reflecting whether load was successful.
+ * @param state     Machine in which to complete transfer
+ * @param address   Starting address of word in memory (lowest address).
+ * @param dest      Register to be loaded into.
+ * @return          Code reflecting whether load was successful.
  */
-StatusCode load_word(uint address, uint *destination);
+StatusCode load_word(State *state, uint address, Register dest);
 
 /**
- * Store four bytes into the machine state memory, usually from a register.
+ * Store four bytes into the machine state memory from a register.
  * 
+ * @param state     Machine in which to complete transfer
  * @param address   Starting address of where to store word.
  * @param data      Word to be stored.
  * @return          Code reflecting whether load was successful.
  */
-StatusCode store_word(uint address, uint data);
+StatusCode store_word(State *state, uint address, Register source);
 
 
 #endif  // __HELPERS_H__
