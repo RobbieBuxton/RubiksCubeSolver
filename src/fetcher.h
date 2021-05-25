@@ -6,8 +6,8 @@
 /**
  * Fetches next instruction from memory according to program counter.
  *
- * @param  state Machine state to decode the fetched instruction.
- * @return       Success state when decoding.
+ * @param  state Machine state to fetch the fetched instruction for.
+ * @return       Success state when fetching.
  */
 StatusCode fetch(State *state);
 

@@ -36,6 +36,7 @@ StatusCode b_execute(State *state) {
     if (state->registers[PC] >= MAX_MEMORY_LOCATION) {
         return FAILURE;
     } else {
+        // Clear fetched and decoded from the machine state, as if "flushing" the pipeline.
         state->fetched = 0u;
         memset(&(state->decoded), 0u, sizeof(Instruction));
 

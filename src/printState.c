@@ -1,4 +1,6 @@
 #include "insttypes.h"
+
+#include <stdio.h>
 #include <string.h>
 
 void printState(State *state) {
@@ -18,7 +20,7 @@ void printState(State *state) {
     printf("PC  :%11d (0x%08x)\n", contents, contents);
     contents = state->CPSR;
     printf("CPSR:%11d (0x%08x)\n", contents, contents);
-    
+
     //Print the memory
     printf("Non-zero memory:\n");
     for (i = 0; i < MAX_MEMORY_LOCATION; i += 4)

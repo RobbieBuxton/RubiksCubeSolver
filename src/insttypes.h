@@ -37,8 +37,11 @@ typedef enum {
     dp_mov = 13  /**< opr2 (Rn is ignored) */
 } DPOpCode;
 
+// Instruction byte length
+#define INSTRUCTION_BYTE_LENGTH 4u
+
 // Register count (excluding CPSR)
-#define REGISTER_COUNT 16
+#define REGISTER_COUNT 16u
 
 /**
  * Register names and encodings.
@@ -69,7 +72,7 @@ typedef enum {
 } Register;
 
 // Maximum memory location in main memory.
-#define MAX_MEMORY_LOCATION 65536
+#define MAX_MEMORY_LOCATION 65536u
 
 /**
  * Enum defining the used instruction types.
@@ -178,8 +181,8 @@ typedef struct {
 } Instruction;
 
 // State flags
-#define BIT_FETCHED 1
-#define BIT_DECODED 2
+#define BIT_FETCHED 1u
+#define BIT_DECODED 2u
 
 /**
  * Emulator state struct.
