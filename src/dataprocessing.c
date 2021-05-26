@@ -183,9 +183,11 @@ StatusCode dp_execute(State *machineState) {
     if (*to_dest == 0) {
         Z = 1u;
     }
-    //Updates CPSR with the new flag bits
-    machineState->CPSR = select_range(machineState->CPSR,28u,0u) |
-                         shifter(N << 2u | Z << 1u | C,3u,32u,ror,NULL);
+    //Updates CPSR with the new flag bit
+    if (instr->bits_ipuasl & BIT_S) {
+        machineState->CPSR = select_range(machineState->CPSR,28u,0u) |
+                             shifter(N << 2u | Z << 1u | C,3u,32u,ror,NULL);
+    }
 
     return CONTINUE;
 }
