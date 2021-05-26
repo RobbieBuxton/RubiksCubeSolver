@@ -147,47 +147,55 @@ StatusCode dp_execute(State *machineState) {
     uint neg_a, neg_b;
 
     uint *to_dest = machineState->registers + instr->Rd;
+    uint result;
     switch (instr->opcode) {
         case dp_and:
-            *to_dest = a & b;
+        case dp_tst:
+            result = a & b;
             break;
         case dp_eor:
-            *to_dest = a ^ b;
+        case dp_teq:
+            result = a ^ b;
             break;
         case dp_sub:
+        case dp_cmp:
             neg_b = to_neg(b);
-            *to_dest = a + neg_b;
+            result = a + neg_b;
             C = is_add_overflow(a,neg_b);
             break;
         case dp_rsb:
             neg_a = to_neg(a);
-            *to_dest = neg_a + b;
+            result = neg_a + b;
             C = is_add_overflow(neg_a,b);
             break;
         case dp_add:
-            *to_dest = a + b;
+            result = a + b;
             C = is_add_overflow(a,b);
             break;
-        case dp_tst:
-            break;
-        case dp_teq:
-            break;
-        case dp_cmp:
-            neg_b = to_neg(b);
-            C = is_add_overflow(a,neg_b);
-            break; 
         case dp_orr:
-            *to_dest = a | b;
+            result = a | b;
             break;
         case dp_mov:
-            *to_dest = b;
+            result = b;
             break;
         default:
             //Unsupported operation error
             return INVALID_OPCODE;
     }
-    N = select_range(*to_dest,31u,31u);
-    if (*to_dest == 0) {
+
+    switch (instr->opcode)
+    {
+    case dp_tst:
+    case dp_teq:
+    case dp_cmp:
+        break;
+    default:
+        *to_dest = result;
+        break;
+    }
+
+    N = select_range(result,31u,31u);
+    if (result == 0) {
         Z = 1u;
     }
     //Updates CPSR with the new flag bit
