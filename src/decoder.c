@@ -19,7 +19,7 @@
 // Unused. It is used as a reminder.
 #define RmOFFSET      (0u)
 
-#define BRANCHPATTERN (5u << 3u)
+#define BRANCHPATTERN (10u)
 #define BRANCHMASK    (15u)
 
 #define SDTPATTERN    (1u << 4u)
@@ -42,19 +42,10 @@ StatusCode decode(State *state) {
     uint typemasked = select_bits(translated, TYPEMASK, TYPEOFFSET, true);
     if (!raw) {
         state->decoded.type = H;
-    } else if (select_bits(typemasked, BRANCHMASK, 0u, false) == BRANCHPATTERN) {
+    } else if (select_bits(typemasked, BRANCHMASK, 2u, true) == BRANCHPATTERN) {
         // Branch
         state->decoded.type = B;
         state->decoded.inst.b.offset = translated & ((1u << 24u) - 1u);
-    } else if (typemasked == 0u) {
-        // Multiply
-        state->decoded.type = M;
-        state->decoded.inst.m.bits_ipuasl = translated & BITS_IPUASL;
-
-        state->decoded.inst.m.Rd = select_bits(translated, NIBBLEMASK, RndOFFSET, true);
-        state->decoded.inst.m.Rn = select_bits(translated, NIBBLEMASK, RdnOFFSET, true);
-        state->decoded.inst.m.Rs = select_bits(translated, NIBBLEMASK, RsOFFSET, true);
-        state->decoded.inst.m.Rm = (translated & NIBBLEMASK);
     } else if (select_bits(typemasked, SDTMASK, 0u, false) == SDTPATTERN) {
         // Single Data Transfer
         state->decoded.type = SDT;
@@ -74,6 +65,15 @@ StatusCode decode(State *state) {
         state->decoded.inst.dp.Rd = select_bits(translated, NIBBLEMASK, RdnOFFSET, true);
 
         state->decoded.inst.dp.operand2 = translated & OPR2_OR_OFFSET;
+    } else if (typemasked == 0u) {
+        // Multiply
+        state->decoded.type = M;
+        state->decoded.inst.m.bits_ipuasl = translated & BITS_IPUASL;
+
+        state->decoded.inst.m.Rd = select_bits(translated, NIBBLEMASK, RndOFFSET, true);
+        state->decoded.inst.m.Rn = select_bits(translated, NIBBLEMASK, RdnOFFSET, true);
+        state->decoded.inst.m.Rs = select_bits(translated, NIBBLEMASK, RsOFFSET, true);
+        state->decoded.inst.m.Rm = (translated & NIBBLEMASK);
     } else {
         // Undefined instruction
         return INVALID_INSTRUCTION;
