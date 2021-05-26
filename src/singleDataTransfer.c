@@ -48,10 +48,10 @@ StatusCode sdt_execute(State *state) {
                 offset >>= shift;
                 break;
             case 2:
-                offset = uint ((int32_t) offset >> shift);
+                offset = uint ((sint) offset >> shift);
                 break;
             case 3:
-                offset = (offset >> shift) | (offset << (sizeof(offset) - shift))
+                offset = (offset >> shift) | (offset << (sizeof(offset) * 8 - shift))
                 break;
             default:
                 // should not reach this ever
