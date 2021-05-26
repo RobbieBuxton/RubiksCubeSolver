@@ -76,7 +76,7 @@ StatusCode store_word(State *state, uint address, Register source) {
 bool condIsTrue(Cond cond, uint CPSRflags) {
     switch (cond) {
         case eq:
-            return (bool) select_bits(CPSRflags, 1u, 30, false);
+            return !(select_bits(CPSRflags, 15u, 28u, false));
         case ne:
             return !condIsTrue(eq, CPSRflags);
         case ge:
