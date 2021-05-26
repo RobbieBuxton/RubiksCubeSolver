@@ -15,8 +15,15 @@ uint get_carry_bit(uint, uint, uint, ShiftType);
 
 //bits are 0 indexed from the right
 uint select_range(uint num, uint start_bit, uint finish_bit) {
-    return  ((((1 << (start_bit + 1u)) - 1u) ^
-              ((1 << finish_bit) - 1u)) & num) >> finish_bit;
+    uint upper_mask;
+    if (start_bit == 31) {
+        //MAX_INT
+        upper_mask = 0 - 1;
+    } else {
+        upper_mask = ((1u << (start_bit + 1u))-1u);
+    }
+    uint lower_mask = ((1u << finish_bit) - 1u);
+    return (uint) ((upper_mask ^ lower_mask) & num) >> finish_bit;
 }
 
 uint shifter(uint num, uint amount, uint bit_size, ShiftType type, uint *C) {
