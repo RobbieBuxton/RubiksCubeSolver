@@ -20,9 +20,15 @@ uint select_range(uint num, uint start_bit, uint finish_bit) {
 }
 
 uint shifter(uint num, uint amount, uint bit_size, ShiftType type, uint *C) {
+    // If amount is 0, there is nothing to do.
+    if (amount == 0u) {
+        *C = 0;
+        return num;
+    }
+
     if (C != NULL) {
         *C = get_carry_bit(num, amount, bit_size, type); 
-    } 
+    }
     switch (type) {
         //Logical shift left.
         case lsl:
