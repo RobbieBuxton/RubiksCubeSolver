@@ -75,26 +75,26 @@ StatusCode store_word(State *state, uint address, Register source) {
 
 bool condIsTrue(Cond cond, uint CPSRflags) {
     switch (cond) {
-    case eq:
-        return (bool) select_bits(CPSRflags, 1u, 30, false);
-    case ne:
-        return !condIsTrue(eq, CPSRflags);
-    case ge:
-        {
-            uint N = select_bits(CPSRflags, 1u, 31, true);
-            uint V = select_bits(CPSRflags, 1u, 28, true);
-            return N == V;
-        }
-    case lt:
-        return !condIsTrue(ge, CPSRflags);
-    case gt:
-        return condIsTrue(ge, CPSRflags) && condIsTrue(ne, CPSRflags);
-    case le:
-        return !condIsTrue(gt, CPSRflags);
-    case al:
-        return true;
-    default:
-        break;
+        case eq:
+            return (bool) select_bits(CPSRflags, 1u, 30, false);
+        case ne:
+            return !condIsTrue(eq, CPSRflags);
+        case ge:
+            {
+                uint N = select_bits(CPSRflags, 1u, 31, true);
+                uint V = select_bits(CPSRflags, 1u, 28, true);
+                return N == V;
+            }
+        case lt:
+            return !condIsTrue(ge, CPSRflags);
+        case gt:
+            return condIsTrue(ge, CPSRflags) && condIsTrue(ne, CPSRflags);
+        case le:
+            return !condIsTrue(gt, CPSRflags);
+        case al:
+            return true;
+        default:
+            return false;
     }
 }
 

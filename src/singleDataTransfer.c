@@ -8,7 +8,6 @@ StatusCode sdt_execute(State *state) {
     SDTInst *inst = &(state->decoded.inst.sdt);
     Register base_register = inst->Rn;
     Register dest_register = inst->Rd;
-    Register shifted_register;
     uint offset;
 
     // If I is set, Offset is a shifted register.
