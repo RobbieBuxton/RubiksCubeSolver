@@ -33,7 +33,7 @@ StatusCode sdt_execute(State *state) {
                 // throw tried to access PC error.
                 return FAILURE;
             }
-            shift = machineState->registers[shift_by] & 15;
+            shift = machineState->registers[shift_by] & 255;
         } else {
             // throw unsupported instruction error
             return FAILURE;
