@@ -20,7 +20,7 @@ StatusCode sdt_execute(State *state) {
 
         // Base register cannot be the same as the shifted register in a post-indexing SDT.
         if (!(bits_ipuasl & BIT_P) && base_register == (inst->offset & 15)) {
-            return FAILURE;
+            return INVALID_INSTRUCTION;
         }
 
         // by the value of int 11-7 when bit 4 = 0
@@ -31,12 +31,12 @@ StatusCode sdt_execute(State *state) {
             Register shift_by = shift_info >> 4u;
             if (shift_by == PC) {
                 // throw tried to access PC error.
-                return FAILURE;
+                return INVALID_INSTRUCTION;
             }
             shift = machineState->registers[shift_by] & 255;
         } else {
             // throw unsupported instruction error
-            return FAILURE;
+            return INVALID_INSTRUCTION;
         }
 
         switch (select_bits(shift_info, 3, 1, true)) {
@@ -69,7 +69,7 @@ StatusCode sdt_execute(State *state) {
 
     // Make sure memory address is neither negative nor too large
     if (address >= MAX_MEMORY_LOCATION) {
-        return FAILURE;
+        return ILLEGAL_MEMORY_ACCESS;
     }
 
     // complete memory transfer

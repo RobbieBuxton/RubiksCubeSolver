@@ -77,6 +77,9 @@ int exit_code_handler(StatusCode code, State* state) {
             break;
         case FILE_READ_ERROR:
             printf("Failed to read from binary file.\n");
+            break;
+        case ILLEGAL_MEMORY_ACCESS:
+            printf("Attempted to access invalid memory address.\n");
         default:
             break;
     }
