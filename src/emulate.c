@@ -21,7 +21,7 @@ StatusCode readFile(char *, State *);
 int exit_code_handler(StatusCode, State *);
 
 // Memory contents for machine state.
-static char main_memory[MAX_MEMORY_LOCATION] = { 0u };
+static uchar main_memory[MAX_MEMORY_LOCATION] = { 0u };
 static uint registers[REGISTER_COUNT] = { 0u };
 
 int main(int argc, char **argv) {
@@ -102,15 +102,21 @@ StatusCode readFile(char *fileName, State *machine_state) {
         return FILE_OPEN_ERROR;
     }
 
-    size_t read = fread(machine_state->memory, sizeof(uint), MAX_MEMORY_LOCATION, file);
+    size_t read = fread(machine_state->memory, sizeof(uchar), MAX_MEMORY_LOCATION, file);
     if (!read) {
         return FILE_READ_ERROR;
     }
+
+    fclose(file);
 
     return CONTINUE;
 }
 
 StatusCode execute(State *machine_state) {
+    if (machine_state->decoded.type == H) {
+        return HALT;
+    }
+
     // Current instruction is ignored if the condition is not met.
     if (!checkDecodedCond(machine_state)) {
         return CONTINUE;
@@ -125,8 +131,6 @@ StatusCode execute(State *machine_state) {
             return sdt_execute(machine_state);
         case B:
             return b_execute(machine_state);
-        case H:
-            return HALT;
         default:
             return FAILURE;
     }

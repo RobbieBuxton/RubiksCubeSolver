@@ -133,7 +133,7 @@ StatusCode dp_execute(State *machineState) {
     // Negatives of a and b
     uint neg_a, neg_b;
 
-    uint *to_dest = &(machineState->registers[instr->Rd]);
+    uint *to_dest = machineState->registers + instr->Rd;
     switch (instr->opcode) {
         case dp_and:
             *to_dest = a & b;

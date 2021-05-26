@@ -6,6 +6,7 @@
 // Simplifying typedefs.
 typedef uint32_t uint;
 typedef int32_t sint;
+typedef unsigned char uchar;
 
 /**
  * Enum for encoding the various CPSR flag combinations.
@@ -190,9 +191,9 @@ typedef struct {
  * Keeps track of the current state of the ARM emulator. Registers and memory are allocated at runtime.
  */
 typedef struct {
-    char flags;          /**< Fetched and Decoded flags. Instructions are only executed if both flags are set. */
+    uchar flags;         /**< Fetched and Decoded flags. Instructions are only executed if both flags are set. */
     uint *registers;     /**< The sixteen accessible registers from an instruction. */
-    char *memory;        /**< The 65536 memory slots of the system. */
+    uchar *memory;       /**< The 65536 memory slots of the system. */
     uint fetched;        /**< Raw fetched instruction to be executed after decoded. */
     Instruction decoded; /**< Next decoded instruction to be executed. */
     uint CPSR;           /**< Status flags register. */

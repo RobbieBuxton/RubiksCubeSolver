@@ -11,10 +11,10 @@ StatusCode fetch(State *state) {
     }
 
     // receive bytes in order of memory, decode will decypher little-endianess
-    uint fetched = state->memory[pc] << 24u;
-    fetched += state->memory[pc + 1] << 16u;
-    fetched += state->memory[pc + 2] << 8u;
-    fetched += state->memory[pc + 3];
+    uint fetched = ((uint) state->memory[pc]) << 24u;
+    fetched |= ((uint) state->memory[pc + 1]) << 16u;
+    fetched |= ((uint) state->memory[pc + 2]) << 8u;
+    fetched |= ((uint) state->memory[pc + 3]);
 
     // update fetched in machine pipeline
     state->fetched = fetched;

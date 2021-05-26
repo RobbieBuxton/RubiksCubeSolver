@@ -11,6 +11,7 @@
 
 #define NIBBLEMASK    (15u)
 
+#define OPCODEOFFSET  (21u)
 #define RndOFFSET     (16u)
 #define RdnOFFSET     (12u)
 #define RsOFFSET      (8u)
@@ -67,6 +68,7 @@ StatusCode decode(State *state) {
         // Data Processing
         state->decoded.type = DP;
         state->decoded.inst.dp.bits_ipuasl = translated & BITS_IPUASL;
+        state->decoded.inst.dp.opcode = select_bits(translated, NIBBLEMASK, OPCODEOFFSET, true);
 
         state->decoded.inst.dp.Rn = select_bits(translated, NIBBLEMASK, RndOFFSET, true);
         state->decoded.inst.dp.Rd = select_bits(translated, NIBBLEMASK, RdnOFFSET, true);
