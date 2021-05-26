@@ -186,6 +186,12 @@ typedef struct {
 #define BIT_FETCHED 1u
 #define BIT_DECODED 2u
 
+// CPSR flags
+#define FLAG_N (1u << 31u)
+#define FLAG_Z (1u << 30u)
+#define FLAG_C (1u << 29u)
+#define FLAG_V (1u << 28u)
+
 /**
  * Emulator state struct.
  * Keeps track of the current state of the ARM emulator. Registers and memory are allocated at runtime.
