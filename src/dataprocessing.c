@@ -28,7 +28,13 @@ uint shifter(uint num, uint amount, uint bit_size, ShiftType type, uint *C) {
     //Arthimetic right shift (preserves sign bit).
     case asr:
         uint sign_bit = (1u << (bit_size-1u)) & num;
-        return sign_bit | shifter(num,amount,bit_size-1,lsr,NULL);
+        if (select_range(num,31,31)) {
+        return shifter((1 << amount) - 1,amount,32,ror,NULL) | 
+               shifter(num,amount,32,lsr,NULL);
+        } else {
+            return shifter(num,amount,32,lsr,NULL);
+        }
+
     //Rotate right.
     case ror:
         return shifter(num,amount,bit_size,lsr,NULL) | 
@@ -58,7 +64,7 @@ uint get_carry_bit(uint num, uint amount, uint bit_size, ShiftType type) {
 }
 
 uint get_b(State *machineState,uint *C) {
-    DPInst *instr = machineState->decoded.inst.dp.opcode;
+    DPInst *instr = &(machineState->decoded.inst.dp);
     uint *operand2 = instr->operand2;
 
     //Rotates the bits 7-0 of the opcode by bits 11-8 times 2.
@@ -88,7 +94,7 @@ uint get_b(State *machineState,uint *C) {
                 //throw tried to access PC error.
             }
 
-            uint rs = machineState->registers[select_range(operand2,11u,8u)];
+            uint rs = select(machineState->registers[select_range(operand2,11u,8u)],7,0);
             return shifter(rm,rs,32u,shift_type,*C);
 
         } else {
@@ -98,22 +104,19 @@ uint get_b(State *machineState,uint *C) {
     }
 }
 
-#define INT_MAX (int) 2147483647
-#define INT_MIN -(int) 2147483648
+#define INT_MAX 2147483647
 
 uint is_add_overflow(uint a, uint b) {
-    sint x = (sint) a;
-    sint y = (sint) b;
-    if ((x > 0) && (y > INT_MAX - x)) {
-        return 1u;
-    } else {
-        return 0u;
-    }
-    
+    return ((a > 0) && (a > INT_MAX - b));
 }
 
+uint to_neg(uint a) {
+    return ~(1u + a);
+}
+
+
 StatusCode dp_execute(State *machineState) {
-    DPInst *instr = machineState->decoded.inst.dp.opcode;
+    DPInst *instr = &(machineState->decoded.inst.dp);
     uint C;
     uint N;
     uint Z = 0u;
@@ -122,44 +125,54 @@ StatusCode dp_execute(State *machineState) {
     //B can be either value of a specified register or an immediate value.
     uint b = get_b(machineState,&C);
 
-    uint to_dest;
-    sint twos_to_dest;
+    uint *to_dest = &(machineState->registers[instr->Rd]);
     switch (instr->opcode) {
         case dp_and:
-            to_dest = a & b;
+            *to_dest = a & b;
             break;
         case dp_eor:
-            to_dest = a ^ b;
+            *to_dest = a ^ b;
             break;
         case dp_sub:
-
+            uint neg_b = to_neg(b);
+            *to_dest = a + neg_b;
+            C = is_add_overflow(a,neg_b);
             break;
         case dp_rsb:
+            uint neg_a = to_neg(a);
+            *to_dest = neg_a + b;
+            C = is_add_overflow(neg_a,b);
             break;
         case dp_add:
+            *to_dest = a + b;
+            C = is_add_overflow(a,b);
             break;
         case dp_tst:
             break;
         case dp_teq:
             break;
         case dp_cmp:
+            uint neg_b = to_neg(b);
+            C = is_add_overflow(a,neg_b);
             break; 
         case dp_orr:
-            to_dest = a | b;
+            *to_dest = a | b;
             break;
         case dp_mov:
-            to_dest = b;
+            *to_dest = b;
             break;
         default:
             //Unsupported operation error
             break;
     }
     N = select_range(to_dest,31u,31u);
-    if (to_dest == 0) {
+    if (*to_dest == 0) {
         Z = 1u;
     }
     //Updates CPSR with the new flag bits
     machineState->CPSR = select_range(machineState->CPSR,28u,0u) |
                          shifter(N << 2u | Z << 1u | C,3u,32u,ror,NULL);
+    
+
 }
 
