@@ -88,7 +88,7 @@ uint get_b(State *machineState,uint *C) {
     //Rotates the bits 7-0 of the opcode by bits 11-8 times 2.
     if (instr->bits_ipuasl & BIT_I) {
         return shifter(select_range(operand2,7u,0u),
-                       select_range(operand2,11u,8u),32u,ror,C);
+                       select_range(operand2,11u,8u) * 2u,32u,ror,C);
 
     //Shifts the value in a register 3-0.
     } else {
