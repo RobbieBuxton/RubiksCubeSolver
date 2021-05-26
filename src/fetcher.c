@@ -7,7 +7,7 @@ StatusCode fetch(State *state) {
 
     // makes sure memory accesses will be valid
     if (pc + 3 >= MAX_MEMORY_LOCATION) {
-        return FAILURE;
+        return INVALID_PC_LOCATION;
     }
 
     // receive bytes in order of memory, decode will decypher little-endianess

@@ -14,7 +14,7 @@ StatusCode sdt_execute(State *state) {
     // If I is set, Offset is a shifted register.
     // Else, it is a 12 bit unsigned offset
     if (bits_ipuasl & BIT_I) {
-        uint offset = machineState->registers[(inst->offset & 15)];
+        uint offset = state->registers[(inst->offset & 15)];
         uint shift_info = inst->offset >> 4u;
         uint shift;
 
@@ -33,7 +33,7 @@ StatusCode sdt_execute(State *state) {
                 // throw tried to access PC error.
                 return INVALID_INSTRUCTION;
             }
-            shift = machineState->registers[shift_by] & 255;
+            shift = state->registers[shift_by] & 255;
         } else {
             // throw unsupported instruction error
             return INVALID_INSTRUCTION;
@@ -48,10 +48,10 @@ StatusCode sdt_execute(State *state) {
                 offset >>= shift;
                 break;
             case 2:
-                offset = uint ((sint) offset >> shift);
+                offset = (uint) ((sint) offset >> shift);
                 break;
             case 3:
-                offset = (offset >> shift) | (offset << (sizeof(offset) * 8 - shift))
+                offset = (offset >> shift) | (offset << (sizeof(offset) * 8 - shift));
                 break;
             default:
                 // should not reach this ever
