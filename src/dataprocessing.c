@@ -129,7 +129,7 @@ uint is_add_overflow(uint a, uint b) {
 }
 
 uint to_neg(uint a) {
-    return ~(1u + a);
+    return ~(a) + 1;
 }
 
 
