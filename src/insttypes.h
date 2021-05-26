@@ -202,9 +202,14 @@ typedef struct {
  * Runtime status codes for the emulator.
  */
 typedef enum {
-    CONTINUE = 0, /**< Carry on execution. */
-    HALT = 1,     /**< Program exited cleanly. */
-    FAILURE = 2   /**< Error during execution, exit program. */
+    CONTINUE = 0,            /**< Carry on execution. */
+    HALT = 1,                /**< Program exited cleanly. */
+    FAILURE = 2,             /**< Miscellaneous error during execution, exit program. */
+    INVALID_INSTRUCTION = 3, /**< Invalid decoded instruction. */
+    INVALID_PC_LOCATION = 4, /**< Program counter has landed in an invalid location. */
+    INVALID_OPCODE = 5,      /**< Invalid Data Processing opcode. */
+    FILE_OPEN_ERROR = 6,     /**< Binary file failed to open. */
+    FILE_READ_ERROR = 7      /**< Binary file failed to read. */
 } StatusCode;
 
 #endif  // __INSTTYPES_H__

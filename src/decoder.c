@@ -74,7 +74,7 @@ StatusCode decode(State *state) {
         state->decoded.inst.dp.operand2 = translated & OPR2_OR_OFFSET;
     } else {
         // Undefined instruction
-        return FAILURE;
+        return INVALID_INSTRUCTION;
     }
 
     state->flags |= BIT_DECODED;

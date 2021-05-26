@@ -34,7 +34,7 @@ StatusCode b_execute(State *state) {
     // Because the PC is unsigned, if < 0, it will wrap to a large positive value.
     // Maximum is MAX_MEMORY_LOCATION (should be 65535).
     if (state->registers[PC] >= MAX_MEMORY_LOCATION) {
-        return FAILURE;
+        return INVALID_PC_LOCATION;
     } else {
         // Clear fetched and decoded from the machine state, as if "flushing" the pipeline.
         state->fetched = 0u;

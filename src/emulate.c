@@ -17,7 +17,8 @@
 
 StatusCode execute(State *);
 void initialise_state(State *);
-void readFile(char *, State *);
+StatusCode readFile(char *, State *);
+int exit_code_handler(StatusCode, State *);
 
 // Memory contents for machine state.
 static char main_memory[MAX_MEMORY_LOCATION] = { 0u };
@@ -32,7 +33,9 @@ int main(int argc, char **argv) {
 
     //Copy the contents of the file into the emulator's memory
     assert(argc > 1);
-    readFile(argv[1], &machine_state);
+    if ((code = readFile(argv[1], &machine_state))) {
+        goto exit_handling;
+    }
 
     while (!code) {
         if (machine_state.flags & BIT_DECODED) {
@@ -48,14 +51,37 @@ int main(int argc, char **argv) {
 
     printState(&machine_state);
 
+    // Handle status codes at the end of execution.
+exit_handling:
+    return exit_code_handler(code, &machine_state);
+}
+
+int exit_code_handler(StatusCode code, State* state) {
     switch (code) {
         case HALT:
             return EXIT_SUCCESS;
         case FAILURE:
-            printf("Error");
+            printf("Miscellaneous error during execution.\n");
+            break;
+        case INVALID_INSTRUCTION:
+            printf("Invalid decoded instruction: %X\n", state->fetched);
+            break;
+        case INVALID_PC_LOCATION:
+            printf("Program counter has landed in an invalid location: %u\n", state->registers[PC]);
+            break;
+        case INVALID_OPCODE:
+            printf("Data processing instruction has an invalid opcode: %X\n", state->decoded.inst.dp.opcode);
+            break;
+        case FILE_OPEN_ERROR:
+            printf("Failed to open binary file.\n");
+            break;
+        case FILE_READ_ERROR:
+            printf("Failed to read from binary file.\n");
         default:
-            return EXIT_FAILURE;
+            break;
     }
+
+    return EXIT_FAILURE;
 }
 
 void initialise_state(State *machine_state) {
@@ -66,9 +92,19 @@ void initialise_state(State *machine_state) {
     machine_state->registers = registers;
 }
 
-void readFile(char *fileName, State *machine_state) {
+StatusCode readFile(char *fileName, State *machine_state) {
     FILE *file = fopen(fileName, "rb");
-    fread(machine_state->memory, sizeof(uint), MAX_MEMORY_LOCATION, file);
+
+    if (!file) {
+        return FILE_OPEN_ERROR;
+    }
+
+    size_t read = fread(machine_state->memory, sizeof(uint), MAX_MEMORY_LOCATION, file);
+    if (!read) {
+        return FILE_READ_ERROR;
+    }
+
+    return CONTINUE;
 }
 
 StatusCode execute(State *machine_state) {
