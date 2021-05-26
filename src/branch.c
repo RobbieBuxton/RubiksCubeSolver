@@ -14,9 +14,9 @@ StatusCode b_execute(State *state) {
     // Extract component and flip accordingly
     uint component = bits ^ sign;
 
-    // If negative, -1 and flip bits...
+    // If negative, flip bits and add 1...
     if (sign) {
-        component = ~(component - 1u);
+        component = ~component + 1u;
         component &= (1u << 24u) - 1u;
     }
 
