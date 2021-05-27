@@ -229,5 +229,8 @@ typedef enum {
     ILLEGAL_MEMORY_ACCESS = 8  /**< Invalid memory address on attempt to access memory. */
 } StatusCode;
 
+// Execute function typedef
+typedef StatusCode (*ExecuteFunction)(State *);
+
 #endif  // __INSTTYPES_H__
 
