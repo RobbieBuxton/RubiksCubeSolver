@@ -6,17 +6,17 @@ StatusCode m_execute(State *state) {
     uint m = state->registers[params.Rm];
     uint s = state->registers[params.Rs];
 
-    //Calculate the result
+    // Calculate the result
     uint d = m * s;
     if (params.bits_ipuasl & BIT_A) {
         uint n = state->registers[params.Rn];
         d += n;
     }
 
-    //Write the result to Rd
+    // Write the result to Rd
     state->registers[params.Rd] = d;
 
-    //Update CPSR
+    // Update CPSR
     if (params.bits_ipuasl & BIT_S) {
         uint N = d & (1u << 31u);
         uint Z = (d == 0u) << 30u;
@@ -25,3 +25,4 @@ StatusCode m_execute(State *state) {
 
     return CONTINUE;
 }
+

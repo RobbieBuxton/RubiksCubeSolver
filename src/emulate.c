@@ -12,13 +12,34 @@
 #include "fetcher.h"
 
 #include "executefuncs.h"
-#include "printState.h"
+#include "printstate.h"
 #include "helpers.h"
 
-StatusCode execute(State *);
-void initialise_state(State *);
-StatusCode readFile(char *, State *);
+/**
+ * Initialise a machine state with starting values.
+ *
+ * @param state Machine state struct to give initial values to
+ */
+void initialise_state(State *state);
 
+/**
+ * Run a decoded instruction from a machine state, using the memory and registers of the provided state.
+ *
+ * @param  state Machine state to simulate
+ * @return       The new status code after running an instruction
+ */
+StatusCode execute(State *state);
+
+/**
+ * Read a binary program to simulate.
+ *
+ * @param  file_path Path to binary file
+ * @param  state     Machine state to read the file into
+ * @return           File read error status
+ */
+StatusCode readFile(char *file_path, State *state);
+
+// The condition of when the main loop should occur.
 #define LOOPCOND (!code || code == ILLEGAL_MEMORY_ACCESS)
 
 // Memory contents for machine state.
@@ -26,88 +47,101 @@ static uchar main_memory[MAX_MEMORY_LOCATION] = { 0u };
 static uint registers[REGISTER_COUNT] = { 0u };
 
 int main(int argc, char **argv) {
-    StatusCode code = 0;
+    // The machine's current error status code.
+    StatusCode code = CONTINUE;
 
     // Create a brand new machine state
-    State machine_state;
-    initialise_state(&machine_state);
+    State state;
+    initialise_state(&state);
 
     //Copy the contents of the file into the emulator's memory
     assert(argc > 1);
-    if ((code = readFile(argv[1], &machine_state))) {
-        status_code_handler(code, &machine_state);
+    if ((code = readFile(argv[1], &state))) {
+        status_code_handler(code, &state);
         goto exit;
     }
 
+    // Run the emulator.
+    // The three-stage pipeline is simulated using these three if statements.
     while (LOOPCOND) {
-        if (machine_state.flags & BIT_DECODED) {
-            code = execute(&machine_state);
-            status_code_handler(code, &machine_state);
+        // Run a decoded instruction iff a decoded instruction exists.
+        if (state.flags & BIT_DECODED) {
+            code = execute(&state);
+            status_code_handler(code, &state);
         }
 
-        if (LOOPCOND && machine_state.flags & BIT_FETCHED) {
-            code = decode(&machine_state);
-            status_code_handler(code, &machine_state);
+        // Decode a fetched instruction iff a fetched instruction exists.
+        if (LOOPCOND && state.flags & BIT_FETCHED) {
+            code = decode(&state);
+            status_code_handler(code, &state);
         }
 
+        // Fetch the next instruction from memory.
         if (LOOPCOND) {
-            code = fetch(&machine_state);
-            status_code_handler(code, &machine_state);
+            code = fetch(&state);
+            status_code_handler(code, &state);
         }
     }
 
-    printState(&machine_state);
+    // Print the final state of the machine.
+    print_state(&state);
 
     // Handle status codes at the end of execution.
 exit:
     return EXIT_SUCCESS;
 }
 
-void initialise_state(State *machine_state) {
+void initialise_state(State *state) {
     // Clear machine state
-    memset(machine_state, 0, sizeof(State));
+    memset(state, 0, sizeof(State));
 
-    machine_state->memory = main_memory;
-    machine_state->registers = registers;
+    state->memory = main_memory;
+    state->registers = registers;
 }
 
-StatusCode readFile(char *fileName, State *machine_state) {
-    FILE *file = fopen(fileName, "rb");
+StatusCode readFile(char *file_path, State *state) {
+    FILE *file = fopen(file_path, "rb");
 
+    // If file does not exist, it has not been opened successfully.
     if (!file) {
         return FILE_OPEN_ERROR;
     }
 
-    size_t read = fread(machine_state->memory, sizeof(uchar), MAX_MEMORY_LOCATION, file);
+    size_t read = fread(state->memory, sizeof(uchar), MAX_MEMORY_LOCATION, file);
     if (!read) {
+        // If nothing was read, the file was either empty or there was a read error.
         return FILE_READ_ERROR;
     }
 
+    // Close the file after reading it.
     fclose(file);
 
     return CONTINUE;
 }
 
-StatusCode execute(State *machine_state) {
-    if (machine_state->decoded.type == H) {
+StatusCode execute(State *state) {
+    // Halt the machine if a halt instruction is received.
+    if (state->decoded.type == H) {
         return HALT;
     }
 
     // Current instruction is ignored if the condition is not met.
-    if (!checkDecodedCond(machine_state)) {
+    if (!check_decoded_cond(state)) {
         return CONTINUE;
     }
 
-    switch (machine_state->decoded.type) {
+    switch (state->decoded.type) {
         case DP:
-            return dp_execute(machine_state);
+            return dp_execute(state);
         case M:
-            return m_execute(machine_state);
+            return m_execute(state);
         case SDT:
-            return sdt_execute(machine_state);
+            return sdt_execute(state);
         case B:
-            return b_execute(machine_state);
+            return b_execute(state);
         default:
-            return FAILURE;
+            // This should never be reached.
+            return INVALID_INSTRUCTION;
     }
 }
+

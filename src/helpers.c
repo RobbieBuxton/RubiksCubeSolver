@@ -40,7 +40,7 @@ StatusCode load_word(State *state, uint address, Register dest) {
     uint loaded;
 
     // Load bytes in little endian order.
-    loaded = state->memory[address];
+    loaded =  state->memory[address    ];
     loaded += state->memory[address + 1] << 8u;
     loaded += state->memory[address + 2] << 16u;
     loaded += state->memory[address + 3] << 24u;
@@ -74,12 +74,12 @@ StatusCode store_word(State *state, uint address, Register source) {
     return CONTINUE;
 }
 
-bool condIsTrue(Cond cond, uint CPSRflags) {
+bool cond_is_true(Cond cond, uint CPSRflags) {
     switch (cond) {
         case eq:
             return select_bits(CPSRflags, 1u, 30u, false);
         case ne:
-            return !condIsTrue(eq, CPSRflags);
+            return !cond_is_true(eq, CPSRflags);
         case ge:
             {
                 uint N = select_bits(CPSRflags, 1u, 31, true);
@@ -87,11 +87,11 @@ bool condIsTrue(Cond cond, uint CPSRflags) {
                 return N == V;
             }
         case lt:
-            return !condIsTrue(ge, CPSRflags);
+            return !cond_is_true(ge, CPSRflags);
         case gt:
-            return condIsTrue(ge, CPSRflags) && condIsTrue(ne, CPSRflags);
+            return cond_is_true(ge, CPSRflags) && cond_is_true(ne, CPSRflags);
         case le:
-            return !condIsTrue(gt, CPSRflags);
+            return !cond_is_true(gt, CPSRflags);
         case al:
             return true;
         default:
@@ -99,8 +99,8 @@ bool condIsTrue(Cond cond, uint CPSRflags) {
     }
 }
 
-bool checkDecodedCond(State *state) {
-    return condIsTrue(state->decoded.condition, state->CPSR);
+bool check_decoded_cond(State *state) {
+    return cond_is_true(state->decoded.condition, state->CPSR);
 }
 
 void status_code_handler(StatusCode code, State *state) {
@@ -129,3 +129,4 @@ void status_code_handler(StatusCode code, State *state) {
             break;
     }
 }
+

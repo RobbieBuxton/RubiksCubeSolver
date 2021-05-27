@@ -12,3 +12,4 @@
 StatusCode fetch(State *state);
 
 #endif  // __FETCHER_H__
+

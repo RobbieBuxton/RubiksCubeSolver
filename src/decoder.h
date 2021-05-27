@@ -12,3 +12,4 @@
 StatusCode decode(State *state);
 
 #endif  // __DECODER_H__
+

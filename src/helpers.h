@@ -71,7 +71,7 @@ StatusCode store_word(State *state, uint address, Register source);
  * @return       A boolean indicating whether the condition specified by the
  *               current decoded instruction is true.
  */
-bool checkDecodedCond(State *state);
+bool check_decoded_cond(State *state);
 
 /**
  * Print an error message regarding a non-halt / continue status code.
@@ -82,3 +82,4 @@ bool checkDecodedCond(State *state);
 void status_code_handler(StatusCode code, State *state);
 
 #endif  // __HELPERS_H__
+

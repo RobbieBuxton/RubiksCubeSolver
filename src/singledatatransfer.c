@@ -13,44 +13,46 @@ StatusCode sdt_execute(State *state) {
     // If I is set, Offset is a shifted register.
     // Else, it is a 12 bit unsigned offset
     if (bits_ipuasl & BIT_I) {
-        offset = state->registers[(inst->offset & 15)];
+        offset = state->registers[(inst->offset & 15u)];
         uint shift_info = inst->offset >> 4u;
         uint shift;
 
         // Base register cannot be the same as the shifted register in a post-indexing SDT.
-        if (!(bits_ipuasl & BIT_P) && base_register == (inst->offset & 15)) {
+        if (!(bits_ipuasl & BIT_P) && base_register == (inst->offset & 15u)) {
             return INVALID_INSTRUCTION;
         }
 
-        // by the value of int 11-7 when bit 4 = 0
-        if (!(shift_info & 1)) {
+        // By the value of int 11-7 when bit 4 = 0
+        if (!(shift_info & 1u)) {
             shift = shift_info >> 3u;
-        // by the value of register 11-8 when bit 4 = 1 and bit 7 = 0.
-        } else if ((shift_info & 1) && !(shift_info & 8)) {
+        // By the value of register 11-8 when bit 4 = 1 and bit 7 = 0.
+        } else if ((shift_info & 1u) && !(shift_info & 8u)) {
             Register shift_by = shift_info >> 4u;
+
             if (shift_by == PC) {
                 // throw tried to access PC error.
                 return INVALID_INSTRUCTION;
             }
-            shift = state->registers[shift_by] & 255;
+
+            shift = state->registers[shift_by] & 255u;
         } else {
-            // throw unsupported instruction error
+            // Throw unsupported instruction error
             return INVALID_INSTRUCTION;
         }
 
-        switch (select_bits(shift_info, 3, 1, true)) {
-            // in order: logical left, logical right, arithimetic right, rotate right.
-            case 0:
+        switch (select_bits(shift_info, 3u, 1u, true)) {
+            // In order: logical left, logical right, arithimetic right, rotate right.
+            case lsl:
                 offset <<= shift;
                 break;
-            case 1:
+            case lsr:
                 offset >>= shift;
                 break;
-            case 2:
+            case asr:
                 offset = (uint) ((sint) offset >> shift);
                 break;
-            case 3:
-                offset = (offset >> shift) | (offset << (sizeof(offset) * 8 - shift));
+            case ror:
+                offset = (offset >> shift) | (offset << (sizeof(offset) * 8u - shift));
                 break;
             default:
                 // should not reach this ever
@@ -88,3 +90,4 @@ StatusCode sdt_execute(State *state) {
 
     return CONTINUE;
 }
+

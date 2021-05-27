@@ -82,3 +82,4 @@ StatusCode decode(State *state) {
     state->flags |= BIT_DECODED;
     return CONTINUE;
 }
+

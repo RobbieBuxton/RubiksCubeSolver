@@ -39,6 +39,14 @@ typedef enum {
     dp_mov = 13  /**< opr2 (Rn is ignored) */
 } DPOpCode;
 
+// Opcodes for the barrel shifter.
+typedef enum {
+    lsl = 0,
+    lsr = 1,
+    asr = 2,
+    ror = 3
+} ShiftType;
+
 // Instruction byte length
 #define INSTRUCTION_BYTE_LENGTH 4u
 
@@ -222,3 +230,4 @@ typedef enum {
 } StatusCode;
 
 #endif  // __INSTTYPES_H__
+
