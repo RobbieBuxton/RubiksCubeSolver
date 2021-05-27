@@ -13,7 +13,7 @@ StatusCode sdt_execute(State *state) {
     // If I is set, Offset is a shifted register.
     // Else, it is a 12 bit unsigned offset
     if (bits_ipuasl & BIT_I) {
-        uint offset = state->registers[(inst->offset & 15)];
+        offset = state->registers[(inst->offset & 15)];
         uint shift_info = inst->offset >> 4u;
         uint shift;
 
