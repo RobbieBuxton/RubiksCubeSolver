@@ -122,10 +122,8 @@ uint get_b(State *machineState,uint *C) {
     }
 }
 
-#define INT_MAX 2147483647
-
 uint is_add_overflow(uint a, uint b) {
-    return ((a > 0) && (a > INT_MAX - b));
+    return (a > ~0 - b);
 }
 
 uint to_neg(uint a) {
