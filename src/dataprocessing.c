@@ -110,7 +110,7 @@ uint get_b(State *machineState,uint *C) {
             return shifter(rm,select_range(operand2,11u,7u),32u,shift_type,C);
 
         //by the value of register 11-8 when bit 4 = 1 and bit 7 = 0.
-        } else if (!select_range(operand2,7u,7u) && !select_range(operand2,4u,4u)) {
+        } else if (!select_range(operand2,7u,7u) && select_range(operand2,4u,4u)) {
 
             if (select_range(operand2,11u,8u) == PC) {
                 //throw tried to access PC error.
