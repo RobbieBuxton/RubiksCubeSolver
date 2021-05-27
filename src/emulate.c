@@ -61,25 +61,25 @@ int exit_code_handler(StatusCode code, State* state) {
         case HALT:
             return EXIT_SUCCESS;
         case FAILURE:
-            printf("Miscellaneous error during execution.\n");
+            fprintf(stderr, "Miscellaneous error during execution.\n");
             break;
         case INVALID_INSTRUCTION:
-            printf("Invalid decoded instruction: %X\n", state->fetched);
+            fprintf(stderr, "Invalid decoded instruction: %X\n", state->fetched);
             break;
         case INVALID_PC_LOCATION:
-            printf("Program counter has landed in an invalid location: %u\n", state->registers[PC]);
+            fprintf(stderr, "Program counter has landed in an invalid location: %u\n", state->registers[PC]);
             break;
         case INVALID_OPCODE:
-            printf("Data processing instruction has an invalid opcode: %X\n", state->decoded.inst.dp.opcode);
+            fprintf(stderr, "Data processing instruction has an invalid opcode: %X\n", state->decoded.inst.dp.opcode);
             break;
         case FILE_OPEN_ERROR:
-            printf("Failed to open binary file.\n");
+            fprintf(stderr, "Failed to open binary file.\n");
             break;
         case FILE_READ_ERROR:
-            printf("Failed to read from binary file.\n");
+            fprintf(stderr, "Failed to read from binary file.\n");
             break;
         case ILLEGAL_MEMORY_ACCESS:
-            printf("Attempted to access invalid memory address.\n");
+            fprintf(stderr, "Attempted to access invalid memory address.\n");
         default:
             break;
     }
