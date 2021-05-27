@@ -9,26 +9,21 @@ StatusCode b_execute(State *state) {
 
     // Assuming 2s complement for this encoding.
     uint bits = state->decoded.inst.b.offset;
-    uint sign = bits & (1u << 24u);
+    uint sign = bits & (1u << 23u);
 
     // Extract component and flip accordingly
-    uint component = bits ^ sign;
+    uint component = bits;
 
-    // If negative, flip bits and add 1...
+    // If negative, sign extend...
     if (sign) {
-        component = ~component + 1u;
-        component &= (1u << 24u) - 1u;
+        component |= (255u << 24u);
     }
 
     // Shift-Left 2 bytes to make instruction alignment easier.
     component <<= 2u;
 
     // Perform the jump.
-    if (sign) {
-        state->registers[PC] -= component;
-    } else {
-        state->registers[PC] += component;
-    }
+    state->registers[PC] += component;
 
     // Perform checking on where we are.
     // Because the PC is unsigned, if < 0, it will wrap to a large positive value.
