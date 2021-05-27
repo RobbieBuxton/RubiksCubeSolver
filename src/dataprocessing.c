@@ -163,7 +163,7 @@ StatusCode dp_execute(State *machineState) {
         case dp_cmp:
             neg_b = to_neg(b);
             result = a + neg_b;
-            C = is_add_overflow(a,neg_b);
+            C = is_add_overflow(a,neg_b) ^ 1u;
             break;
         case dp_rsb:
             neg_a = to_neg(a);
@@ -200,6 +200,7 @@ StatusCode dp_execute(State *machineState) {
     if (result == 0) {
         Z = 1u;
     }
+    
     //Updates CPSR with the new flag bit
     if (instr->bits_ipuasl & BIT_S) {
         machineState->CPSR = select_range(machineState->CPSR,28u,0u) |
