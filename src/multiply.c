@@ -2,7 +2,6 @@
 #include "executefuncs.h"
 
 StatusCode m_execute(State *state) {
-
     MInst params = state->decoded.inst.m;
     uint m = state->registers[params.Rm];
     uint s = state->registers[params.Rs];
@@ -21,7 +20,7 @@ StatusCode m_execute(State *state) {
     if (params.bits_ipuasl & BIT_S) {
         uint N = d & (1u << 31u);
         uint Z = (d == 0u) << 30u;
-        state->CPSR = N | Z | (state->CPSR & 0x3FFFFFFF);
+        state->CPSR = N | Z | (state->CPSR & ((1u << 30u) - 1u));
     }
 
     return CONTINUE;

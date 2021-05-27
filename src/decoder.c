@@ -55,6 +55,15 @@ StatusCode decode(State *state) {
         state->decoded.inst.sdt.Rd = select_bits(translated, NIBBLEMASK, RdnOFFSET, true);
 
         state->decoded.inst.sdt.offset = translated & OPR2_OR_OFFSET;
+    } else if (typemasked == 0u && select_bits(translated, NIBBLEMASK, 4u, true) == 9u) {
+        // Multiply
+        state->decoded.type = M;
+        state->decoded.inst.m.bits_ipuasl = translated & BITS_IPUASL;
+
+        state->decoded.inst.m.Rd = select_bits(translated, NIBBLEMASK, RndOFFSET, true);
+        state->decoded.inst.m.Rn = select_bits(translated, NIBBLEMASK, RdnOFFSET, true);
+        state->decoded.inst.m.Rs = select_bits(translated, NIBBLEMASK, RsOFFSET, true);
+        state->decoded.inst.m.Rm = (translated & NIBBLEMASK);
     } else if (select_bits(typemasked, DPMASK, 0u, false) == 0u) {
         // Data Processing
         state->decoded.type = DP;
@@ -65,15 +74,6 @@ StatusCode decode(State *state) {
         state->decoded.inst.dp.Rd = select_bits(translated, NIBBLEMASK, RdnOFFSET, true);
 
         state->decoded.inst.dp.operand2 = translated & OPR2_OR_OFFSET;
-    } else if (typemasked == 0u) {
-        // Multiply
-        state->decoded.type = M;
-        state->decoded.inst.m.bits_ipuasl = translated & BITS_IPUASL;
-
-        state->decoded.inst.m.Rd = select_bits(translated, NIBBLEMASK, RndOFFSET, true);
-        state->decoded.inst.m.Rn = select_bits(translated, NIBBLEMASK, RdnOFFSET, true);
-        state->decoded.inst.m.Rs = select_bits(translated, NIBBLEMASK, RsOFFSET, true);
-        state->decoded.inst.m.Rm = (translated & NIBBLEMASK);
     } else {
         // Undefined instruction
         return INVALID_INSTRUCTION;
