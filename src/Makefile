@@ -11,7 +11,7 @@ rebuild: clean all
 
 assemble: assemble.o
 
-emulate: dataprocessing.o singledatatransfer.o multiply.o branch.o fetcher.o decoder.o helpers.o printstate.o emulate.o
+emulate: halt.o dataprocessing.o singledatatransfer.o multiply.o branch.o fetcher.o decoder.o helpers.o printstate.o emulate.o
 
 clean:
 	rm -f $(wildcard *.o)
