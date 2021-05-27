@@ -16,9 +16,9 @@ void printState(State *state) {
 
     //Print the PC and CPSR registers
     contents = state->registers[PC];
-    printf("PC  :%11d (0x%08x)\n", contents, contents);
+    printf("PC  : %10d (0x%08x)\n", contents, contents);
     contents = state->CPSR;
-    printf("CPSR:%11d (0x%08x)\n", contents, contents);
+    printf("CPSR: %10d (0x%08x)\n", contents, contents);
 
     //Print the memory
     printf("Non-zero memory:\n");
