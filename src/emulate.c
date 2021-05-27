@@ -120,20 +120,15 @@ StatusCode readFile(char *file_path, State *state) {
 }
 
 // Function pointers to execute functions:
-static const ExecuteFunction functions[4] = { dp_execute, m_execute, sdt_execute, b_execute };
+static const ExecuteFunction functions[5] = { dp_execute, m_execute, sdt_execute, b_execute, h_execute };
 
 StatusCode execute(State *state) {
-    // Halt the machine if a halt instruction is received.
-    if (state->decoded.type == H) {
-        return HALT;
-    }
-
     // Current instruction is ignored if the condition is not met.
-    if (!check_decoded_cond(state)) {
+    // Halt instructions are always executed.
+    if (check_decoded_cond(state) || state->decoded.type == H) {
+        return functions[state->decoded.type](state);
+    } else {
         return CONTINUE;
     }
-
-    // Execute the current decoded instruction.
-    return functions[state->decoded.type](state);
 }
 
