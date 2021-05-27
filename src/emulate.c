@@ -37,7 +37,7 @@ StatusCode execute(State *state);
  * @param  state     Machine state to read the file into
  * @return           File read error status
  */
-StatusCode readFile(char *file_path, State *state);
+StatusCode read_file(char *file_path, State *state);
 
 // The condition of when the main loop should occur.
 #define LOOPCOND (!code || code == ILLEGAL_MEMORY_ACCESS)
@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
 
     //Copy the contents of the file into the emulator's memory
     assert(argc > 1);
-    if ((code = readFile(argv[1], &state))) {
+    if ((code = read_file(argv[1], &state))) {
         status_code_handler(code, &state);
         goto exit;
     }
@@ -99,7 +99,7 @@ void initialise_state(State *state) {
     state->registers = registers;
 }
 
-StatusCode readFile(char *file_path, State *state) {
+StatusCode read_file(char *file_path, State *state) {
     FILE *file = fopen(file_path, "rb");
 
     // If file does not exist, it has not been opened successfully.
