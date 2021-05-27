@@ -65,10 +65,10 @@ StatusCode store_word(State *state, uint address, Register source) {
     }
 
     // Store data in little endian order
-    state->memory[address] = select_bits(data, 15, 0, true);
-    state->memory[address+1] = select_bits(data, 15, 8, true);
-    state->memory[address+2] = select_bits(data, 15, 16, true);
-    state->memory[address+3] = select_bits(data, 15, 24, true);
+    state->memory[address    ] = select_bits(data, 255u,  0u, true);
+    state->memory[address + 1] = select_bits(data, 255u,  8u, true);
+    state->memory[address + 2] = select_bits(data, 255u, 16u, true);
+    state->memory[address + 3] = select_bits(data, 255u, 24u, true);
 
     return CONTINUE;
 }

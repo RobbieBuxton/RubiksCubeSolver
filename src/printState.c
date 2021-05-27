@@ -9,10 +9,9 @@ void printState(State *state) {
 
     //Print the general-use registers (excluding R13 and R14)
     printf("Registers:\n");
-    for (i = 0; i < 13; i++)
-    {
+    for (i = 0; i < 13; i++) {
         contents = state->registers[i];
-        printf("$%-3d:%11d (0x%08x)\n", i, contents, contents);
+        printf("$%-3d: %10d (0x%08x)\n", i, contents, contents);
     }
 
     //Print the PC and CPSR registers
@@ -23,8 +22,7 @@ void printState(State *state) {
 
     //Print the memory
     printf("Non-zero memory:\n");
-    for (i = 0; i < MAX_MEMORY_LOCATION; i += 4)
-    {
+    for (i = 0; i < MAX_MEMORY_LOCATION; i += 4) {
         contents = state->memory[i] << 24u;
         contents += state->memory[i + 1] << 16u;
         contents += state->memory[i + 2] << 8u;
