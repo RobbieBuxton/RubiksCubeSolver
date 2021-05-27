@@ -203,6 +203,7 @@ typedef struct {
     uint fetched;        /**< Raw fetched instruction to be executed after decoded. */
     Instruction decoded; /**< Next decoded instruction to be executed. */
     uint CPSR;           /**< Status flags register. */
+    uint last_access;    /**< The last address (attempted to be) accessed by the system. */
 } State;
 
 /**
@@ -217,7 +218,7 @@ typedef enum {
     INVALID_OPCODE = 5,        /**< Invalid Data Processing opcode. */
     FILE_OPEN_ERROR = 6,       /**< Binary file failed to open. */
     FILE_READ_ERROR = 7,       /**< Binary file failed to read. */
-    ILLEGAL_MEMORY_ACCESS = 8, /**< Invalid memory address on attempt to access memory. */
+    ILLEGAL_MEMORY_ACCESS = 8  /**< Invalid memory address on attempt to access memory. */
 } StatusCode;
 
 #endif  // __INSTTYPES_H__

@@ -7,6 +7,7 @@ StatusCode fetch(State *state) {
 
     // makes sure memory accesses will be valid
     if (pc + 3 >= MAX_MEMORY_LOCATION) {
+        state->last_access = MAX_MEMORY_LOCATION;
         return INVALID_PC_LOCATION;
     }
 
@@ -15,6 +16,8 @@ StatusCode fetch(State *state) {
     fetched |= ((uint) state->memory[pc + 1]) << 16u;
     fetched |= ((uint) state->memory[pc + 2]) << 8u;
     fetched |= ((uint) state->memory[pc + 3]);
+
+    state->last_access = pc + 3;
 
     // update fetched in machine pipeline
     state->fetched = fetched;

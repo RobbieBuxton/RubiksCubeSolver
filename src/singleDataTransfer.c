@@ -62,6 +62,8 @@ StatusCode sdt_execute(State *state) {
 
     // Calculate memory address to be loaded from/stored to.
     uint address = state->registers[base_register];
+    state->last_access = address;
+
     if (bits_ipuasl & BIT_P) {
         address = (bits_ipuasl & BIT_U) ? address + offset : address - offset;
     }

@@ -1,6 +1,7 @@
 #include "helpers.h"
 #include "insttypes.h"
 
+#include <stdio.h>
 #include <string.h>
 
 uint select_bits(uint value, uint bitmask, uint offset, bool rshift_back) {
@@ -100,4 +101,31 @@ bool condIsTrue(Cond cond, uint CPSRflags) {
 
 bool checkDecodedCond(State *state) {
     return condIsTrue(state->decoded.condition, state->CPSR);
+}
+
+void status_code_handler(StatusCode code, State *state) {
+    switch (code) {
+        case FAILURE:
+            printf("Error: Miscellaneous error during execution.\n");
+            break;
+        case INVALID_INSTRUCTION:
+            printf("Error: Invalid decoded instruction: 0x%x\n", state->decoded.type);
+            break;
+        case INVALID_PC_LOCATION:
+            printf("Error: Program counter has landed in an invalid location: %u\n", state->registers[PC]);
+            break;
+        case INVALID_OPCODE:
+            printf("Error: Data processing instruction has an invalid opcode: 0x%08x\n", state->decoded.inst.dp.opcode);
+            break;
+        case FILE_OPEN_ERROR:
+            printf("Error: Failed to open binary file.\n");
+            break;
+        case FILE_READ_ERROR:
+            printf("Error: Failed to read from binary file.\n");
+            break;
+        case ILLEGAL_MEMORY_ACCESS:
+            printf("Error: Out of bounds memory access at address 0x%08x\n", state->last_access);
+        default:
+            break;
+    }
 }

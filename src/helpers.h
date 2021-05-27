@@ -73,4 +73,12 @@ StatusCode store_word(State *state, uint address, Register source);
  */
 bool checkDecodedCond(State *state);
 
+/**
+ * Print an error message regarding a non-halt / continue status code.
+ *
+ * @param code  Status code to print info for
+ * @param state Current machine state
+ */
+void status_code_handler(StatusCode code, State *state);
+
 #endif  // __HELPERS_H__

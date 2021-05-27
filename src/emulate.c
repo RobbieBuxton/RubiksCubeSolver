@@ -18,7 +18,8 @@
 StatusCode execute(State *);
 void initialise_state(State *);
 StatusCode readFile(char *, State *);
-int exit_code_handler(StatusCode, State *);
+
+#define LOOPCOND (!code || code == ILLEGAL_MEMORY_ACCESS)
 
 // Memory contents for machine state.
 static uchar main_memory[MAX_MEMORY_LOCATION] = { 0u };
@@ -34,57 +35,32 @@ int main(int argc, char **argv) {
     //Copy the contents of the file into the emulator's memory
     assert(argc > 1);
     if ((code = readFile(argv[1], &machine_state))) {
-        goto exit_handling;
+        status_code_handler(code, &machine_state);
+        goto exit;
     }
 
-    while (!code) {
+    while (LOOPCOND) {
         if (machine_state.flags & BIT_DECODED) {
             code = execute(&machine_state);
+            status_code_handler(code, &machine_state);
         }
-        if (!code && machine_state.flags & BIT_FETCHED) {
+
+        if (LOOPCOND && machine_state.flags & BIT_FETCHED) {
             code = decode(&machine_state);
+            status_code_handler(code, &machine_state);
         }
-        if (!code) {
+
+        if (LOOPCOND) {
             code = fetch(&machine_state);
+            status_code_handler(code, &machine_state);
         }
     }
 
     printState(&machine_state);
 
     // Handle status codes at the end of execution.
-exit_handling:
-    return exit_code_handler(code, &machine_state);
-}
-
-int exit_code_handler(StatusCode code, State* state) {
-    switch (code) {
-        case HALT:
-            return EXIT_SUCCESS;
-        case FAILURE:
-            fprintf(stderr, "Miscellaneous error during execution.\n");
-            break;
-        case INVALID_INSTRUCTION:
-            fprintf(stderr, "Invalid decoded instruction: %X\n", state->fetched);
-            break;
-        case INVALID_PC_LOCATION:
-            fprintf(stderr, "Program counter has landed in an invalid location: %u\n", state->registers[PC]);
-            break;
-        case INVALID_OPCODE:
-            fprintf(stderr, "Data processing instruction has an invalid opcode: %X\n", state->decoded.inst.dp.opcode);
-            break;
-        case FILE_OPEN_ERROR:
-            fprintf(stderr, "Failed to open binary file.\n");
-            break;
-        case FILE_READ_ERROR:
-            fprintf(stderr, "Failed to read from binary file.\n");
-            break;
-        case ILLEGAL_MEMORY_ACCESS:
-            fprintf(stderr, "Attempted to access invalid memory address.\n");
-        default:
-            break;
-    }
-
-    return EXIT_FAILURE;
+exit:
+    return EXIT_SUCCESS;
 }
 
 void initialise_state(State *machine_state) {
