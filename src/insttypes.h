@@ -41,10 +41,10 @@ typedef enum {
 
 // Opcodes for the barrel shifter.
 typedef enum {
-    lsl = 0,
-    lsr = 1,
-    asr = 2,
-    ror = 3
+    lsl = 0, /**< Logical shift left */
+    lsr = 1, /**< Logical shift right */
+    asr = 2, /**< Arithmetic shift right */
+    ror = 3  /**< Rotate right */
 } ShiftType;
 
 // Instruction byte length
@@ -63,22 +63,22 @@ typedef enum {
  * CPSR is the 4-byte register used for conditional instruction execution.
  */
 typedef enum {
-    R0   = 0,
-    R1   = 1,
-    R2   = 2,
-    R3   = 3,
-    R4   = 4,
-    R5   = 5,
-    R6   = 6,
-    R7   = 7,
-    R8   = 8,
-    R9   = 9,
-    R10  = 10,
-    R11  = 11,
-    R12  = 12,
-    R13  = 13,
-    R14  = 14,
-    PC   = 15,
+    R0   = 0,  /**< General Purpose Register 0 */
+    R1   = 1,  /**< General Purpose Register 1 */
+    R2   = 2,  /**< General Purpose Register 2 */
+    R3   = 3,  /**< General Purpose Register 3 */
+    R4   = 4,  /**< General Purpose Register 4 */
+    R5   = 5,  /**< General Purpose Register 5 */
+    R6   = 6,  /**< General Purpose Register 6 */
+    R7   = 7,  /**< General Purpose Register 7 */
+    R8   = 8,  /**< General Purpose Register 8 */
+    R9   = 9,  /**< General Purpose Register 9 */
+    R10  = 10, /**< General Purpose Register 10 */
+    R11  = 11, /**< General Purpose Register 11 */
+    R12  = 12, /**< General Purpose Register 12 */
+    R13  = 13, /**< Unused Register 13 */
+    R14  = 14, /**< Unused Register 14 */
+    PC   = 15  /**< Program Counter */
 } Register;
 
 // Maximum memory location in main memory.
@@ -88,11 +88,11 @@ typedef enum {
  * Enum defining the used instruction types.
  */
 typedef enum {
-    DP,  /**< Data Processing */
-    M,   /**< Multiply */
-    SDT, /**< Single Data Transfer */
-    B,   /**< Branch */
-    H    /**< Halt */
+    DP  = 0, /**< Data Processing */
+    M   = 1, /**< Multiply */
+    SDT = 2, /**< Single Data Transfer */
+    B   = 3, /**< Branch */
+    H   = 4  /**< Halt */
 } InstructionType;
 
 // These definitions are for extracting the I P U A S L bits from an instruction
