@@ -1,8 +1,8 @@
 CC      = gcc
-CFLAGS  = -Wall -g -D_POSIX_SOURCE -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic $(foreach d,$(LIBS),-I$d)
-LDLIBS	= $(foreach d, $(LIBS), -L$d) -lfetch -ldecode -lexecute -lhelpers
-LIBS 	= fetch decode execute ../helpers
-BUILD 	= libs emulate
+CFLAGS  = -Wall -g -D_POSIX_SOURCE -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic $(foreach d, $(LIBS), -I$d)
+LDLIBS  = $(foreach d, $(LIBS), -L$d) -lfetch -ldecode -lexecute -lhelpers
+LIBS    = fetch decode execute ../helpers
+BUILD   = libs emulate
 
 .SUFFIXES: .c .o
 
@@ -19,5 +19,5 @@ clean:
 libs:
 	for l in $(LIBS); do $(MAKE) -C $$l; done
 
-emulate:	emulate.o
+emulate: emulate.o
 	gcc emulate.o $(LDLIBS) -o ../emulate

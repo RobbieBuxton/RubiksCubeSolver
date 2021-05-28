@@ -12,4 +12,4 @@ all:
 clean:
 	for d in $(SUBDIRS); do $(MAKE) clean -C $$d; done
 
-rebuild:	clean all
+rebuild: clean all
