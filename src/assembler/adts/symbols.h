@@ -45,6 +45,7 @@ SymbolMap *new_symbol_map(size_t initial_size);
 
 /**
  * Extend the size of a map by 50%.
+ * Failing to extend a map does not free the map.
  *
  * @param  map Map to extend
  * @return     The new size if successful. Returns 0 otherwise.
@@ -58,6 +59,17 @@ size_t extend_symbol_map(SymbolMap *map);
  * @return     Success in freeing the map.
  */
 bool free_symbol_map(SymbolMap *map);
+
+/**
+ * Add a symbol (and its address) to a symbol map.
+ * Failing to add a symbol does not free the map.
+ *
+ * @param[out] map    Symbol map to add symbol to
+ * @param[in]  symbol Identifier of symbol
+ * @param[in]  addr   Address that the symbol points to
+ * @return            True if symbol was sucessfully added. False otherwise.
+ */
+bool add_to_symbol_map(SymbolMap* map, const char *symbol, const uint addr);
 
 /**
  * Result of querying a symbol map for a certain symbol.

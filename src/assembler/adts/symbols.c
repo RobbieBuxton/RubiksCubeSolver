@@ -62,6 +62,24 @@ bool free_symbol_map(SymbolMap *map) {
     return true;
 }
 
+bool add_to_symbol_map(SymbolMap *map, const char *symbol, const uint addr) {
+    // Extend map if it is full.
+    if (map->count >= map->size) {
+        if (!extend_symbol_map(map)) {
+            return false;
+        }
+    }
+
+    // Add the symbol at count, as that always points to the next free location.
+    strncpy(map->arr[map->count].name, symbol, MAXIMUM_SYMBOL_LENGTH);
+    map->arr[map->count].addr = addr;
+
+    // Increment the count.
+    ++(map->count);
+
+    return true;
+}
+
 void query_symbol_map(QueryResult *out_result, const SymbolMap *map, const char *symbol_name) {
     for (size_t i = 0; i < map->count; ++i) {
         Symbol *sym = map->arr + i;
