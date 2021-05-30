@@ -181,5 +181,8 @@ size_t collect_symbols(SymbolMap *map, char *file_contents) {
         ++lines_found;
         line_start = next_line + 1;
     }
+
+    // Return the number of symbols found
+    return symbols_found;
 }
 
