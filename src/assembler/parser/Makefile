@@ -1,8 +1,8 @@
 CC      = gcc
 CFLAGS  = -Wall -g -D_POSIX_SOURCE -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic -I../../helpers
 LDLIB   = -L../../helpers -lhelpers
-LIB     = libadts.a
-LIBOBJS = symbols.o
+LIB     = libparser.a
+LIBOBJS = parser.o symbols.o
 BUILD   = helpers $(LIB)
 
 .SUFFIXES: .c .o
@@ -17,6 +17,8 @@ clean:
 
 $(LIB): $(LIBOBJS)
 	ar rcs $(LIB) $(LIBOBJS)
+
+parser.o: parser.h
 
 symbols.o: symbols.h
 
