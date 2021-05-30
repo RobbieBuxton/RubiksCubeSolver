@@ -1,6 +1,9 @@
 #ifndef __PARSER_H__
 #define __PARSER_H__
 
+// Include the symbol association array.
+#include "symbols.h"
+
 // Macros for use in parser:
 #define MAXIMUM_LINE_LENGTH   512
 
