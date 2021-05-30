@@ -20,3 +20,4 @@ libs:
 
 assemble: assemble.o
 	gcc assemble.o -o ../assemble
+
