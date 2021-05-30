@@ -1,4 +1,5 @@
 #include "parser.h"
+#include "symbols.h"
 
 #include <stddef.h>
 #include <stdio.h>
@@ -88,5 +89,97 @@ size_ok:
     // All good. Close the file and return the newly created buffer.
     fclose(file);
     return file_buffer;
+}
+
+/**
+ * Find the first character in a string that is not whitespace.
+ *
+ * @param  start Where to start searching from
+ * @return       A char * to the first non-whitespace, or NULL if not found
+ */
+char * first_non_whitespace(char *start) {
+    // Whitespace characters to look for.
+    static const char *whitespace = " \r\n\t";
+
+    for (char *c = start; *c; ++c) {
+        if (!strchr(whitespace, *c)) {
+            return c;
+        }
+    }
+
+    return NULL;
+}
+
+/**
+ * First pass of the two-pass assembly, collecting the symbols in the file.
+ *
+ * @param  map           Symbol map to update
+ * @param  file_contents The contents of the whole assembly file
+ * @return               The number of symbols collected
+ */
+size_t collect_symbols(SymbolMap *map, char *file_contents) {
+    // Line trackers
+    char *line_start = file_contents;
+    char temp_buf[MAXIMUM_SYMBOL_LENGTH] = { '\0' };
+
+    // For keeping track of addresses
+    uint lines_found = 0u;
+    uint symbols_found = 0u;
+
+    // Loop while the null terminator has not been reached.
+    // File has at least one line, guaranteed by the file loader rejecting empty files.
+    while (line_start) {
+        // Trim off the leading whitespace.
+        line_start = first_non_whitespace(line_start);
+
+        // Look for the next line ending
+        char *next_line = strchr(line_start, '\n');
+
+        // Success flag for adding to map:
+        bool r = true;
+
+        if (next_line) {
+            // Line exists, look one char before it.
+            if (*(next_line - 1) == ':') {
+                // Symbol found.
+                size_t len = next_line - line_start;
+
+                // We manually terminate the copied string with a null terminator.
+                strncpy(temp_buf, line_start, len - 2);
+                temp_buf[len - 1] = '\0';
+
+                // For every line, that adds +4 to the byte offset of the file. We -4 for every symbol found.
+                // E.g.
+                //
+                // mov r1,#1 <- @0d00
+                // one:      <- @0d04
+                // mov r2,#2 <- @0d04
+                // mov r3,#3 <- @0d08
+                // two:      <- @0d12
+                // mov r4,#4 <- @0d12
+                r = add_to_symbol_map(map, temp_buf, (lines_found * INSTRUCTION_WIDTH) - (++symbols_found * INSTRUCTION_WIDTH));
+            }
+        } else {
+            // Line doesn't exist, look one char before null terminator.
+            size_t len = strlen(line_start);
+            if (line_start[len - 1] == ':') {
+                // See above.
+                strncpy(temp_buf, line_start, len - 2);
+                temp_buf[len - 1] = '\0';
+
+                r = add_to_symbol_map(map, temp_buf, (lines_found * INSTRUCTION_WIDTH) - (++symbols_found * INSTRUCTION_WIDTH));
+            }
+        }
+
+        // If addition was unsuccessful, print an error.
+        if (!r) {
+            printf("Addition to map failed in first symbol collection pass!\n");
+            break;
+        }
+
+        // Incrememnt line.
+        ++lines_found;
+        line_start = next_line + 1;
+    }
 }
 

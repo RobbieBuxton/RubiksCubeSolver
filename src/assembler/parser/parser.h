@@ -5,7 +5,8 @@
 #include "symbols.h"
 
 // Macros for use in parser:
-#define MAXIMUM_LINE_LENGTH   512
+#define MAXIMUM_LINE_LENGTH 512
+#define INSTRUCTION_WIDTH   4u
 
 /**
  * The different mnemonics used in the assembly.
