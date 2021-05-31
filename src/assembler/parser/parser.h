@@ -4,6 +4,9 @@
 // Include the symbol association array.
 #include "symbols.h"
 
+// For size_t
+#include <stdlib.h>
+
 // Macros for use in parser:
 #define MAXIMUM_LINE_LENGTH 512
 #define INSTRUCTION_WIDTH   4u
@@ -36,6 +39,14 @@ typedef enum {
     asm_lsl,  /**< SPECIAL: left shift */
     asm_andeq /**< SPECIAL: halt */
 } Mnemonic;
+
+/**
+ * Stores basic information about the contents of an assembly file.
+ */
+typedef struct {
+    size_t instructions; /**< The number of instructions in the file */
+    size_t symbols;      /**< The number of symbols in the file */
+} AssemblyInfo;
 
 #endif  // __PARSER_H__
 

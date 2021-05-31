@@ -3,7 +3,6 @@
 
 #include <stddef.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 /**
@@ -97,7 +96,7 @@ size_ok:
  * @param  start Where to start searching from
  * @return       A char * to the first non-whitespace, or NULL if not found
  */
-char * first_non_whitespace(char *start) {
+char *first_non_whitespace(char *start) {
     // Whitespace characters to look for.
     static const char *whitespace = " \r\n\t";
 
@@ -113,11 +112,11 @@ char * first_non_whitespace(char *start) {
 /**
  * First pass of the two-pass assembly, collecting the symbols in the file.
  *
- * @param  map           Symbol map to update
- * @param  file_contents The contents of the whole assembly file
- * @return               The number of symbols collected
+ * @param[out] map           Symbol map to update
+ * @param[in]  file_contents The contents of the whole assembly file
+ * @return                   Instruction and symbol count for file
  */
-size_t collect_symbols(SymbolMap *map, char *file_contents) {
+AssemblyInfo collect_symbols(SymbolMap *map, char *file_contents) {
     // Line trackers
     char *line_start = file_contents;
     char temp_buf[MAXIMUM_SYMBOL_LENGTH] = { '\0' };
@@ -182,7 +181,12 @@ size_t collect_symbols(SymbolMap *map, char *file_contents) {
         line_start = next_line + 1;
     }
 
-    // Return the number of symbols found
-    return symbols_found;
+    // Update file info struct
+    AssemblyInfo file_info;
+
+    file_info.symbols = symbols_found;
+    file_info.instructions = lines_found - symbols_found;
+
+    return file_info;
 }
 
