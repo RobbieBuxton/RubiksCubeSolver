@@ -1,10 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "parser/symbols.h"
-#include "parser/parser.h"
+#include "symbols.h"
+#include "parser.h"
 #include "translate.h"
 #include "insttypes.h"
+#include "helpers.h"
 
 StatusCode translate_into_file(SymbolMap*, FILE*, FILE*);
 
@@ -22,8 +23,9 @@ int main(int argc, char **argv) {
     SymbolMap* symbolMap = new_symbol_map(0);
     AssemblyInfo assemblyInfo = collect_symbols(symbolMap, file);
 
-    FILE *outFile = fopen(argv[2], "w");
-    StatusCode exitCode = translate_into_file(symbolMap, file, outFile);
+    FILE *outFile = fopen(argv[2], "wb");
+    StatusCode code = translate_into_file(symbolMap, file, outFile);
+    fclose(outFile);
     
 
 
@@ -33,24 +35,47 @@ int main(int argc, char **argv) {
     return EXIT_SUCCESS;
 }
 
-StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile) {
+// function pointers to translate functions
+static const TranslateFunction t_functions[4] = { dp_translate, m_translate, sdt_translate, b_translate, h_translate};
 
+StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile) {
     char * line = NULL;
     size_t len = 0;
     ssize_t read;
     char* tokens[6] = { 0 };
+    StatusCode code;
+    uint offset = 0;
 
+    // Read file line by line.
     while ((read = getline(&line, &len, file)) != -1) {
-        char *saveptr
-        char *token = strtok_r(line, " ", saveptr);
-        if (strstr(token, ":") != NULL) {
+        uint *currentOp;
+        char *savePtr;
 
+        // Get first token from line
+        char *token = strtok_r(line, " ", &savePtr);
+        // If first token is a label, move onto next.
+        if (strstr(token, ":") != NULL) {
+            token = strtok_r(0, " ", &savePtr);
         }
+        // Copy all tokens into array
+        for (int i = 0; token != NULL; token = strtok_r(0, " ", &savePtr)) {
+            tokens[i] = token;
+        }
+
+        // Call translate function from array according to the type represented by the first token.
+        code = t_functions[type_from_string(*tokens[0])](tokens, symbolMap, offset, currentOp);
+
+        // need error handling here
+
+        // Write binary to file in little endian byte order.
+        uint binary = swap_endianness(*currentOp);
+        fwrite(&binary, sizeof(binary), 1, outFile);
+
+        // Increment offset so it holds the current line number of the file.
+        offset++;
     }
 
-    fclose(fp);
-    if (line)
-        free(line);
-    exit(EXIT_SUCCESS);
-}
+    // Do we need to free anything else here?
+    free(line);
+    return code;
 }

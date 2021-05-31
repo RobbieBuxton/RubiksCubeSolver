@@ -48,5 +48,17 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
  */
 StatusCode b_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output);
 
+/**
+ * Translate a Halt instruction.
+ *
+ * @param[in]  tokens         A line of assembly code separated into tokens.
+ * @param[out] symbols        An associative array of symbols to the addresses.
+ * @param[in]  current_offset The position of this instruction in the code.
+ * @param[out] output         A memory address to which the translated instruction is to be written.
+ * @return                    Operation status code.
+ */
+StatusCode h_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output);
+
+typedef StatusCode (*TranslateFunction)(char **, SymbolMap *, uint, uint *);
 
 #endif  // __TRANSLATE_H__
