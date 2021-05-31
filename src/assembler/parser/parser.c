@@ -8,16 +8,8 @@
 #endif
 
 #include <stddef.h>
-#include <stdio.h>
 #include <string.h>
 
-/**
- * First pass of the two-pass assembly, collecting the symbols in the file.
- *
- * @param[out] map  Symbol map to update
- * @param[in]  file Pointer to open assembly file (expected mode: "r")
- * @return          Instruction and symbol count for file
- */
 AssemblyInfo collect_symbols(SymbolMap *map, FILE *file) {
     // Line trackers
     char line_buf[MAXIMUM_LINE_LENGTH] = { '\0' };

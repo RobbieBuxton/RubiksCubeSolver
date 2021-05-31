@@ -4,7 +4,8 @@
 // Include the symbol association array.
 #include "symbols.h"
 
-// For size_t
+// For FILE and size_t
+#include <stdio.h>
 #include <stdlib.h>
 
 // Macros for use in parser:
@@ -47,6 +48,15 @@ typedef struct {
     size_t instructions; /**< The number of instructions in the file */
     size_t symbols;      /**< The number of symbols in the file */
 } AssemblyInfo;
+
+/**
+ * First pass of the two-pass assembly, collecting the symbols in the file.
+ *
+ * @param[out] map  Symbol map to update
+ * @param[in]  file Pointer to open assembly file (expected mode: "r")
+ * @return          Instruction and symbol count for file
+ */
+AssemblyInfo collect_symbols(SymbolMap *map, FILE *file);
 
 #endif  // __PARSER_H__
 
