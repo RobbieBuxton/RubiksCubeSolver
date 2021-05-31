@@ -51,7 +51,8 @@ typedef enum {
 #define INSTRUCTION_BYTE_LENGTH 4u
 
 // Register count (excluding CPSR)
-#define REGISTER_COUNT 16u
+#define REGISTER_COUNT       16u
+#define GENERAL_REGISTER_MAX 12u
 
 /**
  * Register names and encodings.
@@ -224,9 +225,12 @@ typedef enum {
     INVALID_INSTRUCTION = 3,   /**< Invalid decoded instruction. */
     INVALID_PC_LOCATION = 4,   /**< Program counter has landed in an invalid location. */
     INVALID_OPCODE = 5,        /**< Invalid Data Processing opcode. */
-    FILE_OPEN_ERROR = 6,       /**< Binary file failed to open. */
-    FILE_READ_ERROR = 7,       /**< Binary file failed to read. */
-    ILLEGAL_MEMORY_ACCESS = 8  /**< Invalid memory address on attempt to access memory. */
+    INVALID_REGISTER = 6,      /**< Invalid or illegal register access. */
+    FILE_OPEN_ERROR = 7,       /**< Binary file failed to open. */
+    FILE_READ_ERROR = 8,       /**< Binary file failed to read. */
+    ILLEGAL_MEMORY_ACCESS = 9, /**< Invalid memory address on attempt to access memory. */
+    PARSE_ERROR = 10,          /**< Error while parsing a number or some other formatting. */
+    SYMBOL_DOES_NOT_EXIST = 11 /**< A symbol that was queried does not exist. */
 } StatusCode;
 
 // Execute function typedef

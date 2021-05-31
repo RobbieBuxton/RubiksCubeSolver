@@ -8,7 +8,7 @@ StatusCode check_parse_error(uint *output) {
         perror("Invalid number, caused by: ");
 
         *output = 0;
-        return INVALID_INSTRUCTION;
+        return PARSE_ERROR;
     }
 
     return CONTINUE;
@@ -24,7 +24,7 @@ StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
     // Set instruction to be unconditionally executed.
     // al = 1110
     out |= FLAG_N | FLAG_Z | FLAG_C;
-    
+
     // Add the 0b1001 bit sequence.
     out |= (9u << 4u);
 
@@ -39,30 +39,60 @@ StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
     // Note: rN only exists for mla
 
     // Collect Rd, Rm and Rs
-    out |= ((uint) strtoul(tokens[1], NULL, 10)) << 16u;
+    uint temp = (uint) strtoul(tokens[1], NULL, 10);
+    out |= temp << 16u;
 
     if (check_parse_error(output)) {
-        return INVALID_INSTRUCTION;
+        *out = 0u;
+        return PARSE_ERROR;
     }
 
-    out |= ((uint) strtoul(tokens[2], NULL, 10));
+    if (temp > GENERAL_REGISTER_MAX) {
+        *out = 0u;
+        return INVALID_REGISTER;
+    }
+
+    temp = (uint) strtoul(tokens[2], NULL, 10);
+    out |= temp;
 
     if (check_parse_error(output)) {
-        return INVALID_INSTRUCTION;
+        *out = 0u;
+        return PARSE_ERROR;
     }
 
-    out |= ((uint) strtoul(tokens[3], NULL, 10)) << 8u;
+    if (temp > GENERAL_REGISTER_MAX) {
+        *out = 0u;
+        return INVALID_REGISTER;
+    }
+
+
+    temp = (uint) strtoul(tokens[3], NULL, 10);
+    out |= temp << 8u;
 
     if (check_parse_error(output)) {
-        return INVALID_INSTRUCTION;
+        *out = 0u;
+        return PARSE_ERROR;
     }
+
+    if (temp > GENERAL_REGISTER_MAX) {
+        *out = 0u;
+        return INVALID_REGISTER;
+    }
+
 
     if (out & BIT_A) {
         // Collect Rn
-        out |= ((uint) strtoul(tokens[4], NULL, 10)) << 12u;
-        
+        temp = (uint) strtoul(tokens[2], NULL, 10);
+        out |= temp << 12u;
+
         if (check_parse_error(output)) {
-            return INVALID_INSTRUCTION;
+            *out = 0u;
+            return PARSE_ERROR;
+        }
+
+        if (temp > GENERAL_REGISTER_MAX) {
+            *out = 0u;
+            return INVALID_REGISTER;
         }
     }
 
