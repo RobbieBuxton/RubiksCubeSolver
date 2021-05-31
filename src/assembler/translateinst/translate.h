@@ -76,6 +76,6 @@ StatusCode h_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
 /**
  * The type of a function that translates an array of tokens into an instruction.
  */
-typedef StatusCode (*TranslateFunction)(char **, SymbolMap *, uint, uint *);
+typedef StatusCode (*TranslateFunction)(char **, SymbolMap *, uint, uint *, AssemblyInfo);
 
 #endif  // __TRANSLATE_H__

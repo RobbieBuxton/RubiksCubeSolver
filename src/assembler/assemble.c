@@ -21,7 +21,7 @@
 #endif
 
 InstructionType type_from_string(char *);
-StatusCode translate_into_file(SymbolMap *, FILE *, FILE *);
+StatusCode translate_into_file(SymbolMap *, FILE *, FILE *, AssemblyInfo);
 
 int main(int argc, char **argv) {
     // Assert that we have an in file and an out file
@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
     AssemblyInfo assemblyInfo = collect_symbols(symbolMap, file);
 
     FILE *outFile = fopen(argv[2], "wb");
-    StatusCode code = translate_into_file(symbolMap, file, outFile);
+    StatusCode code = translate_into_file(symbolMap, file, outFile, assemblyInfo);
 
     fclose(outFile);
     fclose(file);
@@ -64,7 +64,7 @@ InstructionType type_from_string(char *token) {
     return H;
 }
 
-StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile) {
+StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, AssemblyInfo assemblyInfo) {
     char line[MAXIMUM_LINE_LENGTH] = { '\0' };
     size_t len = 0;
     ssize_t read;
@@ -97,7 +97,7 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile) 
         }
 
         // Call translate function from array according to the type represented by the first token.
-        code = t_functions[type_from_string(tokens[0])](tokens, symbolMap, offset, &currentOp);
+        code = t_functions[type_from_string(tokens[0])](tokens, symbolMap, offset, &currentOp, assemblyInfo);
 
         // need error handling here
 
