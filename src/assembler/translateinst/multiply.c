@@ -22,6 +22,7 @@ StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
     uint out = 0u;
 
     // Set instruction to be unconditionally executed.
+    // al = 1110
     out |= FLAG_N | FLAG_Z | FLAG_C;
     
     // Add the 0b1001 bit sequence.
