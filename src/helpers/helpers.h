@@ -89,5 +89,12 @@ void status_code_handler(StatusCode code, State *state);
  */
 char *first_non_whitespace(char *start);
 
+/**
+ * Return an instruction type from a string mnemonic.
+ * @param  key  The mnemonic as a string
+ * @return      The corresponding InstructionType
+ */
+InstructionType type_from_string(char *key);
+
 #endif  // __HELPERS_H__
 

@@ -143,3 +143,12 @@ char *first_non_whitespace(char *start) {
     return NULL;
 }
 
+InstructionType type_from_string(char *key) {
+    int i;
+    for (i=0; i < NUM_INSTRUCTIONS; i++) {
+        InstructionTypePair pair = InstructionLookupTable[i];
+        if (strcmp(pair.key, key) == 0)
+            return pair.type;
+    }
+    return -1;
+}
