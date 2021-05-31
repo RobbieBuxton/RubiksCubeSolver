@@ -20,13 +20,15 @@ int main(int argc, char **argv) {
     }
 
     // Completes first pass and rewinds file.
-    SymbolMap* symbolMap = new_symbol_map(0);
+    SymbolMap* symbolMap = new_symbol_map(1);
     AssemblyInfo assemblyInfo = collect_symbols(symbolMap, file);
 
     FILE *outFile = fopen(argv[2], "wb");
     StatusCode code = translate_into_file(symbolMap, file, outFile);
     fclose(outFile);
-    
+    fclose(file);
+    free_symbol_map(symbolMap);
+
 
 
 
@@ -36,7 +38,7 @@ int main(int argc, char **argv) {
 }
 
 // function pointers to translate functions
-static const TranslateFunction t_functions[4] = { dp_translate, m_translate, sdt_translate, b_translate, h_translate};
+static const TranslateFunction t_functions[5] = { dp_translate, m_translate, sdt_translate, b_translate, h_translate };
 
 StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile) {
     char * line = NULL;
@@ -48,7 +50,7 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile) 
 
     // Read file line by line.
     while ((read = getline(&line, &len, file)) != -1) {
-        uint *currentOp;
+        uint currentOp;
         char *savePtr;
 
         // Get first token from line
@@ -63,12 +65,12 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile) 
         }
 
         // Call translate function from array according to the type represented by the first token.
-        code = t_functions[type_from_string(*tokens[0])](tokens, symbolMap, offset, currentOp);
+        code = t_functions[type_from_string(*tokens[0])](tokens, symbolMap, offset, &currentOp);
 
         // need error handling here
 
         // Write binary to file in little endian byte order.
-        uint binary = swap_endianness(*currentOp);
+        uint binary = swap_endianness(currentOp);
         fwrite(&binary, sizeof(binary), 1, outFile);
 
         // Increment offset so it holds the current line number of the file.
