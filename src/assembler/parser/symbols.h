@@ -89,11 +89,11 @@ typedef struct {
 /**
  * Query a map for a symbol name, storing its result in the given QueryStruct pointer.
  *
- * @param[out] out_result  The pointer to store the query result
- * @param[in]  map         The map to query
- * @param[in]  symbol_name The symbol name to find
+ * @param  map         The map to query
+ * @param  symbol_name The symbol name to find
+ * @return             Query result. Check the struct fields for details.
  */
-void query_symbol_map(QueryResult *out_result, const SymbolMap *map, const char *symbol_name);
+QueryResult query_symbol_map(const SymbolMap *map, const char *symbol_name);
 
 #endif  // __SYMBOLS_H__
 
