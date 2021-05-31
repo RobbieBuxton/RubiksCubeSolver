@@ -2,6 +2,7 @@
 #include "symbols.h"
 
 #ifndef __SHORTEN__
+// See symbols.h for information about this conditional macro.
 #include "../../helpers/helpers.h"
 #else
 #include "helpers.h"
