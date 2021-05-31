@@ -1,16 +1,28 @@
+#include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
 
+#ifndef __SHORTEN__
+// Long include paths for language servers
+#include "parser/symbols.h"
+#include "parser/parser.h"
+#include "translateinst/translate.h"
+#include "../helpers/insttypes.h"
+#include "../helpers/helpers.h"
+#else
+// Shortened includes
 #include "symbols.h"
 #include "parser.h"
 #include "translate.h"
 #include "insttypes.h"
 #include "helpers.h"
+#endif
 
-StatusCode translate_into_file(SymbolMap*, FILE*, FILE*);
+StatusCode translate_into_file(SymbolMap *, FILE *, FILE *);
 
 int main(int argc, char **argv) {
-    assert(argc > 2);
+    // Assert that we have an in file and an out file
+    assert(argc > 3);
 
     // Open assembly file.
     FILE *file = fopen(argv[1], "r");
