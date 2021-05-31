@@ -2,17 +2,7 @@
 
 #include <assert.h>
 #include <errno.h>
-
-StatusCode check_parse_error(uint *output) {
-    if (errno) {
-        perror("Invalid number, caused by: ");
-
-        *output = 0;
-        return PARSE_ERROR;
-    }
-
-    return CONTINUE;
-}
+#include <helpers.h>
 
 StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output) {
     // Assert that this instruction can be loaded correctly.
@@ -42,13 +32,13 @@ StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
     uint temp = (uint) strtoul(tokens[1], NULL, 10);
     out |= temp << 16u;
 
+    // check_parse_error sets output to null if there is an error
     if (check_parse_error(output)) {
-        *out = 0u;
         return PARSE_ERROR;
     }
 
     if (temp > GENERAL_REGISTER_MAX) {
-        *out = 0u;
+        *output = 0u;
         return INVALID_REGISTER;
     }
 
@@ -56,12 +46,11 @@ StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
     out |= temp;
 
     if (check_parse_error(output)) {
-        *out = 0u;
         return PARSE_ERROR;
     }
 
     if (temp > GENERAL_REGISTER_MAX) {
-        *out = 0u;
+        *output = 0u;
         return INVALID_REGISTER;
     }
 
@@ -70,12 +59,11 @@ StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
     out |= temp << 8u;
 
     if (check_parse_error(output)) {
-        *out = 0u;
         return PARSE_ERROR;
     }
 
     if (temp > GENERAL_REGISTER_MAX) {
-        *out = 0u;
+        *output = 0u;
         return INVALID_REGISTER;
     }
 
@@ -86,12 +74,11 @@ StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
         out |= temp << 12u;
 
         if (check_parse_error(output)) {
-            *out = 0u;
             return PARSE_ERROR;
         }
 
         if (temp > GENERAL_REGISTER_MAX) {
-            *out = 0u;
+            *output = 0u;
             return INVALID_REGISTER;
         }
     }

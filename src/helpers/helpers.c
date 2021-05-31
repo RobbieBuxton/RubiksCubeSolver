@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
 
 uint select_bits(uint value, uint bitmask, uint offset, bool rshift_back) {
     uint masked = value & (bitmask << offset);
@@ -151,4 +152,15 @@ InstructionType type_from_string(char *key) {
             return pair.type;
     }
     return -1;
+}
+
+StatusCode check_parse_error(uint *output) {
+    if (errno) {
+        perror("Invalid number, caused by: ");
+
+        *output = 0;
+        return PARSE_ERROR;
+    }
+
+    return CONTINUE;
 }
