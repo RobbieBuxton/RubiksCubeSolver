@@ -1,12 +1,19 @@
 #ifndef __TRANSLATE_H__
 #define __TRANSLATE_H__
 
+#ifndef __SHORTEN__
+// Full includes for language servers
+#include "../../helpers/insttypes.h"
+#include "../parser/symbols.h"
+#else
+// Shortened includes
 #include "insttypes.h"
 #include "symbols.h"
+#endif
 
 /**
  * Translate a Data Processing instruction.
- * 
+ *
  * @param[in]  tokens         A line of assembly code separated into tokens.
  * @param[out] symbols        An associative array of symbols to the addresses.
  * @param[in]  current_offset The position of this instruction in the code.
@@ -17,7 +24,7 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
 
 /**
  * Translate a Multiply instruction.
- * 
+ *
  * @param[in]  tokens         A line of assembly code separated into tokens.
  * @param[out] symbols        An associative array of symbols to the addresses.
  * @param[in]  current_offset The position of this instruction in the code.
@@ -59,6 +66,9 @@ StatusCode b_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
  */
 StatusCode h_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output);
 
+/**
+ * The type of a function that translates an array of tokens into an instruction.
+ */
 typedef StatusCode (*TranslateFunction)(char **, SymbolMap *, uint, uint *);
 
 #endif  // __TRANSLATE_H__

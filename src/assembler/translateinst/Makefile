@@ -1,5 +1,5 @@
 CC      = gcc
-CFLAGS  = -Wall -g -D_POSIX_SOURCE -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic -I../../helpers -I../parser
+CFLAGS  = -Wall -g -D__SHORTEN__ -D_POSIX_SOURCE -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic -I../../helpers -I../parser
 LDLIB   = -L../../helpers -lhelpers -L../parser -lparser
 LIB     = libtranslate.a
 LIBOBJS = branch.o dataprocessing.o multiply.o singledatatransfer.o
