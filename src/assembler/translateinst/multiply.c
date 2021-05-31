@@ -4,7 +4,7 @@
 #include <errno.h>
 #include <helpers.h>
 
-StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output) {
+StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo assemblyInfo) {
     // Assert that this instruction can be loaded correctly.
     assert(current_offset < MAX_MEMORY_LOCATION);
 
