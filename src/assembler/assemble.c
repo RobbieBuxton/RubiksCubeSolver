@@ -36,6 +36,8 @@ int main(int argc, char **argv) {
 
     // Completes first pass and rewinds file.
     SymbolMap* symbolMap = new_symbol_map(1);
+
+    // Do we really need this assembly info anymore?
     AssemblyInfo assemblyInfo = collect_symbols(symbolMap, file);
 
     FILE *outFile = fopen(argv[2], "wb");
@@ -86,11 +88,11 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile) 
 
         // If first token is a label, move onto next.
         if (strstr(token, ":") != NULL) {
-            token = strtok_r(0, " ", &savePtr);
+            token = strtok_r(NULL, " ", &savePtr);
         }
 
         // Copy all tokens into array
-        for (int i = 0; token != NULL; token = strtok_r(0, " ", &savePtr)) {
+        for (int i = 0; token != NULL; token = strtok_r(NULL, " ", &savePtr)) {
             tokens[i] = token;
         }
 
