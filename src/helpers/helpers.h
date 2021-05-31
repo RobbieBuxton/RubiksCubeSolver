@@ -45,7 +45,7 @@ sint to_twos_complement(uint unsigned_value, uint sign_bit_location);
 
 /**
  * Load four bytes from the machine state memory into register.
- * 
+ *
  * @param state     Machine in which to complete transfer
  * @param address   Starting address of word in memory (lowest address).
  * @param dest      Register to be loaded into.
@@ -55,7 +55,7 @@ StatusCode load_word(State *state, uint address, Register dest);
 
 /**
  * Store four bytes into the machine state memory from a register.
- * 
+ *
  * @param state     Machine in which to complete transfer
  * @param address   Starting address of where to store word.
  * @param data      Word to be stored.
@@ -80,6 +80,14 @@ bool check_decoded_cond(State *state);
  * @param state Current machine state
  */
 void status_code_handler(StatusCode code, State *state);
+
+/**
+ * Find the first character in a string that is not whitespace.
+ *
+ * @param  start Where to start searching from
+ * @return       A char * to the first non-whitespace, or NULL if not found
+ */
+char *first_non_whitespace(char *start);
 
 #endif  // __HELPERS_H__
 

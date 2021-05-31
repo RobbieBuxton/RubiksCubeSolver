@@ -14,7 +14,7 @@
 #endif
 
 // Macros for use in this file:
-#define MAXIMUM_SYMBOL_LENGTH 510
+#define MAXIMUM_SYMBOL_LENGTH 512
 
 /**
  * A symbol-address associative pair.
