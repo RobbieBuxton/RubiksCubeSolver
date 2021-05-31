@@ -48,10 +48,7 @@ int main(int argc, char **argv) {
 
     free_symbol_map(symbolMap);
 
-
-
-
-
+    status_code_handler(code, NULL);
 
     return EXIT_SUCCESS;
 }
@@ -66,8 +63,6 @@ InstructionType type_from_string(char *token) {
 
 StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, AssemblyInfo assemblyInfo) {
     char line[MAXIMUM_LINE_LENGTH] = { '\0' };
-    size_t len = 0;
-    ssize_t read;
     char* tokens[6] = { NULL };
     StatusCode code;
     uint offset = 0;
@@ -110,6 +105,5 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, 
     }
 
     // Do we need to free anything else here?
-    free(line);
     return code;
 }

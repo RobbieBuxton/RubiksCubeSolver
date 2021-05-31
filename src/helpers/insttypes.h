@@ -104,35 +104,6 @@ typedef struct {
     InstructionType type;
 } InstructionTypePair;
 
-/**
- * Lookup table defining the types of each instruction.
- */
-static InstructionTypePair InstructionLookupTable[] = {
-    {"add", DP},
-    {"sub", DP},
-    {"rsb", DP},
-    {"and", DP},
-    {"eor", DP},
-    {"orr", DP},
-    {"mov", DP},
-    {"tst", DP},
-    {"teq", DP},
-    {"cmp", DP},
-    {"mul", M},
-    {"mla", M},
-    {"ldr", SDT},
-    {"str", SDT},
-    {"beq", B},
-    {"bne", B},
-    {"bge", B},
-    {"blt", B},
-    {"bgt", B},
-    {"ble", B},
-    {"b", B},
-    {"lsl", DP},
-    {"andeq", H}
-};
-
 #define NUM_INSTRUCTIONS 23
 
 // These definitions are for extracting the I P U A S L bits from an instruction

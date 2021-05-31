@@ -17,6 +17,6 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
         out |= BIT_L;
     }
 
-
+    return CONTINUE;
 
 }
