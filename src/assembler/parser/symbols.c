@@ -80,21 +80,26 @@ bool add_to_symbol_map(SymbolMap *map, const char *symbol, const uint addr) {
     return true;
 }
 
-void query_symbol_map(QueryResult *out_result, const SymbolMap *map, const char *symbol_name) {
+QueryResult query_symbol_map(const SymbolMap *map, const char *symbol_name) {
+    // Storate of the result
+    QueryResult out_result;
+
     for (size_t i = 0; i < map->count; ++i) {
         Symbol *sym = map->arr + i;
 
         if (symbol_equals(sym, symbol_name)) {
             // Found! Set results as necessary.
-            out_result->found = true;
-            out_result->addr  = sym->addr;
+            out_result.found = true;
+            out_result.addr  = sym->addr;
 
-            return;
+            return out_result;
         }
     }
 
     // Not found!
-    out_result->found = false;
-    out_result->addr  = 0u;
+    out_result.found = false;
+    out_result.addr  = 0u;
+
+    return out_result;
 }
 
