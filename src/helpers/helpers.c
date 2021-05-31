@@ -130,3 +130,16 @@ void status_code_handler(StatusCode code, State *state) {
     }
 }
 
+char *first_non_whitespace(char *start) {
+    // Whitespace characters to look for.
+    static const char *whitespace = " \r\n\t";
+
+    for (char *c = start; *c; ++c) {
+        if (!strchr(whitespace, *c)) {
+            return c;
+        }
+    }
+
+    return NULL;
+}
+
