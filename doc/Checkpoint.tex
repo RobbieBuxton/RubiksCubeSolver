@@ -1,13 +1,14 @@
-\documentclass[11pt]{article}
+\documentclass[8pt]{article}
 
 \usepackage{fullpage}
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows}
 \tikzstyle{startstop} = [rectangle, rounded corners, minimum height=0.5cm,text centered, draw=black, fill=red!30]
-\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum height=0.5cm, text centered, draw=black, fill=blue!30]
-\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum height=0.8cm, text centered, draw=black, fill=blue!30]
+\tikzstyle{process} = [rectangle, minimum width=1cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
 \tikzstyle{decision} = [diamond, minimum width=1cm, minimum height=1cm, text centered, draw=black, fill=green!30]
 \tikzstyle{arrow} = [thick,->,>=stealth]    
+\tikzstyle{line} = [thick,-,>=stealth] 
 
 \begin{document}
 
@@ -65,40 +66,113 @@ achieve this by spending more time planning before starting on the next section.
     
     \end{itemize}
 
+\begin{minipage}{0.45\textwidth}
 \subsection{Emulator Program Structure}
 
 \begin{itemize}
-    \item \texttt{decoder.c} Decodes raw binary into one of the 5 instruction 
+    \item \texttt{decoder.c} \\ Decodes raw binary into one of the 5 instruction 
     types.
-    \item \texttt{branch.c} Simulates the branch instruction.
-    \item \texttt{dataprocessing.c} Simulates one the ten data processing 
+    \item \texttt{branch.c} \\ Simulates the branch instruction.
+    \item \texttt{dataprocessing.c} \\ Simulates one the ten data processing. 
     instructions.
-    \item \texttt{halt.c} Halts the program.
-    \item \texttt{multiply.c} Simulates the multiply instruction.
-    \item \texttt{singledatatransfer.c} Simulates single data transfer instructions.
-    \item \texttt{fetcher.c} Fetches the next instruction from memory and
+    \item \texttt{halt.c} \\  Halts the program.
+    \item \texttt{multiply.c} \\ Simulates the multiply instruction.
+    \item \texttt{singledatatransfer.c} \\ Simulates single data transfer instructions.
+    \item \texttt{fetcher.c} \\ Fetches the next instruction from memory and
     increments the PC.
-    \item \texttt{emulate.c} initializes the processor and starts the fetch decode
+    \item \texttt{emulate.c} \\ initializes the processor and starts the fetch decode
     execute cycle on the binary file provided. 
-    \item \texttt{printstate.c} Prints the final state of the program after 
+    \item \texttt{printstate.c} \\ Prints the final state of the program after 
     halting.
 \end{itemize}
-
-\subsection{Emulator Program Flow}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.45\textwidth}
 
 \begin{tikzpicture}[node distance=2cm]
-    \node (start) [startstop] {Start};
-    \node (in1) [io, right of=start, xshift=1.5cm] {initialize state};
-    \node (in2) [io, right of=in1, xshift=6cm, inner sep=0] {Load instructions to mem};
-    \node (dec1) [decision, below of=in2, yshift=-0.5cm] {HALT};
-    \node (start) [startstop, right of=dec1, xshift=4cm] {Print State};
-    \node (dec2) [decision, left of=dec1, xshift = -1cm] {MULT};
-    \node (dec3) [decision, left of=dec2, xshift = -1cm] {SDT};
-    \node (dec4) [decision, left of=dec3, xshift = -1cm] {BRCH};
-    
+    \node (start) [scale=0.5, startstop] at (0,0) {Start};
+    \node (in1) [scale=0.5, align=center, io, right of=start, xshift=4cm] 
+    {initialize state and \\ load instructions \\ to mem};
+    \node (code) [scale=0.5, align=center, decision, below of=in1, yshift=-0.5cm] 
+    {code = \\continue};
+    \node (inv4) [scale=0.5, align=center ,right of=code, xshift = -9cm]
+    {};
+    \node (print) [scale=0.5, align=center, io, right of=code, xshift=2.5cm] 
+    {Print State};
+    \node (finish) [scale=0.5, startstop, right of=print, xshift=1cm] 
+    {finish};
+    \node (decoded?) [scale=0.5, align=center, decision, below of=code, yshift=-1.5cm] 
+    {decoded instr \\ exists};
+    \node (inv3) [scale=0.5, align=center ,right of=decoded?, xshift = 5cm, yshift = 2cm]
+    {};
+    \node (instr) [scale=0.5, align=center, decision, below of=decoded?, yshift=-1.5cm] 
+    {instr type};
+    \node (sdt) [scale=0.5, align=center, process, below of=instr, yshift=-0.5cm] 
+    {execute \\ single data \\ transfer};
+    \node (mult) [scale=0.5, align=center, process, right of=sdt, xshift = 0.5cm] 
+    {execute \\ multiply};
+    \node (halt) [scale=0.5, align=center, process, ,right of=mult, xshift = 0.5cm] 
+    {execute \\ halt};
+    \node (brch) [scale=0.5, align=center, process, left of=sdt, xshift = -0.5cm] 
+    {execute \\ branch};
+    \node (dp) [scale=0.5, align=center, process, left of=brch, xshift = -0.5cm] 
+    {execute \\ data process};
+    \node (fetched?) [scale=0.5, align=center, decision, below of=sdt, yshift=-2cm] 
+    {fetched instr \\ exists and \\ code = \\continue};
+    \node (inv1) [scale=0.5, align=center ,right of=fetched?, xshift = 4.0cm]
+    {};
+    \node (decoder) [scale=0.5, align=center, process, ,below of=fetched?, yshift = -1.5cm]
+    {decode fetched \\ instruction};
+    \node (tofetch) [scale=0.5, align=center, decision, below of=decoder, yshift=-1cm] 
+    {code = \\continue};
+    \node (inv2) [scale=0.5, align=center ,left of=tofetch, xshift = -2.5cm]
+    {};
+    \node (fetcher) [scale=0.5, align=center, process, ,below of=tofetch, yshift = -1cm]
+    {fetch next \\ instruction};
+    \node (desc) [scale = 0.6, align=center, below of=tofetch, yshift = -2cm, xshift = -2cm]
+    {flowchart demonstrating program flow in emulate.c};
+
+    \draw [arrow] (start) -- (in1);
+    \draw [arrow] (in1) -- (code);
+    \draw [arrow] (code) -- node[scale=0.5, yshift=0.2cm] {no} (print);
+    \draw [arrow] (print) -- (finish);
+    \draw [arrow] (code) -- node[scale=0.5, xshift=0.5cm] {yes} (decoded?);
+    \draw [arrow] (decoded?) -- node[scale=0.5, xshift=0.5cm] {yes} (instr);
+    \draw [line] (decoded?) -| node[scale=0.5, xshift=0.5cm] {no} (inv1);
+    \draw [arrow] (inv1) -- (fetched?);
+    \draw [arrow] (instr) -| node[scale=0.5, yshift=0.5cm] {DP} (dp);
+    \draw [arrow] (instr) -| node[scale=0.5, yshift=0.5cm] {B} (brch);
+    \draw [arrow] (instr) -- node[scale=0.5, xshift=0.7cm] {SDT} (sdt);
+    \draw [arrow] (instr) -| node[scale=0.5, yshift=0.5cm] {M} (mult);
+    \draw [arrow] (instr) -| node[scale=0.5, yshift=0.5cm] {H} (halt);
+    \draw [arrow] (dp) |- (fetched?.north);
+    \draw [arrow] (brch) |- (fetched?.north);
+    \draw [arrow] (sdt) -- (fetched?.north);
+    \draw [arrow] (mult) |- (fetched?.north);
+    \draw [arrow] (halt) |- node[scale=0.5, xshift=-0.2cm ,yshift=-0.4cm] {code = halt} (fetched?.north);
+    \draw [line] (fetched?) -| node[scale=0.5, yshift=0.5cm] {no} (inv2);
+    \draw [arrow] (inv2) -- (tofetch);
+    \draw [arrow] (fetched?) -- node[scale=0.5, xshift=0.5cm] {yes} (decoder);
+    \draw [arrow] (decoder) -- (tofetch);
+    \draw [line] (tofetch) -| node[scale=0.5, xshift=0.5cm] {no} (inv3);
+    \draw [arrow] (inv3) -| (print);
+    \draw [arrow] (tofetch) -- node[scale=0.5, xshift=0.5cm] {yes} (fetcher);
+    \draw [arrow] (fetcher) -| (inv4) -- (code);
 \end{tikzpicture}
+\end{minipage}%
+
+
+\subsection{Reusable elements for the assembler}
+In our assembler, we plan to use many of the enums we created like the status
+code enums and logic we used to parse them, we also plan to reuse many of the
+helper functions we created like the swap-endianess.
 
 \subsection{Future Tasks}
+It is always hard to know what will be difficult before you attempt the problem 
+but we suspect recognising labels in the assembly will be hard
+however because we plan to use a two pass system hopefully assigning them correctly
+to branch statements won't provide too much difficulty.
+
 
 
 \end{document}
