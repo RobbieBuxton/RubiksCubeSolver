@@ -20,7 +20,7 @@
 #include "helpers.h"
 #endif
 
-StatusCode translate_into_file(SymbolMap *, FILE *, FILE *, AssemblyInfo);
+StatusCode translate_into_file(SymbolMap *, FILE *, FILE *, AssemblyInfo *);
 
 int main(int argc, char **argv) {
     // Assert that we have an in file and an out file
@@ -35,12 +35,11 @@ int main(int argc, char **argv) {
 
     // Completes first pass and rewinds file.
     SymbolMap* symbolMap = new_symbol_map(1);
-
-    // Do we really need this assembly info anymore?
     AssemblyInfo assemblyInfo = collect_symbols(symbolMap, file);
 
-    FILE *outFile = fopen(argv[2], "wb");
-    StatusCode code = translate_into_file(symbolMap, file, outFile, assemblyInfo);
+    // Creates new file and opens it 
+    FILE *outFile = fopen(argv[2], "w+b");
+    StatusCode code = translate_into_file(symbolMap, file, outFile, &assemblyInfo);
 
     fclose(outFile);
     fclose(file);
@@ -55,14 +54,15 @@ int main(int argc, char **argv) {
 // function pointers to translate functions
 static const TranslateFunction t_functions[5] = { dp_translate, m_translate, sdt_translate, b_translate, h_translate };
 
-StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, AssemblyInfo assemblyInfo) {
+StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, AssemblyInfo *assemblyInfo) {
     char line[MAXIMUM_LINE_LENGTH] = { '\0' };
-    char* tokens[6] = { NULL };
     StatusCode code;
     uint offset = 0;
 
     // Read file line by line.
     while (!feof(file)) {
+        // tokens set to null in each iteration
+        char* tokens[6] = { NULL };
         // Read line
         if (!fgets(line, MAXIMUM_LINE_LENGTH, file)) {
             // Error while reading file.
@@ -79,11 +79,11 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, 
         char *savePtr;
 
         // Get first token from line
-        char *token = strtok_r(line, " ", &savePtr);
+        char *token = strtok_r(line, " ,", &savePtr);
 
         // If first token is a label, move onto next.
         if (strstr(token, ":") != NULL) {
-            token = strtok_r(NULL, " ", &savePtr);
+            token = strtok_r(NULL, " ,", &savePtr);
         }
 
         // Copy all tokens into array
