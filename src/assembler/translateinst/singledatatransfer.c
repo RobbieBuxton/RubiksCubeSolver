@@ -9,7 +9,7 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
     out |= FLAG_N | FLAG_Z | FLAG_C;
 
     // Set bits 27,26 to 01
-    out |= 1 << 25u;
+    out |= 1 << 26u;
 
     // Check if this is an "ldr" or "str" instruction.
     if (tokens[0][0] == 'l') {
@@ -18,7 +18,7 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
 
     // Collect Rd
     uint temp = (uint) strtoul(&tokens[1][1], NULL, 10);
-    out |= temp << 11u;
+    out |= temp << 12u;
 
     // check_parse_error sets output to null if there is an error
     if (check_parse_error(output)) {
@@ -37,7 +37,8 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
             return PARSE_ERROR;
         }
         if (temp < 256u) {
-            // return equivalent mov instruction binary
+            // output = unconditional, mov, I = 1, S = 0, Rd = Rd from this, op2 = temp
+            *output = 3642 << 20 | (out & (15 << 12)) | temp;
         }
         // Instruct caller function to place value in correct position
         assemblyInfo->int_to_load = true;
@@ -47,7 +48,7 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
         uint offset = assemblyInfo->instructions - (current_offset + 2);
         offset <<= 2u;
         out |= offset;
-        out |= PC << 15u;
+        out |= PC << 16u;
         out |= BIT_P | BIT_U;
         *output = out;
         return CONTINUE;
@@ -58,32 +59,73 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
     if (check_parse_error(output)) {
         return PARSE_ERROR;
     }
-    out |= temp << 15u;
+    out |= temp << 16u;
 
-    // If next token is of form [Rn]
-    if (strstr(tokens[2], "[") && strstr(tokens[2], "]")) {
-        // If there is a 4th token
-        if (tokens[3]) {
-            // post-indexing logic
-            return CONTINUE;
-        } else {
-            out |= BIT_P | BIT_U;
-            *output = out;
-            return CONTINUE;
-        }
+    // If Rn was last token then it is pre-indexing
+    if (!(tokens[3])) {
+        out |= BIT_P | BIT_U;
+        *output = out;
+        return CONTINUE;
     }
 
-    // From here all alternatives are pre-indexing
-    out |= BIT_P;
-
     if (strstr(tokens[3], "r")) {
+        // Offset is a shifted register, BIT_U is decided by +/- prefix
         out |= BIT_I;
+        // Collect BIT_U and Rm
+        switch (tokens[3][0])
+        {
+        case'+':
+            out |= BIT_U;
+        case '-':
+            out |= (uint) strtol(&tokens[3][2], NULL, 10);
+            break;
+        default:
+            out |= BIT_U;
+            out |= (uint) strtol(&tokens[3][1], NULL, 10);
+            break;
+        }
+        if (check_parse_error(output)) {
+            return PARSE_ERROR;
+        }
+
+        // If there is a shift.
+        if (tokens[4]) {
+            // Collect shift type.
+            if (tokens[4] == "lsl") {
+                out |= 0u;
+            } else if (tokens[4] == "lsr") {
+                out |= 1u << 5u;
+            } else if (tokens[4] == "asr") {
+                out |= 2u << 5u;
+            } else if (tokens[4] == "ror") {
+                out |= 3u << 5u;
+            }
+
+            // Collect shift value/register.
+            if (strstr(tokens[5], "r")) {
+                out |= (uint) strtol(&tokens[5][1], NULL, 10) << 8u;
+                out |= 1u << 4u;
+            } else {
+                out |= (uint) strtol(&tokens[5][1], NULL, 0) << 7u;
+            }
+            if (check_parse_error(output)) {
+                return PARSE_ERROR;
+            }
+        }
     } else {
         // Offset is immediate, BIT_U is decided by its sign
         sint tempSigned = (sint) strtol(&tokens[3][1], NULL, 0);
+        if (check_parse_error(output)) {
+            return PARSE_ERROR;
+        }
         out |= (tempSigned < 0) ? -tempSigned : (tempSigned | BIT_U);
     }
 
-    return CONTINUE;
+    // BIT_P is decided by where ] is
+    if (!(strstr(tokens[2], "]"))) {
+        out |= BIT_P;
+    }
 
+    *output = out;
+    return CONTINUE;
 }

@@ -27,7 +27,7 @@ StatusCode parse_operand2(char *operand_string, uint output){
     //TODO (optional): Add support shifted registers.
 }
 
-StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo assemblyInfo) {
+StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo) {
     // The final instruction output.
     uint out = 0u;
 
