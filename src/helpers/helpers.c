@@ -3,6 +3,36 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
+
+/**
+ * Lookup table defining the types of each instruction.
+ */
+static InstructionTypePair InstructionLookupTable[] = {
+    { "add"  , DP  },
+    { "sub"  , DP  },
+    { "rsb"  , DP  },
+    { "and"  , DP  },
+    { "eor"  , DP  },
+    { "orr"  , DP  },
+    { "mov"  , DP  },
+    { "tst"  , DP  },
+    { "teq"  , DP  },
+    { "cmp"  , DP  },
+    { "mul"  , M   },
+    { "mla"  , M   },
+    { "ldr"  , SDT },
+    { "str"  , SDT },
+    { "beq"  , B   },
+    { "bne"  , B   },
+    { "bge"  , B   },
+    { "blt"  , B   },
+    { "bgt"  , B   },
+    { "ble"  , B   },
+    { "b"    , B   },
+    { "lsl"  , DP  },
+    { "andeq", H   }
+};
 
 uint select_bits(uint value, uint bitmask, uint offset, bool rshift_back) {
     uint masked = value & (bitmask << offset);
@@ -143,3 +173,23 @@ char *first_non_whitespace(char *start) {
     return NULL;
 }
 
+InstructionType type_from_string(char *key) {
+    for (int i = 0; i < NUM_INSTRUCTIONS; i++) {
+        InstructionTypePair pair = InstructionLookupTable[i];
+        if (strcmp(pair.key, key) == 0)
+            return pair.type;
+    }
+
+    return -1;
+}
+
+StatusCode check_parse_error(uint *output) {
+    if (errno) {
+        perror("Invalid number, caused by: ");
+
+        *output = 0;
+        return PARSE_ERROR;
+    }
+
+    return CONTINUE;
+}

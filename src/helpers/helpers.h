@@ -89,5 +89,20 @@ void status_code_handler(StatusCode code, State *state);
  */
 char *first_non_whitespace(char *start);
 
+/**
+ * Return an instruction type from a string mnemonic.
+ * @param  key  The mnemonic as a string
+ * @return      The corresponding InstructionType
+ */
+InstructionType type_from_string(char *key);
+
+/**
+ * Call this after trying to parse a string to make sure it was successful
+ * @param output A pointer to the output of the calling translate function
+ *               to be set to a null value
+ * @return       Either CONTINUE or PARSE_ERROR.
+ */
+StatusCode check_parse_error(uint *output);
+
 #endif  // __HELPERS_H__
 

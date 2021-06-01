@@ -47,6 +47,8 @@ typedef enum {
 typedef struct {
     size_t instructions; /**< The number of instructions in the file */
     size_t symbols;      /**< The number of symbols in the file */
+    uint load_int;        /**< Used whilst encoding load instructions */
+    bool int_to_load;     /**< Flag informing assembler whether load_int should be added */
 } AssemblyInfo;
 
 /**
