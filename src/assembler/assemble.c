@@ -69,6 +69,12 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, 
             return FILE_READ_ERROR;
         }
 
+        // Remove the newline left behind by fgets (if it is there).
+        char *newl = strchr(line, '\n');
+        if (newl) {
+            *newl = '\0';
+        }
+
         uint currentOp;
         char *savePtr;
 
