@@ -23,7 +23,7 @@
  * @param[in]  assemblyInfo   Information gained from first pass such as total length of assembly file.
  * @return                    Operation status code
  */
-StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo assemblyInfo);
+StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo);
 
 /**
  * Translate a Multiply instruction.
@@ -35,7 +35,7 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
  * @param[in]  assemblyInfo   Information gained from first pass such as total length of assembly file.
  * @return                    Operation status code
  */
-StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo assemblyInfo);
+StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo);
 
 /**
  * Translate a Single Data Transfer instruction.
@@ -47,7 +47,7 @@ StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
  * @param[in]  assemblyInfo   Information gained from first pass such as total length of assembly file.
  * @return                    Operation status code
  */
-StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo assemblyInfo);
+StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo);
 
 /**
  * Translate a Branch instruction.
@@ -59,7 +59,7 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
  * @param[in]  assemblyInfo   Information gained from first pass such as total length of assembly file.
  * @return                    Operation status code.
  */
-StatusCode b_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo assemblyInfo);
+StatusCode b_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo);
 
 /**
  * Translate a Halt instruction.
@@ -71,11 +71,11 @@ StatusCode b_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
  * @param[in]  assemblyInfo   Information gained from first pass such as total length of assembly file.
  * @return                    Operation status code.
  */
-StatusCode h_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo assemblyInfo);
+StatusCode h_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo);
 
 /**
  * The type of a function that translates an array of tokens into an instruction.
  */
-typedef StatusCode (*TranslateFunction)(char **, SymbolMap *, uint, uint *, AssemblyInfo);
+typedef StatusCode (*TranslateFunction)(char **, SymbolMap *, uint, uint *, AssemblyInfo *);
 
 #endif  // __TRANSLATE_H__
