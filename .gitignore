@@ -18,6 +18,7 @@
 *.a
 emulate
 assemble
+*.exe
 
 #ignore junk files from compiling Haskell code
 *.hi
