@@ -17,7 +17,7 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
     }
 
     // Collect Rd
-    uint temp = (uint) strtoul(tokens[1], NULL, 10);
+    uint temp = (uint) strtoul(&tokens[1][1], NULL, 10);
     out |= temp << 11u;
 
     // check_parse_error sets output to null if there is an error
@@ -32,7 +32,10 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
 
     // If the address is of the form <=expression>
     if (tokens[2][0] == '=') {
-        temp = (uint) strtoul(tokens[2], NULL, 16);
+        temp = (uint) strtoul(&tokens[2][1], NULL, 0);
+        if (check_parse_error(output)) {
+            return PARSE_ERROR;
+        }
         if (temp < 256u) {
             // return equivalent mov instruction binary
         }
@@ -48,6 +51,37 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
         out |= BIT_P | BIT_U;
         *output = out;
         return CONTINUE;
+    }
+
+    // Collect Rn and store in output
+    temp = (uint) strtoul(&tokens[2][2], NULL, 10);
+    if (check_parse_error(output)) {
+        return PARSE_ERROR;
+    }
+    out |= temp << 15u;
+
+    // If next token is of form [Rn]
+    if (strstr(tokens[2], "[") && strstr(tokens[2], "]")) {
+        // If there is a 4th token
+        if (tokens[3]) {
+            // post-indexing logic
+            return CONTINUE;
+        } else {
+            out |= BIT_P | BIT_U;
+            *output = out;
+            return CONTINUE;
+        }
+    }
+
+    // From here all alternatives are pre-indexing
+    out |= BIT_P;
+
+    if (strstr(tokens[3], "r")) {
+        out |= BIT_I;
+    } else {
+        // Offset is immediate, BIT_U is decided by its sign
+        sint tempSigned = (sint) strtol(&tokens[3][1], NULL, 0);
+        out |= (tempSigned < 0) ? -tempSigned : (tempSigned | BIT_U);
     }
 
     return CONTINUE;
