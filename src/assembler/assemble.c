@@ -37,8 +37,12 @@ int main(int argc, char **argv) {
     SymbolMap* symbolMap = new_symbol_map(1);
     AssemblyInfo assemblyInfo = collect_symbols(symbolMap, file);
 
-    // Creates new file and opens it 
+    // Creates new file and pads it for load immediate instructions
     FILE *outFile = fopen(argv[2], "w+b");
+    for( ;ftell(outFile) < assemblyInfo.instructions * 4; ) {
+        putc(0u, outFile);
+    }
+    rewind(outFile);
     StatusCode code = translate_into_file(symbolMap, file, outFile, &assemblyInfo);
 
     fclose(outFile);
@@ -87,7 +91,7 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, 
         }
 
         // Copy all tokens into array
-        for (int i = 0; token != NULL; token = strtok_r(NULL, " ", &savePtr)) {
+        for (int i = 0; token != NULL; token = strtok_r(NULL, " ,", &savePtr)) {
             tokens[i] = token;
         }
 
@@ -99,6 +103,23 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, 
         // Write binary to file in little endian byte order.
         uint binary = swap_endianness(currentOp);
         fwrite(&binary, sizeof(binary), 1, outFile);
+
+        // If there was a ldr instruction which required a value added to the binary file.
+        if (assemblyInfo->int_to_load) {
+            // Store the current position of the file.
+            fpos_t *nextOp;
+            fgetpos(outFile, nextOp);
+            // Seek the end of the file and save the value there.
+            fseek(outFile, assemblyInfo->instructions * 4, SEEK_SET);
+            binary = swap_endianness(assemblyInfo->load_int);
+            fwrite(binary, sizeof(binary), 1, outFile);
+            // Revert the file pointer to the correct place.
+            fsetpos(outFile, nextOp);
+
+            // Update assembly info so the next value is saved in the next space
+            assemblyInfo->int_to_load = false;
+            assemblyInfo->instructions++;
+        }
 
         // Increment offset so it holds the current line number of the file.
         offset++;

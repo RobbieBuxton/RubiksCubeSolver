@@ -36,7 +36,11 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
         if (temp < 256u) {
             // return equivalent mov instruction binary
         }
-        // Place value at end of assembly and calculate offset to there from PC
+        // Instruct caller function to place value in correct position
+        assemblyInfo->int_to_load = true;
+        assemblyInfo->load_int = temp;
+        
+        // Calculate offset to value from PC
         uint offset = assemblyInfo->instructions - (current_offset + 2);
         offset <<= 2u;
         out |= offset;
