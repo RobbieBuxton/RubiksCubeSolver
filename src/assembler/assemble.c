@@ -20,7 +20,6 @@
 #include "helpers.h"
 #endif
 
-InstructionType type_from_string(char *);
 StatusCode translate_into_file(SymbolMap *, FILE *, FILE *, AssemblyInfo);
 
 int main(int argc, char **argv) {
@@ -55,11 +54,6 @@ int main(int argc, char **argv) {
 
 // function pointers to translate functions
 static const TranslateFunction t_functions[5] = { dp_translate, m_translate, sdt_translate, b_translate, h_translate };
-
-InstructionType type_from_string(char *token) {
-    // TODO
-    return H;
-}
 
 StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, AssemblyInfo assemblyInfo) {
     char line[MAXIMUM_LINE_LENGTH] = { '\0' };

@@ -9,29 +9,29 @@
  * Lookup table defining the types of each instruction.
  */
 static InstructionTypePair InstructionLookupTable[] = {
-    {"add", DP},
-    {"sub", DP},
-    {"rsb", DP},
-    {"and", DP},
-    {"eor", DP},
-    {"orr", DP},
-    {"mov", DP},
-    {"tst", DP},
-    {"teq", DP},
-    {"cmp", DP},
-    {"mul", M},
-    {"mla", M},
-    {"ldr", SDT},
-    {"str", SDT},
-    {"beq", B},
-    {"bne", B},
-    {"bge", B},
-    {"blt", B},
-    {"bgt", B},
-    {"ble", B},
-    {"b", B},
-    {"lsl", DP},
-    {"andeq", H}
+    { "add"  , DP  },
+    { "sub"  , DP  },
+    { "rsb"  , DP  },
+    { "and"  , DP  },
+    { "eor"  , DP  },
+    { "orr"  , DP  },
+    { "mov"  , DP  },
+    { "tst"  , DP  },
+    { "teq"  , DP  },
+    { "cmp"  , DP  },
+    { "mul"  , M   },
+    { "mla"  , M   },
+    { "ldr"  , SDT },
+    { "str"  , SDT },
+    { "beq"  , B   },
+    { "bne"  , B   },
+    { "bge"  , B   },
+    { "blt"  , B   },
+    { "bgt"  , B   },
+    { "ble"  , B   },
+    { "b"    , B   },
+    { "lsl"  , DP  },
+    { "andeq", H   }
 };
 
 uint select_bits(uint value, uint bitmask, uint offset, bool rshift_back) {
@@ -174,12 +174,12 @@ char *first_non_whitespace(char *start) {
 }
 
 InstructionType type_from_string(char *key) {
-    int i;
-    for (i=0; i < NUM_INSTRUCTIONS; i++) {
+    for (int i = 0; i < NUM_INSTRUCTIONS; i++) {
         InstructionTypePair pair = InstructionLookupTable[i];
         if (strcmp(pair.key, key) == 0)
             return pair.type;
     }
+
     return -1;
 }
 
