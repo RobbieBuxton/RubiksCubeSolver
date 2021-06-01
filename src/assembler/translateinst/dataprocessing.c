@@ -9,7 +9,7 @@ int parse_register(char *register_label) {
     return atoi(register_label[1]);
 }
 
-uint parse_operand2(char *operand_string){
+StatusCode parse_operand2(char *operand_string, uint output){
     uint operand = strtol(operand_string[1], NULL, 0);
     uint shift = 0;
     do
@@ -19,10 +19,11 @@ uint parse_operand2(char *operand_string){
             operand = operand << 2;
             shift ++;
         } else {
-            return operand | (shift << 8);
+            output |= operand | (shift << 8);
+            return CONTINUE;
         }
     } while (shift < 16);
-    //TODO: Give an error here (operand can't be represented).
+    return PARSE_ERROR;
     //TODO (optional): Add support shifted registers.
 }
 
@@ -63,15 +64,18 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
         break;
     case dp_mov:
         out |= parse_register(tokens[1]) << 12u;
-        out |= parse_operand2(tokens[2]);
+        if (parse_operand2(tokens[2], out)) return PARSE_ERROR;
+        break;
     default:
         out |= parse_register(tokens[1]) << 12u;
         out |= parse_register(tokens[2]) << 16u;
-        out |= parse_operand2(tokens[3]);
+        if (parse_operand2(tokens[3], out)) return PARSE_ERROR;
         break;
     }
 
     free_symbol_map(opcodes);
 
     *output = out;
+
+    return CONTINUE;
 }
