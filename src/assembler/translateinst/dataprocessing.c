@@ -58,8 +58,6 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
         break;
     }
 
-    free_symbol_map(opcodes);
-
     *output = out;
 
     return CONTINUE;
