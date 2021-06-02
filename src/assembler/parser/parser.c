@@ -8,6 +8,7 @@
 #include "helpers.h"
 #endif
 
+#include <errno.h>
 #include <stddef.h>
 #include <string.h>
 
@@ -26,9 +27,9 @@ AssemblyInfo collect_symbols(SymbolMap *map, FILE *file) {
     // Keep reading until we reach EOF
     while (!feof(file)) {
         // Read a line from the file.
-        if (!fgets(line_buf, MAXIMUM_LINE_LENGTH, file)) {
+        if (!fgets(line_buf, MAXIMUM_LINE_LENGTH, file) && errno) {
             // Error while reading file.
-            perror("Error while reading file: ");
+            perror("Error while reading file");
 
             rewind(file);
             return file_info;

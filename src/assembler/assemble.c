@@ -121,20 +121,24 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, 
             *newl = '\0';
         }
 
+        // Strip leading whitespace
+        char *true_start = first_non_whitespace(line);
+
         uint currentOp;
         char *savePtr;
 
         // Get first token from line
-        char *token = strtok_r(line, " ,", &savePtr);
+        char *token = strtok_r(true_start, " ,", &savePtr);
 
         // If first token is a label, move onto next.
         if (strstr(token, ":") != NULL) {
-            token = strtok_r(NULL, " ,", &savePtr);
+            // token = strtok_r(NULL, " ,", &savePtr);
+            continue;
         }
 
         // Copy all tokens into array
         for (int i = 0; token != NULL; token = strtok_r(NULL, " ,", &savePtr)) {
-            tokens[i] = token;
+            tokens[i++] = token;
         }
 
         // Call translate function from array according to the type represented by the first token.
@@ -147,7 +151,7 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, 
 
         // Write binary to file in little endian byte order.
         uint binary = swap_endianness(currentOp);
-        fwrite(&binary, sizeof(binary), 1, outFile);
+        fwrite(&binary, sizeof(uint), 1, outFile);
 
         // If there was a ldr instruction which required a value added to the binary file.
         if (assemblyInfo->int_to_load) {
