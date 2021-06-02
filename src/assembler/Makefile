@@ -19,6 +19,6 @@ clean:
 libs:
 	for l in $(LIBS); do $(MAKE) -C $$l; done
 
-assemble: assemble.o
+assemble: mainmap.h assemble.o
 	gcc assemble.o -o ../assemble
 
