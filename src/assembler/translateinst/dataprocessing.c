@@ -1,5 +1,5 @@
 #include "translate.h"
-
+#include "mainmap.h"
 #include <errno.h>
 
 int parse_register(char *register_label) {
@@ -32,20 +32,8 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
     // al = 1110
     out |= FLAG_N | FLAG_Z | FLAG_C;
 
-    SymbolMap *opcodes = new_symbol_map(10);
-    add_to_symbol_map(opcodes, "and", dp_and);
-    add_to_symbol_map(opcodes, "eor", dp_eor);
-    add_to_symbol_map(opcodes, "sub", dp_sub);
-    add_to_symbol_map(opcodes, "rsb", dp_rsb);
-    add_to_symbol_map(opcodes, "add", dp_add);
-    add_to_symbol_map(opcodes, "orr", dp_orr);
-    add_to_symbol_map(opcodes, "mov", dp_mov);
-    add_to_symbol_map(opcodes, "tst", dp_tst);
-    add_to_symbol_map(opcodes, "teq", dp_teq);
-    add_to_symbol_map(opcodes, "cmp", dp_cmp);
-
     //get the opcode and write it to the binary instruction
-    DPOpCode opcode = query_symbol_map(opcodes, tokens[0]).addr;
+    DPOpCode opcode = query_symbol_map(translation_map, tokens[0]).addr;
     out |= opcode << 21u;
 
     //Set the I bit (may have to modify if we add support for shifted registers)
