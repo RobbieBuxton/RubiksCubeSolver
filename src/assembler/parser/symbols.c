@@ -92,6 +92,13 @@ bool add_to_symbol_map(SymbolMap *map, const char *symbol, const uint addr) {
     size_t curr_ptr = 0u;
 
     do {
+        while (curr_ptr >= map->size) {
+            // We've exited the map. Extend it to fit.
+            if (!extend_symbol_map(map)) {
+                return false;
+            }
+        }
+
         ulong ptr_hash = map->arr[curr_ptr].hash;
 
         // Found empty child. Set all fields.

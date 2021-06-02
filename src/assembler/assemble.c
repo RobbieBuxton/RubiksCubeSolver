@@ -52,6 +52,7 @@ int main(int argc, char **argv) {
     fclose(file);
 
     free_symbol_map(symbolMap);
+    free_symbol_map(translation_map);
 
     status_code_handler(code, NULL);
 
