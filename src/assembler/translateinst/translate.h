@@ -4,11 +4,13 @@
 #ifndef __SHORTEN__
 // Full includes for language servers
 #include "../../helpers/insttypes.h"
+#include "../../helpers/helpers.h"
 #include "../parser/symbols.h"
 #include "../parser/parser.h"
 #else
 // Shortened includes
 #include "insttypes.h"
+#include "helpers.h"
 #include "symbols.h"
 #include "parser.h"
 #endif

@@ -3,15 +3,10 @@
 #include <assert.h>
 #include <errno.h>
 
-#ifndef __SHORTEN__
-#include "../../helpers/helpers.h"
-#else
-#include "helpers.h"
-#endif
-
 StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo) {
     // Assert that this instruction can be loaded correctly.
-    assert(current_offset < MAX_MEMORY_LOCATION);
+    // Assuming the current_offset is number of instructions in assembly...
+    assert(current_offset < MAX_MEMORY_LOCATION / INSTRUCTION_BYTE_LENGTH);
 
     // The final instruction output.
     uint out = 0u;

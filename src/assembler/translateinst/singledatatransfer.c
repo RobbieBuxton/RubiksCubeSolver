@@ -1,5 +1,7 @@
 #include "translate.h"
 
+#include <string.h>
+
 StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo) {
     // The final instruction output.
     uint out = 0u;
@@ -43,7 +45,7 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
         // Instruct caller function to place value in correct position
         assemblyInfo->int_to_load = true;
         assemblyInfo->load_int = temp;
-        
+
         // Calculate offset to value from PC
         uint offset = assemblyInfo->instructions - (current_offset + 2);
         offset <<= 2u;
@@ -91,13 +93,13 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
         // If there is a shift.
         if (tokens[4]) {
             // Collect shift type.
-            if (tokens[4] == "lsl") {
+            if (strcmp(tokens[4], "lsl") == 0) {
                 out |= 0u;
-            } else if (tokens[4] == "lsr") {
+            } else if (strcmp(tokens[4], "lsr") == 0) {
                 out |= 1u << 5u;
-            } else if (tokens[4] == "asr") {
+            } else if (strcmp(tokens[4], "asr") == 0) {
                 out |= 2u << 5u;
-            } else if (tokens[4] == "ror") {
+            } else if (strcmp(tokens[4], "ror") == 0) {
                 out |= 3u << 5u;
             }
 

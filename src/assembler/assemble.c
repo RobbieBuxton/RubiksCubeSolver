@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
     AssemblyInfo assemblyInfo = collect_symbols(symbolMap, file);
 
     // Creates new file and pads it for load immediate instructions
-    FILE *outFile = fopen(argv[2], "w+b");
+    FILE *outFile = fopen(argv[2], "wb+");
     for( ;ftell(outFile) < assemblyInfo.instructions * 4; ) {
         putc(0u, outFile);
     }
@@ -112,7 +112,7 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, 
             // Seek the end of the file and save the value there.
             fseek(outFile, assemblyInfo->instructions * 4, SEEK_SET);
             binary = swap_endianness(assemblyInfo->load_int);
-            fwrite(binary, sizeof(binary), 1, outFile);
+            fwrite(&binary, sizeof(binary), 1, outFile);
             // Revert the file pointer to the correct place.
             fsetpos(outFile, nextOp);
 

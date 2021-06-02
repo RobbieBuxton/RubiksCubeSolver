@@ -53,7 +53,7 @@ AssemblyInfo collect_symbols(SymbolMap *map, FILE *file) {
                 // Add to symbol map
                 add_to_symbol_map(
                     map, temp_buf,
-                    (lines_found  - (++symbols_found)) * INSTRUCTION_WIDTH
+                    (lines_found  - (++symbols_found)) * INSTRUCTION_BYTE_LENGTH
                 );
             }
         }
