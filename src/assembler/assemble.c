@@ -78,7 +78,7 @@ void init_translation_map(void) {
     add_to_symbol_map(translation_map, "teq", dp_teq);
     add_to_symbol_map(translation_map, "cmp", dp_cmp);
 
-    //Branch 
+    //Branch
     add_to_symbol_map(translation_map, "beq", eq);
     add_to_symbol_map(translation_map, "bne", ne);
     add_to_symbol_map(translation_map, "bge", ge);
@@ -87,7 +87,7 @@ void init_translation_map(void) {
     add_to_symbol_map(translation_map, "ble", le);
     add_to_symbol_map(translation_map, "bal", al);
     add_to_symbol_map(translation_map, "b",   al);
-    
+
     //Multiply
     add_to_symbol_map(translation_map, "mul", mul);
     add_to_symbol_map(translation_map, "mla", mla);
@@ -140,7 +140,10 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, 
         // Call translate function from array according to the type represented by the first token.
         code = t_functions[type_from_string(tokens[0])](tokens, symbolMap, offset, &currentOp, assemblyInfo);
 
-        // need error handling here
+        // Error handling here
+        if (code) {
+            fprintf(stderr, "Error! See code for details: Code %d\n", code);
+        }
 
         // Write binary to file in little endian byte order.
         uint binary = swap_endianness(currentOp);
@@ -149,14 +152,14 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, 
         // If there was a ldr instruction which required a value added to the binary file.
         if (assemblyInfo->int_to_load) {
             // Store the current position of the file.
-            fpos_t *nextOp;
-            fgetpos(outFile, nextOp);
+            fpos_t nextOp;
+            fgetpos(outFile, &nextOp);
             // Seek the end of the file and save the value there.
-            fseek(outFile, assemblyInfo->instructions * 4, SEEK_SET);
+            fseek(outFile, assemblyInfo->instructions * INSTRUCTION_BYTE_LENGTH, SEEK_SET);
             binary = swap_endianness(assemblyInfo->load_int);
             fwrite(&binary, sizeof(binary), 1, outFile);
             // Revert the file pointer to the correct place.
-            fsetpos(outFile, nextOp);
+            fsetpos(outFile, &nextOp);
 
             // Update assembly info so the next value is saved in the next space
             assemblyInfo->int_to_load = false;
