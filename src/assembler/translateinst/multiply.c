@@ -70,7 +70,7 @@ StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
 
     if (out & BIT_A) {
         // Collect Rn
-        temp = (uint) strtoul(tokens[2], NULL, 10);
+        temp = (uint) strtoul(tokens[4] + 1, NULL, 10);
         out |= temp << 12u;
 
         if (check_parse_error(output)) {
