@@ -91,18 +91,28 @@ char *first_non_whitespace(char *start);
 
 /**
  * Return an instruction type from a string mnemonic.
+ *
  * @param  key  The mnemonic as a string
  * @return      The corresponding InstructionType
  */
 InstructionType type_from_string(char *key);
 
 /**
- * Call this after trying to parse a string to make sure it was successful
- * @param output A pointer to the output of the calling translate function
+ * Call this after trying to parse a string to make sure it was successful.
+ *
+ * @param  output A pointer to the output of the calling translate function
  *               to be set to a null value
  * @return       Either CONTINUE or PARSE_ERROR.
  */
 StatusCode check_parse_error(uint *output);
+
+/**
+ * Generate the hash of a string.
+ *
+ * @param  str Start of string to hash
+ * @return     A 64-bit unsigned number representing the hash of the string
+ */
+ulong hash_string(const char *str);
 
 #endif  // __HELPERS_H__
 

@@ -21,6 +21,7 @@
  * A symbol-address associative pair.
  */
 typedef struct {
+    ulong hash;                       /**< Hash identifier of symbol. */
     char name[MAXIMUM_SYMBOL_LENGTH]; /**< Identifier of symbol. */
     uint addr;                        /**< Address it represents. */
 } Symbol;
@@ -70,6 +71,7 @@ bool free_symbol_map(SymbolMap *map);
 
 /**
  * Add a symbol (and its address) to a symbol map.
+ * Attempts to order the items by their hashes. O(n) worst case.
  * Failing to add a symbol does not free the map.
  *
  * @param[out] map    Symbol map to add symbol to
@@ -88,13 +90,25 @@ typedef struct {
 } QueryResult;
 
 /**
- * Query a map for a symbol name, storing its result in the given QueryStruct pointer.
+ * Query a map for a symbol name, storing its result in the returned QueryResult.
+ * Uses the symbol hashes, for a binary search, O(log_2 n).
  *
  * @param  map         The map to query
  * @param  symbol_name The symbol name to find
  * @return             Query result. Check the struct fields for details.
  */
 QueryResult query_symbol_map(const SymbolMap *map, const char *symbol_name);
+
+/**
+ * Query a map for a symbol name, storing its result in the returned QueryResult.
+ * Uses the symbol names, for a linear search, O(n).
+ * Use if you aren't 100% certain that the map is sorted by hashes.
+ *
+ * @param  map         The map to query
+ * @param  symbol_name The symbol name to find
+ * @return             Query result. Check the struct fields for details.
+ */
+QueryResult safe_query_symbol_map(const SymbolMap *map, const char *symbol_name);
 
 #endif  // __SYMBOLS_H__
 

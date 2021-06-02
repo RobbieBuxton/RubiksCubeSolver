@@ -6,6 +6,7 @@
 // Simplifying typedefs.
 typedef uint32_t uint;
 typedef int32_t sint;
+typedef uint64_t ulong;
 typedef unsigned char uchar;
 
 /**

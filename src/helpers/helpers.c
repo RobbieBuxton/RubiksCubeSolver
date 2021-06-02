@@ -193,3 +193,17 @@ StatusCode check_parse_error(uint *output) {
 
     return CONTINUE;
 }
+
+ulong hash_string(const char *str) {
+    ulong result = 1ul;
+    ulong multiplier = 1ul;
+
+    // Assumes the string is null-terminated.
+    for (size_t i = 0; str[i]; ++i) {
+        result += str[i] * multiplier;
+        multiplier *= 524287ul;
+    }
+
+    return result;
+}
+
