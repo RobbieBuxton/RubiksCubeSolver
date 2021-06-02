@@ -2,7 +2,7 @@ CC      = gcc
 CFLAGS  = -Wall -g -D__SHORTEN__ -D_POSIX_SOURCE -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic -I../helpers -I./parser -I./translateinst
 LDFLAGS = -L./parser -L./translateinst -L../helpers -lparser -ltranslate -lhelpers
 LIBS    = parser translateinst ../helpers
-BUILD   = $(LIBS) assemble
+BUILD   = libs assemble
 
 .SUFFIXES: .c .o
 
