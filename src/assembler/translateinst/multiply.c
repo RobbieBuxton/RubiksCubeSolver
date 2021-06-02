@@ -2,7 +2,12 @@
 
 #include <assert.h>
 #include <errno.h>
-#include <helpers.h>
+
+#ifndef __SHORTEN__
+#include "../../helpers/helpers.h"
+#else
+#include "helpers.h"
+#endif
 
 StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo) {
     // Assert that this instruction can be loaded correctly.
@@ -29,7 +34,7 @@ StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
     // Note: rN only exists for mla
 
     // Collect Rd, Rm and Rs
-    uint temp = (uint) strtoul(tokens[1], NULL, 10);
+    uint temp = (uint) strtoul(tokens[1] + 1, NULL, 10);
     out |= temp << 16u;
 
     // check_parse_error sets output to null if there is an error
@@ -42,7 +47,7 @@ StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
         return INVALID_REGISTER;
     }
 
-    temp = (uint) strtoul(tokens[2], NULL, 10);
+    temp = (uint) strtoul(tokens[2] + 1, NULL, 10);
     out |= temp;
 
     if (check_parse_error(output)) {
@@ -55,7 +60,7 @@ StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
     }
 
 
-    temp = (uint) strtoul(tokens[3], NULL, 10);
+    temp = (uint) strtoul(tokens[3] + 1, NULL, 10);
     out |= temp << 8u;
 
     if (check_parse_error(output)) {
