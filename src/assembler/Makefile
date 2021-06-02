@@ -1,8 +1,8 @@
 CC      = gcc
 CFLAGS  = -Wall -g -D__SHORTEN__ -D_POSIX_SOURCE -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic -I../helpers -I./parser -I./translateinst
-LDFLAGS = -L./parser -L./translateinst -L../helpers -lparser -ltranslateinst -lhelpers
-LIBS    = adts ../helpers
-BUILD   = libs assemble
+LDFLAGS = -L./parser -L./translateinst -L../helpers -lparser -ltranslate -lhelpers
+LIBS    = parser translateinst ../helpers
+BUILD   = $(LIBS) assemble
 
 .SUFFIXES: .c .o
 
@@ -19,6 +19,6 @@ clean:
 libs:
 	for l in $(LIBS); do $(MAKE) -C $$l; done
 
-assemble: mainmap.h assemble.o
-	gcc assemble.o -o ../assemble
+assemble: assemble.o
+	gcc assemble.o $(LDFLAGS) -o ../assemble
 

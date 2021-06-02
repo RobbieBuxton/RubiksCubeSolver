@@ -173,3 +173,9 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, 
     // Do we need to free anything else here?
     return code;
 }
+
+StatusCode h_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo) {
+    *output = 0u;
+    return CONTINUE;
+}
+

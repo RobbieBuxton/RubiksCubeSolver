@@ -1,5 +1,5 @@
 #include "translate.h"
-#include "mainmap.h"
+#include "../mainmap.h"
 #include <errno.h>
 
 int parse_register(char *register_label) {
