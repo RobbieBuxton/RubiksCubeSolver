@@ -66,7 +66,35 @@ void init_translation_map(void) {
     // Small initial size. It will self-extend later.
     translation_map = new_symbol_map(4);
 
-    // TODO: Add in the symbols.
+    //Data Processing
+    add_to_symbol_map(translation_map, "and", dp_and);
+    add_to_symbol_map(translation_map, "eor", dp_eor);
+    add_to_symbol_map(translation_map, "sub", dp_sub);
+    add_to_symbol_map(translation_map, "rsb", dp_rsb);
+    add_to_symbol_map(translation_map, "add", dp_add);
+    add_to_symbol_map(translation_map, "orr", dp_orr);
+    add_to_symbol_map(translation_map, "mov", dp_mov);
+    add_to_symbol_map(translation_map, "tst", dp_tst);
+    add_to_symbol_map(translation_map, "teq", dp_teq);
+    add_to_symbol_map(translation_map, "cmp", dp_cmp);
+
+    //Branch 
+    add_to_symbol_map(translation_map, "beq", eq);
+    add_to_symbol_map(translation_map, "bne", ne);
+    add_to_symbol_map(translation_map, "bge", ge);
+    add_to_symbol_map(translation_map, "blt", lt);
+    add_to_symbol_map(translation_map, "bgt", gt);
+    add_to_symbol_map(translation_map, "ble", le);
+    add_to_symbol_map(translation_map, "bal", al);
+    add_to_symbol_map(translation_map, "b",   al);
+    
+    //Multiply
+    add_to_symbol_map(translation_map, "mul", mul);
+    add_to_symbol_map(translation_map, "mla", mla);
+
+    //Single Data Transfer
+    add_to_symbol_map(translation_map, "ldr", ldr);
+    add_to_symbol_map(translation_map, "str", str);
 }
 
 // function pointers to translate functions

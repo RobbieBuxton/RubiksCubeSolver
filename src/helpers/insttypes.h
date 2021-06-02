@@ -48,6 +48,18 @@ typedef enum {
     ror = 3  /**< Rotate right */
 } ShiftType;
 
+//Types of SDT
+typedef enum {
+    ldr,
+    str
+} SDTType;
+
+//Types of Multiply
+typedef enum {
+    mul,
+    mla
+} MULType;
+
 // Instruction byte length
 #define INSTRUCTION_BYTE_LENGTH 4u
 
