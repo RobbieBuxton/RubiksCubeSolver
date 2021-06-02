@@ -21,15 +21,16 @@
 
 \subsection{Work Distribution and Coordination}
 
-In our initial group meeting, we planned out how we wanted to first approach
-creating the emulator. We decided to initially work together on designing the
-data types and structures, and then implemented the decoder and the overarching
-fetch-execute cycle. \\ \\
-After this was completed, we distributed the four categories
-of instruction between the team members. Fawwaz worked on branch, Robert on data
-processing, Edward on the single data transfer and Wojtek on multiply. After
-code was committed it was reviewed by other teammates. Once all the subsections were complete we worked together as a team to fix bugs
-and remove redundancies in the code.
+In our initial group meeting, we found it difficult to divide work without having a
+better handle on the problem as a whole. We had already agreed upon a style guide 
+but realised there was still a bottleneck to overcome before we could code independently.
+We split into two groups, with one coder and one observer each; one pair created general data
+types and structures whilst the other implemented the overarching logic of the execute-decode-fetch cycle.
+Communication was open between the groups to keep our concept of the overall project in sync. \\ \\
+While we knew we would return to these central parts, the first drafts allowed us to split
+further and each implement one category of instruction. The people with simpler instruction types
+to implement could then work to create and improve central files such as a Makefile.
+Finally the whole team collaborated to test and review each other's code and fix any bugs.
 
 \subsection{Evaluation and Future Strategies}
 
@@ -38,8 +39,9 @@ Our primary method of communication is Discord where we have a video meeting at
 We also communicate frequently in the chat which means that the team has a good
 idea of the state of the project and any problems can be resolved promptly. \\ \\
 What we would like to do in the future is find ways to reduce the amount of
-downtime when team is waiting for bottlenecks to be completed. We think we can
-achieve this by spending more time planning before starting on the next section.
+downtime when team is waiting for bottlenecks to be completed. This can be resolved
+by sending two members of the team ahead to decide useful function signatures and
+data types so that the team can get straight to coding once the report is finished.
 
 \section{Implementation}
 
@@ -48,20 +50,20 @@ achieve this by spending more time planning before starting on the next section.
 \begin{itemize}
 
     \item \textbf{Program State} (\texttt{State}): A struct representing the 
-    processor's current state. It holds the current fetched and 
-    decoded flags, a pointer to an array of values representing 
-    all of the registers excluding the CPSR, A pointer to an array of values 
-    representing the processors memory, The next instruction to be decoded, the 
-    next instruction to be executed, 
-    the CPSR register and lastly the last accessed memory address.
+    processor's current state. It holds a pointer to an array representing 
+    all of the registers excluding the CPSR; a pointer to an array
+    representing the processor's memory; the next instruction to be decoded; the 
+    next instruction to be executed; flags representing whether decoded
+    and fetched instructions are present; 
+    the CPSR register and the last accessed memory address.
     
     \item \textbf{Decoded instruction} (\texttt{Instruction}): A struct representing
-    a decoded instruction. It holds a condition code, a type referring to which 
-    instruction it is and lastly a strut representing the specific instruction be executed.
+    a decoded instruction. It holds a condition code, a type referring to which type of 
+    instruction it holds and lastly a strut representing the specific instruction to be executed.
     
-    \item \textbf{Instruction types} There are 5 instruction types, data processing,
-    multiply, single data transfer, branch and halt and they all have a strut
-    representing them containing all the required data to execute them
+    \item \textbf{Instruction types} There are 5 instruction types, the four specified 
+    plus a halt type and they each have a struct
+    representing them containing all the required data to execute them.
 
     
     \end{itemize}
@@ -73,7 +75,7 @@ achieve this by spending more time planning before starting on the next section.
     \item \texttt{decoder.c} \\ Decodes raw binary into one of the 5 instruction 
     types.
     \item \texttt{branch.c} \\ Simulates the branch instruction.
-    \item \texttt{dataprocessing.c} \\ Simulates one the ten data processing. 
+    \item \texttt{dataprocessing.c} \\ Simulates one of the ten data processing 
     instructions.
     \item \texttt{halt.c} \\  Halts the program.
     \item \texttt{multiply.c} \\ Simulates the multiply instruction.
@@ -163,15 +165,20 @@ achieve this by spending more time planning before starting on the next section.
 
 
 \subsection{Reusable elements for the assembler}
-In our assembler, we plan to use many of the enums we created like the status
-code enums and logic we used to parse them, we also plan to reuse many of the
-helper functions we created like the swap-endianess.
+In our assembler, we plan to use many of the enum data types such as the
+instruction types and exit-status codes; we also plan to reuse some of the
+helper functions we created such as swap-endianess(). Due to the same 4 
+instruction categories being present, we should be able to use a similar 
+function pointer array as we did in emulate.c to call the correct function
+per type of instruction.
 
 \subsection{Future Tasks}
-It is always hard to know what will be difficult before you attempt the problem 
-but we suspect recognising labels in the assembly will be hard
-however because we plan to use a two pass system hopefully assigning them correctly
-to branch statements won't provide too much difficulty.
+Parsing the assembly instructions may prove to be tedious, hopefully by discussing
+our problems and working together to make robust helper functions we can reduce
+this workload. Also, implementing the first pass of our planned two-pass assembly 
+in such a way that symbols can be quickly found later may be challenging, we will
+need to research appropiate data structures before committing to one.
+
 
 
 
