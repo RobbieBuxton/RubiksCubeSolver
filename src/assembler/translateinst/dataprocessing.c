@@ -1,16 +1,13 @@
 #include "translate.h"
 
-
 #include <errno.h>
-#include <helpers.h>
-
 
 int parse_register(char *register_label) {
-    return atoi(register_label[1]);
+    return atoi(register_label + 1);
 }
 
 StatusCode parse_operand2(char *operand_string, uint output){
-    uint operand = strtol(operand_string[1], NULL, 0);
+    uint operand = strtol(operand_string + 1, NULL, 0);
     uint shift = 0;
     do
     {

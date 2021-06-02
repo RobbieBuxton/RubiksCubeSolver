@@ -4,9 +4,8 @@
 #include <errno.h>
 
 StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo) {
-    // Assert that this instruction can be loaded correctly.
-    // Assuming the current_offset is number of instructions in assembly...
-    assert(current_offset < MAX_MEMORY_LOCATION / INSTRUCTION_BYTE_LENGTH);
+    // Assert that we have not somehow ran out of unsigned integer offsets.
+    assert(current_offset + 1u < current_offset);
 
     // The final instruction output.
     uint out = 0u;
@@ -70,7 +69,7 @@ StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
 
     if (out & BIT_A) {
         // Collect Rn
-        temp = (uint) strtoul(tokens[2], NULL, 10);
+        temp = (uint) strtoul(tokens[4] + 1, NULL, 10);
         out |= temp << 12u;
 
         if (check_parse_error(output)) {
