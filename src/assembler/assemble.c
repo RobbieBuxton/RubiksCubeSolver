@@ -20,7 +20,10 @@
 #include "helpers.h"
 #endif
 
+#include "mainmap.h"
+
 StatusCode translate_into_file(SymbolMap *, FILE *, FILE *, AssemblyInfo *);
+void init_translation_map(void);
 
 int main(int argc, char **argv) {
     // Assert that we have an in file and an out file
@@ -53,6 +56,16 @@ int main(int argc, char **argv) {
     status_code_handler(code, NULL);
 
     return EXIT_SUCCESS;
+}
+
+// Declaration of translation_map for mainmap.h
+SymbolMap *translation_map = NULL;
+
+void init_translation_map(void) {
+    // Small initial size. It will self-extend later.
+    translation_map = new_symbol_map(4);
+
+    // TODO: Add in the symbols.
 }
 
 // function pointers to translate functions
