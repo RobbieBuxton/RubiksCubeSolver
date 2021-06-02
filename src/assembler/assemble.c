@@ -27,7 +27,7 @@ void init_translation_map(void);
 
 int main(int argc, char **argv) {
     // Assert that we have an in file and an out file
-    assert(argc > 3);
+    assert(argc >= 3);
 
     // Open assembly file.
     FILE *file = fopen(argv[1], "r");
