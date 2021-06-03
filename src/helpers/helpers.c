@@ -82,12 +82,15 @@ StatusCode write_gpio_pins(State *state, uint addr, uint value) {
     switch (addr) {
         case PIN_TYPES_0_9_ADDR:
             control_row = &(state->pins.pin_types_0_9);
+            printf("One GPIO pin from 0 to 9 has been accessed\n");
             goto next;
         case PIN_TYPES_10_19_ADDR:
             control_row = &(state->pins.pin_types_10_19);
+            printf("One GPIO pin from 10 to 19 has been accessed\n");
             goto next;
         case PIN_TYPES_20_29_ADDR:
             control_row = &(state->pins.pin_types_20_29);
+            printf("One GPIO pin from 20 to 29 has been accessed\n");
 
             // Clear pins if 20-29 addr given and 0 written.
             if (value == 0u) {

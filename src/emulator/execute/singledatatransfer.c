@@ -72,7 +72,7 @@ StatusCode sdt_execute(State *state) {
     state->last_access = address;
 
     // Make sure memory address is neither negative nor too large
-    if (address >= MAX_MEMORY_LOCATION && address < PIN_TYPES_0_9_ADDR) {
+    if (address >= MAX_MEMORY_LOCATION && (address < PIN_TYPES_0_9_ADDR || address > CLEAR_ADDR)) {
         return ILLEGAL_MEMORY_ACCESS;
     }
 
