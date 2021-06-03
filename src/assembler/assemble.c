@@ -149,7 +149,7 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, 
         // Strip leading whitespace
         char *true_start = first_non_whitespace(line);
 
-        uint currentOp;
+        uint currentOp = 0u;
         char *savePtr;
 
         // Get first token from line
