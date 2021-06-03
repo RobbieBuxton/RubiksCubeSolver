@@ -68,14 +68,78 @@ sint to_twos_complement(uint unsigned_value, uint sign_bit_location) {
     return result;
 }
 
+/**
+ * Modifies the GPIO pins of the current machine state.
+ *
+ * @param[out] Machine state to modify
+ * @param[in]  Address to write to
+ * @param[in]  32-bit value to write
+ * @return     Status code for the operation.
+ */
+StatusCode write_gpio_pins(State *state, uint addr, uint value) {
+    uint *control_row;
+
+    switch (addr) {
+        case PIN_TYPES_0_9_ADDR:
+            control_row = &(state->pins.pin_types_0_9);
+            goto next;
+        case PIN_TYPES_10_19_ADDR:
+            control_row = &(state->pins.pin_types_10_19);
+            goto next;
+        case PIN_TYPES_20_29_ADDR:
+            control_row = &(state->pins.pin_types_20_29);
+
+            // Clear pins if 20-29 addr given and 0 written.
+            if (value == 0u) {
+                state->pins.pin_types_0_9   = 0u;
+                state->pins.pin_types_10_19 = 0u;
+                state->pins.pin_types_20_29 = 0u;
+                break;
+            }
+next:
+            *control_row = value;
+            break;
+        case CONTROL_ADDR:
+            state->pins.pin_states |= value;
+            break;
+        case CLEAR_ADDR:
+            state->pins.pin_states ^= (state->pins.pin_states) & value;
+            break;
+        default:
+            // Invalid physical address.
+            return PIN_ERROR;
+    }
+
+    return CONTINUE;
+}
+
 StatusCode load_word(State *state, uint address, Register dest) {
     uint loaded;
 
-    // Load bytes in little endian order.
-    loaded =  state->memory[address    ];
-    loaded += state->memory[address + 1] << 8u;
-    loaded += state->memory[address + 2] << 16u;
-    loaded += state->memory[address + 3] << 24u;
+    if (address < PIN_TYPES_0_9_ADDR) {
+        // Load bytes in little endian order.
+        loaded =  state->memory[address    ];
+        loaded += state->memory[address + 1] << 8u;
+        loaded += state->memory[address + 2] << 16u;
+        loaded += state->memory[address + 3] << 24u;
+    } else {
+        // See spec.
+        switch (address) {
+            case PIN_TYPES_0_9_ADDR:
+                printf("One GPIO pin from 0 to 9 has been accessed\n");
+                break;
+            case PIN_TYPES_10_19_ADDR:
+                printf("One GPIO pin from 10 to 19 has been accessed\n");
+                break;
+            case PIN_TYPES_20_29_ADDR:
+                printf("One GPIO pin from 20 to 29 has been accessed\n");
+                break;
+            default:
+                return PIN_ERROR;
+        }
+
+        loaded = address;
+    }
 
     // Check register validity
     if (dest < R0 || dest > PC) {
@@ -88,47 +152,26 @@ StatusCode load_word(State *state, uint address, Register dest) {
     return CONTINUE;
 }
 
-/**
- * Modifies the GPIO pins of the current machine state.
- *
- * @param[out] Machine state to modify
- * @param[in]  Address to write to
- * @param[in]  32-bit value to write
- * @return     Status code for the operation.
- */
-StatusCode write_gpio_pins(State *state, uint addr, uint value) {
-    // TODO
-    return CONTINUE;
-}
-
-/**
- * Reads the GPIO pins of the current machine state.
- *
- * @param[out] Machine state to read from
- * @param[in]  Address to check
- * @return     Status code for the operation.
- */
-StatusCode read_gpio_pins(State *state, uint addr, Register dest) {
-    // TODO
-    return CONTINUE;
-}
-
 StatusCode store_word(State *state, uint address, Register source) {
-    // Retrieve data from register
-    uint data = state->registers[source];
+    if (address < PIN_TYPES_0_9_ADDR) {
+        // Retrieve data from register
+        uint data = state->registers[source];
 
-    // Check address validity
-    if (address >= MAX_MEMORY_LOCATION - sizeof(uint)) {
-        return FAILURE;
+        // Check address validity
+        if (address >= MAX_MEMORY_LOCATION - sizeof(uint)) {
+            return FAILURE;
+        }
+
+        // Store data in little endian order
+        state->memory[address    ] = select_bits(data, 255u,  0u, true);
+        state->memory[address + 1] = select_bits(data, 255u,  8u, true);
+        state->memory[address + 2] = select_bits(data, 255u, 16u, true);
+        state->memory[address + 3] = select_bits(data, 255u, 24u, true);
+
+        return CONTINUE;
+    } else {
+        return write_gpio_pins(state, address, state->registers[source]);
     }
-
-    // Store data in little endian order
-    state->memory[address    ] = select_bits(data, 255u,  0u, true);
-    state->memory[address + 1] = select_bits(data, 255u,  8u, true);
-    state->memory[address + 2] = select_bits(data, 255u, 16u, true);
-    state->memory[address + 3] = select_bits(data, 255u, 24u, true);
-
-    return CONTINUE;
 }
 
 bool cond_is_true(Cond cond, uint CPSRflags) {
@@ -182,6 +225,10 @@ void status_code_handler(StatusCode code, State *state) {
             break;
         case ILLEGAL_MEMORY_ACCESS:
             printf("Error: Out of bounds memory access at address 0x%08x\n", state->last_access);
+            break;
+        case PIN_ERROR:
+            printf("Error: Invalid physical address 0x%08x\n", state->last_access);
+            break;
         default:
             break;
     }
