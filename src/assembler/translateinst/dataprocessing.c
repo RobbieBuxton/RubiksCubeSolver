@@ -1,12 +1,14 @@
 #include "translate.h"
 #include "../mainmap.h"
+
 #include <errno.h>
+#include <string.h>
 
 int parse_register(char *register_label) {
     return atoi(register_label + 1);
 }
 
-StatusCode parse_operand2(char *operand_string, uint output){
+StatusCode parse_operand2(char *operand_string, uint *output){
     uint operand = strtol(operand_string + 1, NULL, 0);
     uint shift = 0;
     do
@@ -16,7 +18,7 @@ StatusCode parse_operand2(char *operand_string, uint output){
             operand = operand << 2;
             shift ++;
         } else {
-            output |= operand | (shift << 8);
+            *output |= operand | (shift << 8);
             return CONTINUE;
         }
     } while (shift < 16);
@@ -36,8 +38,13 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
     DPOpCode opcode = query_symbol_map(translation_map, tokens[0]).addr;
     out |= opcode << 21u;
 
-    //Set the I bit (may have to modify if we add support for shifted registers)
-    out |= 1u << 25u;
+    // Set the I bit if immediate operands used (may have to modify if we add support for shifted registers)
+    for (char **t = tokens; t < tokens + 6; ++t) {
+        if (*t && strchr(*t, '#')) {
+            out |= 1u << 25u;
+            break;
+        }
+    }
 
     //Set the operands
     switch (opcode){
@@ -49,12 +56,12 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
         break;
     case dp_mov:
         out |= parse_register(tokens[1]) << 12u;
-        if (parse_operand2(tokens[2], out)) return PARSE_ERROR;
+        if (parse_operand2(tokens[2], &out)) return PARSE_ERROR;
         break;
     default:
         out |= parse_register(tokens[1]) << 12u;
         out |= parse_register(tokens[2]) << 16u;
-        if (parse_operand2(tokens[3], out)) return PARSE_ERROR;
+        if (parse_operand2(tokens[3], &out)) return PARSE_ERROR;
         break;
     }
 

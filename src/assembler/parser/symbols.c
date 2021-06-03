@@ -23,7 +23,7 @@ SymbolMap *new_symbol_map(size_t initial_size) {
 
     // Populate the map's fields.
     map->size = initial_size;
-    map->arr  = calloc(initial_size, sizeof(Symbol));
+    map->arr  = (Symbol *) calloc(initial_size, sizeof(Symbol));
 
     if (!(map->arr)) {
         // If calloc fails, map->arr is null. Free the map so no consequences occur.
@@ -36,18 +36,28 @@ SymbolMap *new_symbol_map(size_t initial_size) {
     }
 }
 
-size_t extend_symbol_map(SymbolMap *map) {
-    size_t new_size = map->size + (map->size >> 1u);
-
+/**
+ * Extend the size of a map to new_size.
+ * Failing to extend a map does not free the map.
+ *
+ * @param  map      Map to extend
+ * @param  new_size The new proposed size of the map
+ * @return          The new size if successful. Returns 0 otherwise.
+ */
+size_t extend_symbol_map_with_size(SymbolMap *map, size_t new_size) {
     // Attempt realloc of interal array.
-    Symbol *new_arr = (Symbol *) realloc(map->arr, new_size);
+    Symbol *new_arr = (Symbol *) realloc(map->arr, new_size * sizeof(Symbol));
 
     if (!new_arr) {
         // Realloc fails when it returns NULL.
         return 0u;
     } else {
         // Do some post-initialisation to zero out the new memory.
-        memset(new_arr + map->size, 0, sizeof(Symbol) * (new_size - map->size));
+        for (size_t i = map->size; i < new_size; ++i) {
+            new_arr[i].hash = 0ul;
+            new_arr[i].addr = 0u;
+            memset(new_arr[i].name, '\0', MAXIMUM_SYMBOL_LENGTH);
+        }
 
         // Successful, assign new size and new array pointer.
         map->size = new_size;
@@ -55,6 +65,18 @@ size_t extend_symbol_map(SymbolMap *map) {
 
         return new_size;
     }
+}
+
+/**
+ * Extend the size of a map by 50%.
+ * Failing to extend a map does not free the map.
+ *
+ * @param  map Map to extend
+ * @return     The new size if successful. Returns 0 otherwise.
+ */
+size_t extend_symbol_map(SymbolMap *map) {
+    size_t new_size = map->size + (map->size >> 1u);
+    return extend_symbol_map_with_size(map, new_size);
 }
 
 bool free_symbol_map(SymbolMap *map) {
@@ -92,9 +114,9 @@ bool add_to_symbol_map(SymbolMap *map, const char *symbol, const uint addr) {
     size_t curr_ptr = 0u;
 
     do {
-        while (curr_ptr >= map->size) {
+        if (curr_ptr >= map->size) {
             // We've exited the map. Extend it to fit.
-            if (!extend_symbol_map(map)) {
+            if (!extend_symbol_map_with_size(map, curr_ptr + 1)) {
                 return false;
             }
         }

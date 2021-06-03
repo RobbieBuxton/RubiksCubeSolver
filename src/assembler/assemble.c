@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <errno.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -29,6 +30,9 @@ int main(int argc, char **argv) {
     // Assert that we have an in file and an out file
     assert(argc >= 3);
 
+    // Initialise translation map
+    init_translation_map();
+
     // Open assembly file.
     FILE *file = fopen(argv[1], "r");
     // If file does not exist, it has not been opened successfully.
@@ -42,9 +46,9 @@ int main(int argc, char **argv) {
 
     // Creates new file and pads it for load immediate instructions
     FILE *outFile = fopen(argv[2], "wb+");
-    for( ;ftell(outFile) < assemblyInfo.instructions * 4; ) {
-        putc(0u, outFile);
-    }
+    // for( ;ftell(outFile) < assemblyInfo.instructions * 4; ) {
+    //     putc(0u, outFile);
+    // }
     rewind(outFile);
     StatusCode code = translate_into_file(symbolMap, file, outFile, &assemblyInfo);
 
@@ -65,6 +69,7 @@ SymbolMap *translation_map = NULL;
 void init_translation_map(void) {
     // Small initial size. It will self-extend later.
     translation_map = new_symbol_map(4);
+    assert(translation_map);
 
     //Data Processing
     add_to_symbol_map(translation_map, "and", dp_and);
@@ -100,26 +105,37 @@ void init_translation_map(void) {
 // function pointers to translate functions
 static const TranslateFunction t_functions[5] = { dp_translate, m_translate, sdt_translate, b_translate, h_translate };
 
+// Endianness check (because we need to ensure that the file is *definitely* in little endian).
+// Returns true if big endian.
+bool check_endianness(void) {
+    union {
+        uint32_t i;
+        uchar buf[4];
+    } checker;
+
+    checker.i = 1;
+    return checker.buf[3];
+}
+
 StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, AssemblyInfo *assemblyInfo) {
     char line[MAXIMUM_LINE_LENGTH] = { '\0' };
     StatusCode code;
     uint offset = 0;
+    bool big_e = check_endianness();
 
     // Read file line by line.
     while (!feof(file)) {
         // tokens set to null in each iteration
-        char tok1[MAXIMUM_SYMBOL_LENGTH] = { '\0' };
-        char tok2[MAXIMUM_SYMBOL_LENGTH] = { '\0' };
-        char tok3[MAXIMUM_SYMBOL_LENGTH] = { '\0' };
-        char tok4[MAXIMUM_SYMBOL_LENGTH] = { '\0' };
-        char tok5[MAXIMUM_SYMBOL_LENGTH] = { '\0' };
-        char tok6[MAXIMUM_SYMBOL_LENGTH] = { '\0' };
-        char *tokens[6] = { tok1, tok2, tok3, tok4, tok5, tok6 };
+        char *tokens[6] = { NULL };
 
         // Read line
         if (!fgets(line, MAXIMUM_LINE_LENGTH, file)) {
-            // Error while reading file.
-            return FILE_READ_ERROR;
+            if (errno) {
+                // Error while reading file.
+                return FILE_READ_ERROR;
+            } else {
+                return CONTINUE;
+            }
         }
 
         // Remove the newline left behind by fgets (if it is there).
@@ -145,7 +161,7 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, 
 
         // Copy all tokens into array
         for (int i = 0; token != NULL; token = strtok_r(NULL, " ,", &savePtr)) {
-            strcpy(tokens[i++], token);
+            tokens[i++] = token;
         }
 
         // Call translate function from array according to the type represented by the first token.
@@ -157,7 +173,7 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, 
         }
 
         // Write binary to file in little endian byte order.
-        uint binary = swap_endianness(currentOp);
+        uint binary = big_e ? swap_endianness(currentOp) : currentOp;
         fwrite(&binary, sizeof(uint), 1, outFile);
 
         // If there was a ldr instruction which required a value added to the binary file.
@@ -167,7 +183,7 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, 
             fgetpos(outFile, &nextOp);
             // Seek the end of the file and save the value there.
             fseek(outFile, assemblyInfo->instructions * INSTRUCTION_BYTE_LENGTH, SEEK_SET);
-            binary = swap_endianness(assemblyInfo->load_int);
+            binary = big_e ? swap_endianness(assemblyInfo->load_int) : assemblyInfo->load_int;
             fwrite(&binary, sizeof(binary), 1, outFile);
             // Revert the file pointer to the correct place.
             fsetpos(outFile, &nextOp);
