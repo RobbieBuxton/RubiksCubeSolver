@@ -5,21 +5,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifndef __SHORTEN__
-// Long include paths for language servers
 #include "parser/symbols.h"
 #include "parser/parser.h"
 #include "translateinst/translate.h"
-#include "../helpers/insttypes.h"
 #include "../helpers/helpers.h"
-#else
-// Shortened includes
-#include "symbols.h"
-#include "parser.h"
-#include "translate.h"
-#include "insttypes.h"
-#include "helpers.h"
-#endif
 
 #include "mainmap.h"
 

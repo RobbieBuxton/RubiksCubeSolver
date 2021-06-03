@@ -1,5 +1,5 @@
 CC      = gcc
-CFLAGS  = -Wall -g -D__SHORTEN__ -D_POSIX_SOURCE -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic -I../../helpers
+CFLAGS  = -Wall -g -D_POSIX_SOURCE -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic -I../../helpers
 LDLIB   = -L../../helpers -lhelpers
 LIB     = libparser.a
 LIBOBJS = parser.o symbols.o

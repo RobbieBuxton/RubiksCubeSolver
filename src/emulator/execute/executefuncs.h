@@ -1,11 +1,7 @@
 #ifndef __EXECUTEFUNCS_H__
 #define __EXECUTEFUNCS_H__
 
-#ifndef __SHORTEN__
 #include "../../helpers/insttypes.h"
-#else
-#include "insttypes.h"
-#endif
 
 /**
  * Execute the next decoded Data Processing instruction.

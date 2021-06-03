@@ -1,4 +1,3 @@
-#include "insttypes.h"
 #include "fetcher.h"
 
 StatusCode fetch(State *state) {

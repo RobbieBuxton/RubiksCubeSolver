@@ -1,6 +1,6 @@
-#include "insttypes.h"
 #include "executefuncs.h"
-#include "helpers.h"
+
+#include "../../helpers/helpers.h"
 
 #include <stddef.h>
 
@@ -78,7 +78,7 @@ uint shifter(uint num, uint amount, uint bit_size, ShiftType type, uint *C) {
             }
         // Rotate right.
         case ror:
-            return shifter(num, amount, bit_size, lsr, NULL) | 
+            return shifter(num, amount, bit_size, lsr, NULL) |
                    shifter(select_range(num, amount- 1u, 0u), bit_size-amount, bit_size, lsl, NULL);
         default:
             // Invalid operation, return 0.
