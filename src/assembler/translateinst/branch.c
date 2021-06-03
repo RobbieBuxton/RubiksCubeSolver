@@ -6,7 +6,7 @@
 
 uint convert_to_minus_26bit_twos(uint num) {
     //Makes 7 leading bits ones
-    uint out = num || 4261412864;
+    uint out = num | 4261412864;
     return ~(out) + 1;
 }
 
@@ -26,8 +26,8 @@ StatusCode b_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
     uint current_address = current_offset * 4u - 8u;
     uint offset = target_address + convert_to_minus_26bit_twos(current_address);
     //Masks out bit 26 that has the carry (if there is one).
-    offset = (offset >> 2) && 4227858431;
-    *output = to_output || offset;
+    offset = (offset >> 2) & 4227858431;
+    *output = to_output | offset;
     return CONTINUE;
 
 }
