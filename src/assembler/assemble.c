@@ -82,6 +82,8 @@ void init_translation_map(void) {
     add_to_symbol_map(translation_map, "tst", dp_tst);
     add_to_symbol_map(translation_map, "teq", dp_teq);
     add_to_symbol_map(translation_map, "cmp", dp_cmp);
+    add_to_symbol_map(translation_map, "andeq", dp_andeq);
+    add_to_symbol_map(translation_map, "andeq", dp_lsl);
 
     //Branch
     add_to_symbol_map(translation_map, "beq", eq);
