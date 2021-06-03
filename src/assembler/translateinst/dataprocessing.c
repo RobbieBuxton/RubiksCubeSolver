@@ -5,15 +5,15 @@
 #include <string.h>
 
 int parse_register(char *register_label) {
-    return atoi(register_label + 1);
+    return strtoul(register_label + 1, NULL, 10);
 }
 
 StatusCode parse_operand2(char **tokens, uint *output){
     if (!(strstr(tokens[0], "r"))) {
-        uint operand = strtol(tokens[0] + 1, NULL, 0);
+        uint operand = strtoul(tokens[0] + 1, NULL, 0);
         uint shift = 0;
-        do
-        {
+
+        do {
             if (operand & ~255)
             {
                 operand = operand << 2 | operand >> 30u;
@@ -23,8 +23,10 @@ StatusCode parse_operand2(char **tokens, uint *output){
                 return CONTINUE;
             }
         } while (shift < 16);
+
         return PARSE_ERROR;
     }
+
     // Operand2 is a shifted register
     // Collect Rm
     *output |= parse_register(tokens[0]);
@@ -52,6 +54,7 @@ StatusCode parse_operand2(char **tokens, uint *output){
         } else {
             *output |= (uint) strtol(tokens[2] + 1, NULL, 0) << 7u;
         }
+
         if (check_parse_error(output)) {
             return PARSE_ERROR;
         }
@@ -67,7 +70,7 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
     // al = 1110
     out |= FLAG_N | FLAG_Z | FLAG_C;
 
-    //get the opcode
+    // Get the opcode
     DPOpCode opcode = query_symbol_map(translation_map, tokens[0]).addr;
     out |= opcode << 21u;
 
@@ -79,37 +82,39 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
         }
     }
 
-    //Set the operands
+    // Set the operands
     switch (opcode){
-    case dp_andeq:
-        *output = 0u;
-        return CONTINUE;
-    case dp_lsl:
-        opcode = dp_mov;
-        out = FLAG_N | FLAG_Z | FLAG_C | opcode << 21u;
-        out |= parse_register(tokens[1]) << 12u;
-        if (out & BIT_I) {
-            out -= 1u << 25u;
-        }
-        out |= strtol(tokens[2] + 1, NULL, 0) << 7u;
-        out |= parse_register(tokens[1]);
-        break;
-    case dp_tst:
-    case dp_teq:
-    case dp_cmp:
-        out |= 1u << 20u;   //Set the S bit
-        out |= parse_register(tokens[1]) << 16u;
-        if (parse_operand2(tokens + 2, &out)) return PARSE_ERROR;
-        break;
-    case dp_mov:
-        out |= parse_register(tokens[1]) << 12u;
-        if (parse_operand2(tokens + 2, &out)) return PARSE_ERROR;
-        break;
-    default: // and, eor, orr, add, sub, rsb 
-        out |= parse_register(tokens[1]) << 12u;
-        out |= parse_register(tokens[2]) << 16u;
-        if (parse_operand2(tokens + 3, &out)) return PARSE_ERROR;
-        break;
+        case dp_andeq:
+            *output = 0u;
+            return CONTINUE;
+        case dp_lsl:
+            opcode = dp_mov;
+            out = FLAG_N | FLAG_Z | FLAG_C | opcode << 21u;
+            out |= parse_register(tokens[1]) << 12u;
+            if (out & BIT_I) {
+                out -= 1u << 25u;
+            }
+            out |= strtol(tokens[2] + 1, NULL, 0) << 7u;
+            out |= parse_register(tokens[1]);
+            break;
+        case dp_tst:
+        case dp_teq:
+        case dp_cmp:
+            // Set the S bit
+            out |= 1u << 20u;
+            out |= parse_register(tokens[1]) << 16u;
+            if (parse_operand2(tokens + 2, &out)) return PARSE_ERROR;
+            break;
+        case dp_mov:
+            out |= parse_register(tokens[1]) << 12u;
+            if (parse_operand2(tokens + 2, &out)) return PARSE_ERROR;
+            break;
+        default:
+            // and, eor, orr, add, sub, rsb
+            out |= parse_register(tokens[1]) << 12u;
+            out |= parse_register(tokens[2]) << 16u;
+            if (parse_operand2(tokens + 3, &out)) return PARSE_ERROR;
+            break;
     }
 
     *output = out;
