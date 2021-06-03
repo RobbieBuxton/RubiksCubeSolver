@@ -28,16 +28,18 @@ typedef enum {
  * Enum for encoding the various opcodes used in data processing instructions.
  */
 typedef enum {
-    dp_and = 0,  /**< Rn AND opr2 */
-    dp_eor = 1,  /**< Rn EOR opr2 */
-    dp_sub = 2,  /**< Rn - opr2 */
-    dp_rsb = 3,  /**< opr2 - Rn */
-    dp_add = 4,  /**< Rn + opr2 */
-    dp_tst = 8,  /**< and, but result not written */
-    dp_teq = 9,  /**< eor, but result not written */
-    dp_cmp = 10, /**< sub, but result not written */
-    dp_orr = 12, /**< Rn OR opr2 */
-    dp_mov = 13  /**< opr2 (Rn is ignored) */
+    dp_and   = 0,  /**< Rn AND opr2 */
+    dp_eor   = 1,  /**< Rn EOR opr2 */
+    dp_sub   = 2,  /**< Rn - opr2 */
+    dp_rsb   = 3,  /**< opr2 - Rn */
+    dp_add   = 4,  /**< Rn + opr2 */
+    dp_tst   = 8,  /**< and, but result not written */
+    dp_teq   = 9,  /**< eor, but result not written */
+    dp_cmp   = 10, /**< sub, but result not written */
+    dp_orr   = 12, /**< Rn OR opr2 */
+    dp_mov   = 13, /**< opr2 (Rn is ignored) */
+    dp_andeq = 14,
+    dp_lsl   = 15 
 } DPOpCode;
 
 // Opcodes for the barrel shifter.

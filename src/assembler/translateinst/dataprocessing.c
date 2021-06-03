@@ -34,11 +34,11 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
     // al = 1110
     out |= FLAG_N | FLAG_Z | FLAG_C;
 
-    //get the opcode and write it to the binary instruction
+    //get the opcode
     DPOpCode opcode = query_symbol_map(translation_map, tokens[0]).addr;
     out |= opcode << 21u;
 
-    // Set the I bit if immediate operands used (may have to modify if we add support for shifted registers)
+    // Set the I bit if immediate operands used
     for (char **t = tokens; t < tokens + 6; ++t) {
         if (*t && strchr(*t, '#')) {
             out |= 1u << 25u;
@@ -48,6 +48,17 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
 
     //Set the operands
     switch (opcode){
+    case dp_andeq:
+        *output = 0u;
+        return CONTINUE;
+    case dp_lsl:
+        opcode = dp_mov;
+        out = FLAG_N | FLAG_Z | FLAG_C | opcode << 21u;
+        out |= parse_register(tokens[1]) << 12u;
+        out -= 1u << 25u;
+        out |= strtol(tokens[2], NULL, 0) << 7u;
+        out |= parse_register(tokens[1]);
+        break;
     case dp_tst:
     case dp_teq:
     case dp_cmp:
