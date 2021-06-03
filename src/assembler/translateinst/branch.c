@@ -10,12 +10,6 @@
 #include "insttypes.h"
 #endif
 
-uint convert_to_minus_26bit_twos(uint num) {
-    //Makes 7 leading bits ones
-    uint out = num | 4261412864;
-    return ~(out) + 1;
-}
-
 StatusCode b_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo) {
     // Just to make sure...
     *output = 0u;
@@ -58,3 +52,4 @@ StatusCode b_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
 
     return CONTINUE;
 }
+
