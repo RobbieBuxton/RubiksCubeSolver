@@ -41,7 +41,7 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
     // Set the I bit if immediate operands used
     for (char **t = tokens; t < tokens + 6; ++t) {
         if (*t && strchr(*t, '#')) {
-            out |= 1u << 25u;
+            out |= BIT_I;
             break;
         }
     }
@@ -55,8 +55,10 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
         opcode = dp_mov;
         out = FLAG_N | FLAG_Z | FLAG_C | opcode << 21u;
         out |= parse_register(tokens[1]) << 12u;
-        out -= 1u << 25u;
-        out |= strtol(tokens[2], NULL, 0) << 7u;
+        if (out & BIT_I) {
+            out -= 1u << 25u;
+        }
+        out |= strtol(tokens[2] + 1, NULL, 0) << 7u;
         out |= parse_register(tokens[1]);
         break;
     case dp_tst:
