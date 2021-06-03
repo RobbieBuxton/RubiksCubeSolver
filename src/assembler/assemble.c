@@ -140,63 +140,65 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, 
             }
         }
 
-        // Remove the newline left behind by fgets (if it is there).
-        char *newl = strchr(line, '\n');
-        if (newl) {
-            *newl = '\0';
-        }
-
         // Strip leading whitespace
         char *true_start = first_non_whitespace(line);
 
-        uint currentOp = 0u;
-        char *savePtr;
+        if (true_start) {
+            // Remove the newline left behind by fgets (if it is there).
+            char *newl = strchr(line, '\n');
+            if (newl) {
+                *newl = '\0';
+            }
 
-        // Get first token from line
-        char *token = strtok_r(true_start, " ,", &savePtr);
+            uint currentOp = 0u;
+            char *savePtr;
 
-        // If first token is a label, move onto next line.
-        if (strstr(token, ":") != NULL) {
-            // token = strtok_r(NULL, " ,", &savePtr);
-            continue;
+            // Get first token from line
+            char *token = strtok_r(true_start, " ,", &savePtr);
+
+            // If first token is a label, move onto next line.
+            if (strstr(token, ":") != NULL) {
+                // token = strtok_r(NULL, " ,", &savePtr);
+                continue;
+            }
+
+            // Copy all tokens into array
+            for (int i = 0; token != NULL; token = strtok_r(NULL, " ,", &savePtr)) {
+                tokens[i++] = token;
+            }
+
+            // Call translate function from array according to the type represented by the first token.
+            code = t_functions[type_from_string(tokens[0])](tokens, symbolMap, offset, &currentOp, assemblyInfo);
+
+            // Error handling here
+            if (code) {
+                fprintf(stderr, "Error! See code for details: Code %d\n", code);
+            }
+
+            // Write binary to file in little endian byte order.
+            uint binary = big_e ? swap_endianness(currentOp) : currentOp;
+            fwrite(&binary, sizeof(uint), 1, outFile);
+
+            // If there was a ldr instruction which required a value added to the binary file.
+            if (assemblyInfo->int_to_load) {
+                // Store the current position of the file.
+                fpos_t nextOp;
+                fgetpos(outFile, &nextOp);
+                // Seek the end of the file and save the value there.
+                fseek(outFile, assemblyInfo->instructions * INSTRUCTION_BYTE_LENGTH, SEEK_SET);
+                binary = big_e ? swap_endianness(assemblyInfo->load_int) : assemblyInfo->load_int;
+                fwrite(&binary, sizeof(binary), 1, outFile);
+                // Revert the file pointer to the correct place.
+                fsetpos(outFile, &nextOp);
+
+                // Update assembly info so the next value is saved in the next space
+                assemblyInfo->int_to_load = false;
+                assemblyInfo->instructions++;
+            }
+
+            // Increment offset so it holds the current line number of the file.
+            offset++;
         }
-
-        // Copy all tokens into array
-        for (int i = 0; token != NULL; token = strtok_r(NULL, " ,", &savePtr)) {
-            tokens[i++] = token;
-        }
-
-        // Call translate function from array according to the type represented by the first token.
-        code = t_functions[type_from_string(tokens[0])](tokens, symbolMap, offset, &currentOp, assemblyInfo);
-
-        // Error handling here
-        if (code) {
-            fprintf(stderr, "Error! See code for details: Code %d\n", code);
-        }
-
-        // Write binary to file in little endian byte order.
-        uint binary = big_e ? swap_endianness(currentOp) : currentOp;
-        fwrite(&binary, sizeof(uint), 1, outFile);
-
-        // If there was a ldr instruction which required a value added to the binary file.
-        if (assemblyInfo->int_to_load) {
-            // Store the current position of the file.
-            fpos_t nextOp;
-            fgetpos(outFile, &nextOp);
-            // Seek the end of the file and save the value there.
-            fseek(outFile, assemblyInfo->instructions * INSTRUCTION_BYTE_LENGTH, SEEK_SET);
-            binary = big_e ? swap_endianness(assemblyInfo->load_int) : assemblyInfo->load_int;
-            fwrite(&binary, sizeof(binary), 1, outFile);
-            // Revert the file pointer to the correct place.
-            fsetpos(outFile, &nextOp);
-
-            // Update assembly info so the next value is saved in the next space
-            assemblyInfo->int_to_load = false;
-            assemblyInfo->instructions++;
-        }
-
-        // Increment offset so it holds the current line number of the file.
-        offset++;
     }
 
     // Do we need to free anything else here?

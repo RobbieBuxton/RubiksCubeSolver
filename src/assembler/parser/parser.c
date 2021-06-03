@@ -50,7 +50,7 @@ AssemblyInfo collect_symbols(SymbolMap *map, FILE *file) {
             }
 
             if (first_char[0] == '\0') {
-                break;
+                continue;
             }
 
             ++lines_found;
