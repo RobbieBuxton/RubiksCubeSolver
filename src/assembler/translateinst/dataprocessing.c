@@ -36,6 +36,7 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
 
     //get the opcode
     DPOpCode opcode = query_symbol_map(translation_map, tokens[0]).addr;
+    out |= opcode << 21u;
 
     // Set the I bit if immediate operands used
     for (char **t = tokens; t < tokens + 6; ++t) {
@@ -52,10 +53,11 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
         return CONTINUE;
     case dp_lsl:
         opcode = dp_mov;
+        out = FLAG_N | FLAG_Z | FLAG_C | opcode << 21u;
         out |= parse_register(tokens[1]) << 12u;
-        char *operand2;
-        sprintf(operand2, "%s lsl %s", tokens[1], tokens[2]);
-        if (parse_operand2(operand2, &out)) return PARSE_ERROR;
+        out -= 1u << 25u;
+        out |= strtol(tokens[2], NULL, 0) << 7u;
+        out |= parse_register(tokens[1]);
         break;
     case dp_tst:
     case dp_teq:
@@ -73,8 +75,6 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
         if (parse_operand2(tokens[3], &out)) return PARSE_ERROR;
         break;
     }
-
-    out |= opcode << 21u;
 
     *output = out;
 
