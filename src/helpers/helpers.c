@@ -1,9 +1,11 @@
 #include "helpers.h"
 #include "insttypes.h"
 
-#include <stdio.h>
-#include <string.h>
 #include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 /**
  * Lookup table defining the types of each instruction.
@@ -83,6 +85,31 @@ StatusCode load_word(State *state, uint address, Register dest) {
     // Put result in destination.
     state->registers[dest] = loaded;
 
+    return CONTINUE;
+}
+
+/**
+ * Modifies the GPIO pins of the current machine state.
+ *
+ * @param[out] Machine state to modify
+ * @param[in]  Address to write to
+ * @param[in]  32-bit value to write
+ * @return     Status code for the operation.
+ */
+StatusCode write_gpio_pins(State *state, uint addr, uint value) {
+    // TODO
+    return CONTINUE;
+}
+
+/**
+ * Reads the GPIO pins of the current machine state.
+ *
+ * @param[out] Machine state to read from
+ * @param[in]  Address to check
+ * @return     Status code for the operation.
+ */
+StatusCode read_gpio_pins(State *state, uint addr, Register dest) {
+    // TODO
     return CONTINUE;
 }
 

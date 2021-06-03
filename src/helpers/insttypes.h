@@ -39,7 +39,7 @@ typedef enum {
     dp_orr   = 12, /**< Rn OR opr2 */
     dp_mov   = 13, /**< opr2 (Rn is ignored) */
     dp_andeq = 14,
-    dp_lsl   = 15 
+    dp_lsl   = 15
 } DPOpCode;
 
 // Opcodes for the barrel shifter.
@@ -216,6 +216,39 @@ typedef struct {
     __InstUnion__ inst;   /**< Union holding the specific instruction. Use type to check what is inside. */
 } Instruction;
 
+/**
+ * Represents the types and statuses of each GPIO pin.
+ */
+typedef struct {
+    uint pin_types_0_9;   /**< The type of each pin from pin 0 to pin 9. */
+    uint pin_types_10_19; /**< The type of each pin from pin 10 to pin 19. */
+    uint pin_types_20_29; /**< The type of each pin from pin 20 to pin 29. */
+    uint pin_states;      /**< The state of each pin. */
+} Pins;
+
+// Masks for the various pin types.
+#define PIN_TYPE_x0 (7u << 0u)
+#define PIN_TYPE_x1 (7u << 3u)
+#define PIN_TYPE_x2 (7u << 6u)
+#define PIN_TYPE_x3 (7u << 9u)
+#define PIN_TYPE_x4 (7u << 12u)
+#define PIN_TYPE_x5 (7u << 15u)
+#define PIN_TYPE_x6 (7u << 18u)
+#define PIN_TYPE_x7 (7u << 21u)
+#define PIN_TYPE_x8 (7u << 24u)
+#define PIN_TYPE_x9 (7u << 27u)
+
+// Various pin states. Mask with the PIN_TYPE_xy macros to use.
+#define PIN_ON  (153391689u)
+#define PIN_OFF (0u)
+
+// Control addresses for the pins.
+#define PIN_TYPES_0_9_ADDR   (538968064u)
+#define PIN_TYPES_10_19_ADDR (538968068u)
+#define PIN_TYPES_20_29_ADDR (538968072u)
+#define CONTROL_ADDR         (538968092u)
+#define CLEAR_ADDR           (538968104u)
+
 // State flags
 #define BIT_FETCHED 1u
 #define BIT_DECODED 2u
@@ -238,24 +271,26 @@ typedef struct {
     Instruction decoded; /**< Next decoded instruction to be executed. */
     uint CPSR;           /**< Status flags register. */
     uint last_access;    /**< The last address (attempted to be) accessed by the system. */
+    Pins pins;           /**< The states of the GPIO pins for the machine. */
 } State;
 
 /**
  * Runtime status codes for the emulator.
  */
 typedef enum {
-    CONTINUE = 0,              /**< Carry on execution. */
-    HALT = 1,                  /**< Program exited cleanly. */
-    FAILURE = 2,               /**< Miscellaneous error during execution, exit program. */
-    INVALID_INSTRUCTION = 3,   /**< Invalid decoded instruction. */
-    INVALID_PC_LOCATION = 4,   /**< Program counter has landed in an invalid location. */
-    INVALID_OPCODE = 5,        /**< Invalid Data Processing opcode. */
-    INVALID_REGISTER = 6,      /**< Invalid or illegal register access. */
-    FILE_OPEN_ERROR = 7,       /**< Binary file failed to open. */
-    FILE_READ_ERROR = 8,       /**< Binary file failed to read. */
-    ILLEGAL_MEMORY_ACCESS = 9, /**< Invalid memory address on attempt to access memory. */
-    PARSE_ERROR = 10,          /**< Error while parsing a number or some other formatting. */
-    SYMBOL_DOES_NOT_EXIST = 11 /**< A symbol that was queried does not exist. */
+    CONTINUE = 0,               /**< Carry on execution. */
+    HALT = 1,                   /**< Program exited cleanly. */
+    FAILURE = 2,                /**< Miscellaneous error during execution, exit program. */
+    INVALID_INSTRUCTION = 3,    /**< Invalid decoded instruction. */
+    INVALID_PC_LOCATION = 4,    /**< Program counter has landed in an invalid location. */
+    INVALID_OPCODE = 5,         /**< Invalid Data Processing opcode. */
+    INVALID_REGISTER = 6,       /**< Invalid or illegal register access. */
+    FILE_OPEN_ERROR = 7,        /**< Binary file failed to open. */
+    FILE_READ_ERROR = 8,        /**< Binary file failed to read. */
+    ILLEGAL_MEMORY_ACCESS = 9,  /**< Invalid memory address on attempt to access memory. */
+    PARSE_ERROR = 10,           /**< Error while parsing a number or some other formatting. */
+    SYMBOL_DOES_NOT_EXIST = 11, /**< A symbol that was queried does not exist. */
+    PIN_ERROR = 12              /**< Error occurred while writing / reading from GPIO pin. */
 } StatusCode;
 
 // Execute function typedef
