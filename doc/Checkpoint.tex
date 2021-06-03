@@ -64,7 +64,7 @@ data types for the assembler so that the team can get straight to coding once th
     a decoded instruction. It holds a condition code, a type referring to which type of 
     instruction it holds and lastly a struct representing the specific instruction to be executed.
     
-    \item \textbf{Instruction types} There are 5 instruction types, the four specified 
+    \item \textbf{Instruction types}: There are 5 instruction types, the four specified 
     plus a halt type and they each have a struct
     representing them containing all the required data to execute them.
 
@@ -85,8 +85,8 @@ data types for the assembler so that the team can get straight to coding once th
     \item \texttt{singledatatransfer.c} \\ Simulates single data transfer instructions.
     \item \texttt{fetcher.c} \\ Fetches the next instruction from memory and
     increments the PC.
-    \item \texttt{emulate.c} \\ initializes the processor and starts the fetch decode
-    execute cycle on the binary file provided. 
+    \item \texttt{emulate.c} \\ Initializes the processor and starts the fetch-decode-execute
+    cycle on the binary file provided. 
     \item \texttt{printstate.c} \\ Prints the final state of the program after 
     halting.
 \end{itemize}
