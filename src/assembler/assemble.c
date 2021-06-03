@@ -108,7 +108,14 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, 
     // Read file line by line.
     while (!feof(file)) {
         // tokens set to null in each iteration
-        char* tokens[6] = { NULL };
+        char tok1[MAXIMUM_SYMBOL_LENGTH] = { '\0' };
+        char tok2[MAXIMUM_SYMBOL_LENGTH] = { '\0' };
+        char tok3[MAXIMUM_SYMBOL_LENGTH] = { '\0' };
+        char tok4[MAXIMUM_SYMBOL_LENGTH] = { '\0' };
+        char tok5[MAXIMUM_SYMBOL_LENGTH] = { '\0' };
+        char tok6[MAXIMUM_SYMBOL_LENGTH] = { '\0' };
+        char *tokens[6] = { tok1, tok2, tok3, tok4, tok5, tok6 };
+
         // Read line
         if (!fgets(line, MAXIMUM_LINE_LENGTH, file)) {
             // Error while reading file.
@@ -130,7 +137,7 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, 
         // Get first token from line
         char *token = strtok_r(true_start, " ,", &savePtr);
 
-        // If first token is a label, move onto next.
+        // If first token is a label, move onto next line.
         if (strstr(token, ":") != NULL) {
             // token = strtok_r(NULL, " ,", &savePtr);
             continue;
@@ -138,7 +145,7 @@ StatusCode translate_into_file(SymbolMap *symbolMap, FILE* file, FILE* outFile, 
 
         // Copy all tokens into array
         for (int i = 0; token != NULL; token = strtok_r(NULL, " ,", &savePtr)) {
-            tokens[i++] = token;
+            strcpy(tokens[i++], token);
         }
 
         // Call translate function from array according to the type represented by the first token.
