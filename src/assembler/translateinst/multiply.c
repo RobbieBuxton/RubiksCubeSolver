@@ -4,9 +4,6 @@
 #include <errno.h>
 
 StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo) {
-    // Assert that we have not somehow ran out of unsigned integer offsets.
-    assert(current_offset + 1u > current_offset);
-
     // The final instruction output.
     uint out = 0u;
 
