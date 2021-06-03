@@ -1,10 +1,6 @@
 #include "symbols.h"
 
-#ifndef __SHORTEN__
 #include "../../helpers/helpers.h"
-#else
-#include "helpers.h"
-#endif
 
 #include <stddef.h>
 #include <stdlib.h>

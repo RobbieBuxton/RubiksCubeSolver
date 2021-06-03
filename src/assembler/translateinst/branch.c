@@ -1,14 +1,9 @@
 #include "translate.h"
+
 #include "../mainmap.h"
+
 #include <assert.h>
 #include <errno.h>
-
-#ifndef __SHORTEN__
-// Allow language servers to get completion info.
-#include "../../helpers/insttypes.h"
-#else
-#include "insttypes.h"
-#endif
 
 StatusCode b_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo) {
     // Just to make sure...

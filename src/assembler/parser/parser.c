@@ -1,12 +1,7 @@
 #include "parser.h"
 #include "symbols.h"
 
-#ifndef __SHORTEN__
-// See symbols.h for information about this conditional macro.
 #include "../../helpers/helpers.h"
-#else
-#include "helpers.h"
-#endif
 
 #include <errno.h>
 #include <stddef.h>

@@ -6,14 +6,13 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "insttypes.h"
+#include "../helpers/insttypes.h"
+#include "../helpers/helpers.h"
+#include "../helpers/printstate.h"
 
-#include "decoder.h"
-#include "fetcher.h"
-
-#include "executefuncs.h"
-#include "printstate.h"
-#include "helpers.h"
+#include "decode/decoder.h"
+#include "fetch/fetcher.h"
+#include "execute/executefuncs.h"
 
 /**
  * Initialise a machine state with starting values.

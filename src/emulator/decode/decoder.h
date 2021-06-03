@@ -1,7 +1,7 @@
 #ifndef __DECODER_H__
 #define __DECODER_H__
 
-#include "insttypes.h"
+#include "../../helpers/insttypes.h"
 
 /**
  * Decodes an instruction from the fetched field to the decoded field of a state.

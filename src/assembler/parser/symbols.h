@@ -4,15 +4,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#ifndef __SHORTEN__
-// If we don't have this flag, use the full path.
-// This flag is only toggled in the makefile.
-// This allows language servers to still provide good completions when editing this file.
 #include "../../helpers/insttypes.h"
-#else
-// This is used with the -I flag in the makefile's CFLAGS
-#include "insttypes.h"
-#endif
 
 // Macros for use in this file:
 #define MAXIMUM_SYMBOL_LENGTH 512

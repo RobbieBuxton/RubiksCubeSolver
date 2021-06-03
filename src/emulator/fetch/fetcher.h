@@ -1,7 +1,7 @@
 #ifndef __FETCHER_H__
 #define __FETCHER_H__
 
-#include "insttypes.h"
+#include "../../helpers/insttypes.h"
 
 /**
  * Fetches next instruction from memory according to program counter.
