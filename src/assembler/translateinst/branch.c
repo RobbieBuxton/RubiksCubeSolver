@@ -57,7 +57,7 @@ StatusCode b_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
     QueryResult label_addr_result = query_symbol_map(symbols, tokens[1]);
 
     if (label_addr_result.found) {
-        target_address = label_addr_result.addr / 4u;
+        target_address = label_addr_result.addr / INSTRUCTION_BYTE_LENGTH;
     } else {
         *output = 0u;
         return SYMBOL_DOES_NOT_EXIST;
@@ -65,7 +65,7 @@ StatusCode b_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
 
     // Calculate offset
     sint offset = (sint) target_address - (sint) current_address;
-    if (abs(offset) >= (1 << 25)) {
+    if (abs(offset) >= (1 << 24)) {
         return INVALID_INSTRUCTION;
     }
 
