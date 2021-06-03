@@ -100,9 +100,11 @@ next:
             *control_row = value;
             break;
         case CONTROL_ADDR:
+            printf("PIN ON\n");
             state->pins.pin_states |= value;
             break;
         case CLEAR_ADDR:
+            printf("PIN OFF\n");
             state->pins.pin_states ^= (state->pins.pin_states) & value;
             break;
         default:
