@@ -42,9 +42,9 @@ Our primary method of communication is Discord where we have a video meeting at
 We also communicate frequently in the chat which means that the team has a good
 idea of the state of the project and any problems can be resolved promptly. \\ \\
 What we would like to do in the future is find ways to reduce the amount of
-downtime when team is waiting for bottlenecks to be completed. This can be resolved
+downtime caused when the team is waiting for bottlenecks to be completed. This can be resolved
 by sending two members of the team ahead to decide useful function signatures and
-data types so that the team can get straight to coding once the report is finished.
+data types for the assembler so that the team can get straight to coding once the report is finished.
 
 \section{Implementation}
 
@@ -62,7 +62,7 @@ data types so that the team can get straight to coding once the report is finish
     
     \item \textbf{Decoded instruction} (\texttt{Instruction}): A struct representing
     a decoded instruction. It holds a condition code, a type referring to which type of 
-    instruction it holds and lastly a strut representing the specific instruction to be executed.
+    instruction it holds and lastly a struct representing the specific instruction to be executed.
     
     \item \textbf{Instruction types} There are 5 instruction types, the four specified 
     plus a halt type and they each have a struct
@@ -168,9 +168,9 @@ data types so that the team can get straight to coding once the report is finish
 
 
 \subsection{Reusable elements for the assembler}
-In our assembler, we plan to use many of the enum data types such as the
+In our assembler, we plan to use many of the Enum data types such as the
 instruction types and exit-status codes; we also plan to reuse some of the
-helper functions we created such as swap-endianess(). Due to the same 4 
+helper functions we created such as swap-endianness(). Due to the same 4 
 instruction categories being present, we should be able to use a similar 
 function pointer array as we did in emulate.c to call the correct function
 per type of instruction.
@@ -180,7 +180,7 @@ Parsing the assembly instructions may prove to be tedious, hopefully by discussi
 our problems and working together to make robust helper functions we can reduce
 this workload. Also, implementing the first pass of our planned two-pass assembly 
 in such a way that symbols can be quickly found later may be challenging, we will
-need to research appropiate data structures before committing to one.
+need to research appropriate data structures before committing to one.
 
 
 
