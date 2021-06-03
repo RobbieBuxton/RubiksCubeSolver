@@ -64,6 +64,7 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
     case dp_cmp:
         out |= 1u << 20u;   //Set the S bit
         out |= parse_register(tokens[1]) << 16u;
+        if (parse_operand2(tokens[2], &out)) return PARSE_ERROR;
         break;
     case dp_mov:
         out |= parse_register(tokens[1]) << 12u;
