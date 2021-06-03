@@ -26,20 +26,27 @@ AssemblyInfo collect_symbols(SymbolMap *map, FILE *file) {
 
     // Keep reading until we reach EOF
     while (!feof(file)) {
-        // Clear the buffer
-        memset(line_buf, 0, MAXIMUM_LINE_LENGTH);
-
         // Read a line from the file.
-        if (!fgets(line_buf, MAXIMUM_LINE_LENGTH, file) && errno) {
-            // Error while reading file.
-            perror("Error while reading file");
+        if (!fgets(line_buf, MAXIMUM_LINE_LENGTH, file)) {
+            if (errno) {
+                // Error while reading file.
+                perror("Error while reading file");
 
-            rewind(file);
-            return file_info;
+                rewind(file);
+                return file_info;
+            } else {
+                break;
+            }
         }
 
         // Find first non-whitespace character.
         char *first_char = first_non_whitespace(line_buf);
+
+        // Remove the newline that fgets keeps.
+        char *nl = strchr(first_char, '\n');
+        if (nl) {
+            *nl = '\0';
+        }
 
         if (first_char) {
             ++lines_found;
@@ -52,7 +59,7 @@ AssemblyInfo collect_symbols(SymbolMap *map, FILE *file) {
                 strcpy(temp_buf, first_char);
 
                 // Remove the :
-                temp_buf[len - 2] = '\0';
+                temp_buf[len - 1] = '\0';
 
                 // Add to symbol map
                 add_to_symbol_map(
