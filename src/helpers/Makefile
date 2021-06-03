@@ -21,3 +21,4 @@ $(LIB): $(LIBOBJS)
 helpers.o: helpers.h insttypes.h
 
 printstate.o: printstate.h insttypes.h
+

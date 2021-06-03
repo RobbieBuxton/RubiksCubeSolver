@@ -1,5 +1,5 @@
 CC      = gcc
-CFLAGS  = -Wall -g -D_POSIX_SOURCE -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic -I../../helpers
+CFLAGS  = -Wall -g -D__SHORTEN__ -D_POSIX_SOURCE -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic -I../../helpers
 LDLIB   = -L../../helpers -lhelpers
 LIB     = libexecute.a
 LIBOBJS = branch.o dataprocessing.o halt.o multiply.o singledatatransfer.o

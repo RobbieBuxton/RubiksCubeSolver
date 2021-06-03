@@ -1,6 +1,6 @@
 #include "insttypes.h"
-#include "executefuncs.h"
 #include "helpers.h"
+#include "executefuncs.h"
 
 StatusCode sdt_execute(State *state) {
     // Retrieve components of instruction
@@ -72,7 +72,7 @@ StatusCode sdt_execute(State *state) {
     state->last_access = address;
 
     // Make sure memory address is neither negative nor too large
-    if (address >= MAX_MEMORY_LOCATION) {
+    if (address >= MAX_MEMORY_LOCATION && address < PIN_TYPES_0_9_ADDR) {
         return ILLEGAL_MEMORY_ACCESS;
     }
 
