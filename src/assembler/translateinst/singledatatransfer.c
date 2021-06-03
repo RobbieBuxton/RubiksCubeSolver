@@ -2,7 +2,7 @@
 
 #include <string.h>
 
-StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo) {
+StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assembly_info) {
     // The final instruction output.
     uint out = 0u;
 
@@ -45,11 +45,11 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
             *output = 3642 << 20 | (out & (15 << 12)) | temp;
         } else {
             // Instruct caller function to place value in correct position
-            assemblyInfo->int_to_load = true;
-            assemblyInfo->load_int = temp;
+            assembly_info->int_to_load = true;
+            assembly_info->load_int = temp;
 
             // Calculate offset to value from PC
-            uint offset = assemblyInfo->instructions - (current_offset + 2);
+            uint offset = assembly_info->instructions - (current_offset + 2);
             offset <<= 2u;
             out |= offset;
             out |= PC << 16u;
@@ -123,13 +123,13 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
         }
     } else {
         // Offset is immediate, BIT_U is decided by its sign
-        sint tempSigned = (sint) strtol(tokens[3] + 1, NULL, 0);
+        sint temp_signed = (sint) strtol(tokens[3] + 1, NULL, 0);
 
         if (check_parse_error(output)) {
             return PARSE_ERROR;
         }
 
-        out |= (tempSigned < 0) ? -tempSigned : (tempSigned | BIT_U);
+        out |= (temp_signed < 0) ? -temp_signed : (temp_signed | BIT_U);
     }
 
     // BIT_P is decided by where ] is
