@@ -41,18 +41,19 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
         if (temp < 256u) {
             // output = unconditional, mov, I = 1, S = 0, Rd = Rd from this, op2 = temp
             *output = 3642 << 20 | (out & (15 << 12)) | temp;
-        }
-        // Instruct caller function to place value in correct position
-        assemblyInfo->int_to_load = true;
-        assemblyInfo->load_int = temp;
+        } else {
+            // Instruct caller function to place value in correct position
+            assemblyInfo->int_to_load = true;
+            assemblyInfo->load_int = temp;
 
-        // Calculate offset to value from PC
-        uint offset = assemblyInfo->instructions - (current_offset + 2);
-        offset <<= 2u;
-        out |= offset;
-        out |= PC << 16u;
-        out |= BIT_P | BIT_U;
-        *output = out;
+            // Calculate offset to value from PC
+            uint offset = assemblyInfo->instructions - (current_offset + 2);
+            offset <<= 2u;
+            out |= offset;
+            out |= PC << 16u;
+            out |= BIT_P | BIT_U;
+            *output = out;
+        }
         return CONTINUE;
     }
 

@@ -26,6 +26,9 @@ AssemblyInfo collect_symbols(SymbolMap *map, FILE *file) {
 
     // Keep reading until we reach EOF
     while (!feof(file)) {
+        // Clear the buffer
+        memset(line_buf, 0, MAXIMUM_LINE_LENGTH);
+
         // Read a line from the file.
         if (!fgets(line_buf, MAXIMUM_LINE_LENGTH, file) && errno) {
             // Error while reading file.
