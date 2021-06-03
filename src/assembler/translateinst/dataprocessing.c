@@ -15,7 +15,7 @@ StatusCode parse_operand2(char *operand_string, uint *output){
     {
         if (operand & ~255)
         {
-            operand = operand << 2;
+            operand = operand << 2 | operand >> 30u;
             shift ++;
         } else {
             *output |= operand | (shift << 8);
