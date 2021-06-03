@@ -53,15 +53,6 @@ typedef struct {
 SymbolMap *new_symbol_map(size_t initial_size);
 
 /**
- * Extend the size of a map by 50%.
- * Failing to extend a map does not free the map.
- *
- * @param  map Map to extend
- * @return     The new size if successful. Returns 0 otherwise.
- */
-size_t extend_symbol_map(SymbolMap *map);
-
-/**
  * Free a symbol map created by new_symbol_map.
  *
  * @param  map The map to free
