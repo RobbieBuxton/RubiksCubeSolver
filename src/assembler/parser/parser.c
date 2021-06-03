@@ -42,13 +42,17 @@ AssemblyInfo collect_symbols(SymbolMap *map, FILE *file) {
         // Find first non-whitespace character.
         char *first_char = first_non_whitespace(line_buf);
 
-        // Remove the newline that fgets keeps.
-        char *nl = strchr(first_char, '\n');
-        if (nl) {
-            *nl = '\0';
-        }
-
         if (first_char) {
+            // Remove the newline that fgets keeps.
+            char *nl = strchr(first_char, '\n');
+            if (nl) {
+                *nl = '\0';
+            }
+
+            if (first_char[0] == '\0') {
+                break;
+            }
+
             ++lines_found;
 
             // There is a line here, start parsing it.
