@@ -10,12 +10,26 @@
 #define MAXIMUM_SYMBOL_LENGTH 512
 
 /**
+ * "Colours" for the Symbol nodes.
+ * Used for balancing a symbol map.
+ */
+typedef enum {
+    RED,  /**< Red colouring for a node. */
+    BLACK /**< Black colouring for a node. */
+} SymbolColour;
+
+/**
  * A symbol-address associative pair.
  */
-typedef struct {
+typedef struct Symbol_t {
     ulong hash;                       /**< Hash identifier of symbol. */
     char name[MAXIMUM_SYMBOL_LENGTH]; /**< Identifier of symbol. */
     uint addr;                        /**< Address it represents. */
+
+    SymbolColour colour;              /**< Symbol colour for use in balancing. */
+    struct Symbol_t *parent;          /**< Parent symbol for this symbol. */
+    struct Symbol_t *left_child;      /**< Left child for this symbol. */
+    struct Symbol_t *right_child;     /**< Right child for this symbol. */
 } Symbol;
 
 /**
@@ -28,12 +42,11 @@ typedef struct {
 bool symbol_equals(const Symbol *s1, const char *name);
 
 /**
- * An associative array of symbols to the addresses.
+ * An associative tree map of symbols to the addresses.
  */
 typedef struct {
-    size_t size;  /**< Size of associative array. */
-    size_t count; /**< Number of items currently stored in array. */
-    Symbol *arr;  /**< Pointer to start of associative array. */
+    size_t count; /**< Number of items currently stored in the tree. */
+    Symbol *root; /**< Pointer to the root of the map's symbol tree. */
 } SymbolMap;
 
 /**
@@ -74,24 +87,13 @@ typedef struct {
 
 /**
  * Query a map for a symbol name, storing its result in the returned QueryResult.
- * Uses the symbol hashes, for a binary search, O(log_2 n).
+ * Uses the symbol hashes, for a tree traversal, O(log_2 n).
  *
  * @param  map         The map to query
  * @param  symbol_name The symbol name to find
  * @return             Query result. Check the struct fields for details.
  */
 QueryResult query_symbol_map(const SymbolMap *map, const char *symbol_name);
-
-/**
- * Query a map for a symbol name, storing its result in the returned QueryResult.
- * Uses the symbol names, for a linear search, O(n).
- * Use if you aren't 100% certain that the map is sorted by hashes.
- *
- * @param  map         The map to query
- * @param  symbol_name The symbol name to find
- * @return             Query result. Check the struct fields for details.
- */
-QueryResult safe_query_symbol_map(const SymbolMap *map, const char *symbol_name);
 
 #endif  // __SYMBOLS_H__
 
