@@ -1,5 +1,7 @@
 #include "translate.h"
 
+#include "../mainmap.h"
+
 #include <assert.h>
 #include <errno.h>
 
@@ -7,18 +9,16 @@ StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
     // The final instruction output.
     uint out = 0u;
 
-    // Set instruction to be unconditionally executed.
-    // al = 1110
-    out |= FLAG_N | FLAG_Z | FLAG_C;
-
-    // Add the 0b1001 bit sequence.
-    out |= (9u << 4u);
-
-    // Check if this is an "ml" or "mla" instruction.
-    // It is assumed that the S bit is always 0.
-    if (tokens[0][2] == 'a') {
-        out |= BIT_A;
+    // Get the correct multiply instruction starter bits.
+    // See insttypes.h for more information on the MulType enum.
+    QueryResult mul_inst_query = query_symbol_map(translation_map, tokens[0]);
+    if (!mul_inst_query.found) {
+        *output = 0u;
+        return INVALID_INSTRUCTION;
     }
+
+    // Field is named addr due to map's original use for collecting symbols from the assembly.
+    out |= mul_inst_query.addr;
 
     // Assuming the only registers used are r0 to r12...
     // And the tokenisation splits the string into: { ml/mla, rD, rM, rS, rN }

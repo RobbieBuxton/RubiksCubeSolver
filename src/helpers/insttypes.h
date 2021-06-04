@@ -50,18 +50,6 @@ typedef enum {
     ror = 3  /**< Rotate right */
 } ShiftType;
 
-//Types of SDT
-typedef enum {
-    ldr,
-    str
-} SDTType;
-
-//Types of Multiply
-typedef enum {
-    mul,
-    mla
-} MULType;
-
 // Instruction byte length
 #define INSTRUCTION_BYTE_LENGTH 4u
 
@@ -130,6 +118,30 @@ typedef struct {
 #define BIT_S       (1u << 20u)
 #define BIT_L       (1u << 20u)
 #define BITS_IPUASL (BIT_I | BIT_P | BIT_U | BIT_A | BIT_S | BIT_L)
+
+/**
+ * Types of SDT instruction, used for the assembler.
+ */
+typedef enum {
+    ldr, /**< Load from memory. */
+    str  /**< Store to memory. */
+} SDTType;
+
+/*
+ * Types of Multiply instruction.
+ *
+ * The member values hold the base bits in a multiply instruction, used in the assembler.
+ * Therefore, each will always have:
+ *
+ * (al << 28u) | (9u << 4u)
+ * 1110 0000 0000 0000 0000 0000 1001 0000
+ *
+ * at the very least.
+ *
+ * S is always unset, but A is set for mla.
+ */
+#define mul_inst ((al << 28u) | (9u << 4u))
+#define mla_inst (mul_inst | BIT_A)
 
 // Extract lower 12 bytes with &.
 // E.g. inst & OPR2_OR_OFFSET

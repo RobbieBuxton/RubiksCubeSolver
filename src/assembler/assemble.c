@@ -83,8 +83,8 @@ static void init_translation_map(void) {
     add_to_symbol_map(translation_map, "b",   al);
 
     // Multiply
-    add_to_symbol_map(translation_map, "mul", mul);
-    add_to_symbol_map(translation_map, "mla", mla);
+    add_to_symbol_map(translation_map, "mul", mul_inst);
+    add_to_symbol_map(translation_map, "mla", mla_inst);
 
     // Single Data Transfer
     add_to_symbol_map(translation_map, "ldr", ldr);
