@@ -91,7 +91,7 @@ void init_translation_map(void) {
     add_to_symbol_map(translation_map, "str", str);
 }
 
-// function pointers to translate functions
+// Function pointers to translate functions
 static const TranslateFunction t_functions[5] = { dp_translate, m_translate, sdt_translate, b_translate, h_translate };
 
 // Endianness check (because we need to ensure that the file is *definitely* in little endian).

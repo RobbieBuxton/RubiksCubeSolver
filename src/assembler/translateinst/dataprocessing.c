@@ -53,7 +53,7 @@ StatusCode parse_operand2(char **tokens, uint *output){
             *output |= parse_register(tokens[2]) << 8u;
             *output |= 1u << 4u;
         } else {
-            *output |= (uint) strtol(tokens[2] + 1, NULL, 0) << 7u;
+            *output |= (uint) strtoul(tokens[2] + 1, NULL, 0) << 7u;
         }
 
         if (check_parse_error(output)) {
@@ -95,7 +95,7 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
             if (out & BIT_I) {
                 out -= 1u << 25u;
             }
-            out |= strtol(tokens[2] + 1, NULL, 0) << 7u;
+            out |= strtoul(tokens[2] + 1, NULL, 0) << 7u;
             out |= parse_register(tokens[1]);
             break;
         case dp_tst:
@@ -122,3 +122,4 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
 
     return CONTINUE;
 }
+

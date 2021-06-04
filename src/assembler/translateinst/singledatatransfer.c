@@ -84,11 +84,11 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
             case'+':
                 out |= BIT_U;
             case '-':
-                out |= (uint) strtol(tokens[3] + 2, NULL, 10);
+                out |= (uint) strtoul(tokens[3] + 2, NULL, 10);
                 break;
             default:
                 out |= BIT_U;
-                out |= (uint) strtol(tokens[3] + 1, NULL, 10);
+                out |= (uint) strtoul(tokens[3] + 1, NULL, 10);
                 break;
         }
 
@@ -111,10 +111,10 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
 
             // Collect shift value/register.
             if (strchr(tokens[5], 'r')) {
-                out |= (uint) strtol(tokens[5] + 1, NULL, 10) << 8u;
+                out |= (uint) strtoul(tokens[5] + 1, NULL, 10) << 8u;
                 out |= 1u << 4u;
             } else {
-                out |= (uint) strtol(tokens[5] + 1, NULL, 0) << 7u;
+                out |= (uint) strtoul(tokens[5] + 1, NULL, 0) << 7u;
             }
 
             if (check_parse_error(output)) {
@@ -123,7 +123,7 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
         }
     } else {
         // Offset is immediate, BIT_U is decided by its sign
-        sint temp_signed = (sint) strtol(tokens[3] + 1, NULL, 0);
+        sint temp_signed = (sint) strtoul(tokens[3] + 1, NULL, 0);
 
         if (check_parse_error(output)) {
             return PARSE_ERROR;
@@ -140,3 +140,4 @@ StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset,
     *output = out;
     return CONTINUE;
 }
+
