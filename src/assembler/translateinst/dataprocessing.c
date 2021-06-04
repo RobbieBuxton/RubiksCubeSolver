@@ -5,11 +5,24 @@
 #include <errno.h>
 #include <string.h>
 
-int parse_register(char *register_label) {
+/**
+ * Parses a single register number from a token.
+ *
+ * @param  register_label Pointer to start of number.
+ * @return                Register number.
+ */
+static int parse_register(char *register_label) {
     return strtoul(register_label + 1, NULL, 10);
 }
 
-StatusCode parse_operand2(char **tokens, uint *output){
+/**
+ * Parses a single operand2 from an array of tokens.
+ *
+ * @param[in]  tokens Tokens to parse.
+ * @param[out] output Output instruction address.
+ * @return            Success code for the instruction.
+ */
+static StatusCode parse_operand2(char **tokens, uint *output){
     if (!(strstr(tokens[0], "r"))) {
         uint operand = strtoul(tokens[0] + 1, NULL, 0);
         uint shift = 0;

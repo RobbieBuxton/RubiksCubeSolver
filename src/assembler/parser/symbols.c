@@ -40,7 +40,7 @@ SymbolMap *new_symbol_map(size_t initial_size) {
  * @param  new_size The new proposed size of the map
  * @return          The new size if successful. Returns 0 otherwise.
  */
-size_t extend_symbol_map_with_size(SymbolMap *map, size_t new_size) {
+static size_t extend_symbol_map_with_size(SymbolMap *map, size_t new_size) {
     // Attempt realloc of interal array.
     Symbol *new_arr = (Symbol *) realloc(map->arr, new_size * sizeof(Symbol));
 
@@ -70,7 +70,7 @@ size_t extend_symbol_map_with_size(SymbolMap *map, size_t new_size) {
  * @param  map Map to extend
  * @return     The new size if successful. Returns 0 otherwise.
  */
-size_t extend_symbol_map(SymbolMap *map) {
+static size_t extend_symbol_map(SymbolMap *map) {
     size_t new_size = map->size + (map->size >> 1u);
     return extend_symbol_map_with_size(map, new_size);
 }
@@ -89,11 +89,11 @@ bool free_symbol_map(SymbolMap *map) {
     return true;
 }
 
-size_t left_child(size_t curr) {
+static size_t left_child(size_t curr) {
     return (curr << 1u) + 1u;
 }
 
-size_t right_child(size_t curr) {
+static size_t right_child(size_t curr) {
     return left_child(curr) + 1u;
 }
 

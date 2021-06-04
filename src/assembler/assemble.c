@@ -12,8 +12,8 @@
 
 #include "mainmap.h"
 
-StatusCode translate_into_in_file(SymbolMap *, FILE *, FILE *, AssemblyInfo *);
-void init_translation_map(void);
+static StatusCode translate_into_in_file(SymbolMap *, FILE *, FILE *, AssemblyInfo *);
+static void init_translation_map(void);
 
 int main(int argc, char **argv) {
     // Assert that we have an in file and an out file
@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
 // Declaration of translation_map for mainmap.h
 SymbolMap *translation_map = NULL;
 
-void init_translation_map(void) {
+static void init_translation_map(void) {
     // Small initial size. It will self-extend later.
     translation_map = new_symbol_map(4);
     assert(translation_map);
@@ -96,7 +96,7 @@ static const TranslateFunction t_functions[5] = { dp_translate, m_translate, sdt
 
 // Endianness check (because we need to ensure that the file is *definitely* in little endian).
 // Returns true if big endian.
-bool check_endianness(void) {
+static bool check_endianness(void) {
     // Somewhat undefined behaviour is being used here...
     union {
         uint32_t i;
@@ -107,7 +107,7 @@ bool check_endianness(void) {
     return checker.buf[3];
 }
 
-StatusCode translate_into_in_file(SymbolMap *symbol_map,FILE* in_file, FILE* out_file, AssemblyInfo *assembly_info) {
+static StatusCode translate_into_in_file(SymbolMap *symbol_map,FILE* in_file, FILE* out_file, AssemblyInfo *assembly_info) {
     char line[MAXIMUM_LINE_LENGTH] = { '\0' };
     StatusCode code;
     uint offset = 0;

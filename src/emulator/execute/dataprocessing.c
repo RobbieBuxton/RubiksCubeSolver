@@ -13,7 +13,7 @@
  * @param  type     Shift operation
  * @return          The caarry bit as a result from the operation
  */
-uint get_carry_bit(uint num, uint amount, uint bit_size, ShiftType type);
+static uint get_carry_bit(uint num, uint amount, uint bit_size, ShiftType type);
 
 /**
  * Select a range of bits from a number.
@@ -25,7 +25,7 @@ uint get_carry_bit(uint num, uint amount, uint bit_size, ShiftType type);
  * @param  finish_bit Rightmost bit to select
  * @return            Numeric value of selected bits
  */
-uint select_range(uint num, uint start_bit, uint finish_bit) {
+static uint select_range(uint num, uint start_bit, uint finish_bit) {
     uint upper_mask;
     if (start_bit == 31u) {
         //MAX_UINT
@@ -47,7 +47,7 @@ uint select_range(uint num, uint start_bit, uint finish_bit) {
  * @param  C        Pointer to C flag. May be NULL if the C flag should not be set.
  * @return          Shifted value.
  */
-uint shifter(uint num, uint amount, uint bit_size, ShiftType type, uint *C) {
+static uint shifter(uint num, uint amount, uint bit_size, ShiftType type, uint *C) {
     // If amount is 0, there is nothing to do.
     if (amount == 0u) {
         if (C) {
@@ -86,7 +86,7 @@ uint shifter(uint num, uint amount, uint bit_size, ShiftType type, uint *C) {
     }
 }
 
-uint get_carry_bit(uint num, uint amount, uint bit_size, ShiftType type) {
+static uint get_carry_bit(uint num, uint amount, uint bit_size, ShiftType type) {
     if (amount == 0u) {
         return 0u;
     }
@@ -113,7 +113,7 @@ uint get_carry_bit(uint num, uint amount, uint bit_size, ShiftType type) {
  * @param  C     Pointer to C flag.
  * @return       The second operand for this DP instruction.
  */
-uint get_b(State *state, uint *C) {
+static uint get_b(State *state, uint *C) {
     DPInst *instr = &(state->decoded.inst.dp);
     uint operand2 = instr->operand2;
 
@@ -163,7 +163,7 @@ uint get_b(State *state, uint *C) {
  * @param  b RHS
  * @return   Boolean flag (0 or 1).
  */
-uint is_add_overflow(uint a, uint b) {
+static uint is_add_overflow(uint a, uint b) {
     return (b == 0u) || (a > ~0u - b);
 }
 
@@ -173,7 +173,7 @@ uint is_add_overflow(uint a, uint b) {
  * @param  a Unsigned number
  * @return   2s complement negative for the number.
  */
-uint to_neg(uint a) {
+static uint to_neg(uint a) {
     return ~(a) + 1u;
 }
 

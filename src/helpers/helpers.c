@@ -76,7 +76,7 @@ sint to_twos_complement(uint unsigned_value, uint sign_bit_location) {
  * @param[in]  32-bit value to write
  * @return     Status code for the operation.
  */
-StatusCode write_gpio_pins(State *state, uint addr, uint value) {
+static StatusCode write_gpio_pins(State *state, uint addr, uint value) {
     uint *control_row;
 
     switch (addr) {
@@ -179,24 +179,31 @@ StatusCode store_word(State *state, uint address, Register source) {
     }
 }
 
-bool cond_is_true(Cond cond, uint CPSRflags) {
+/**
+ * Check if the current state of the CPSR is adequate for an instruction to execute.
+ *
+ * @param  cond       Condition to compare aganst the CPSR
+ * @param  cpsr_flags Current state of the CPSR
+ * @return            Satisfiability of the condition
+ */
+static bool cond_is_true(Cond cond, uint cpsr_flags) {
     switch (cond) {
         case eq:
-            return select_bits(CPSRflags, 1u, 30u, false);
+            return select_bits(cpsr_flags, 1u, 30u, false);
         case ne:
-            return !cond_is_true(eq, CPSRflags);
+            return !cond_is_true(eq, cpsr_flags);
         case ge:
             {
-                uint N = select_bits(CPSRflags, 1u, 31, true);
-                uint V = select_bits(CPSRflags, 1u, 28, true);
+                uint N = select_bits(cpsr_flags, 1u, 31, true);
+                uint V = select_bits(cpsr_flags, 1u, 28, true);
                 return N == V;
             }
         case lt:
-            return !cond_is_true(ge, CPSRflags);
+            return !cond_is_true(ge, cpsr_flags);
         case gt:
-            return cond_is_true(ge, CPSRflags) && cond_is_true(ne, CPSRflags);
+            return cond_is_true(ge, cpsr_flags) && cond_is_true(ne, cpsr_flags);
         case le:
-            return !cond_is_true(gt, CPSRflags);
+            return !cond_is_true(gt, cpsr_flags);
         case al:
             return true;
         default:

@@ -19,7 +19,7 @@
  *
  * @param state Machine state struct to give initial values to
  */
-void initialise_state(State *state);
+static void initialise_state(State *state);
 
 /**
  * Run a decoded instruction from a machine state, using the memory and registers of the provided state.
@@ -27,7 +27,7 @@ void initialise_state(State *state);
  * @param  state Machine state to simulate
  * @return       The new status code after running an instruction
  */
-StatusCode execute(State *state);
+static StatusCode execute(State *state);
 
 /**
  * Read a binary program to simulate.
@@ -36,7 +36,7 @@ StatusCode execute(State *state);
  * @param  state     Machine state to read the file into
  * @return           File read error status
  */
-StatusCode read_file(char *file_path, State *state);
+static StatusCode read_file(char *file_path, State *state);
 
 // The condition of when the main loop should occur.
 #define LOOPCOND (!code || code == ILLEGAL_MEMORY_ACCESS)
@@ -90,7 +90,7 @@ exit:
     return EXIT_SUCCESS;
 }
 
-void initialise_state(State *state) {
+static void initialise_state(State *state) {
     // Clear machine state
     memset(state, 0, sizeof(State));
 
@@ -98,7 +98,7 @@ void initialise_state(State *state) {
     state->registers = registers;
 }
 
-StatusCode read_file(char *file_path, State *state) {
+static StatusCode read_file(char *file_path, State *state) {
     FILE *file = fopen(file_path, "rb");
 
     // If file does not exist, it has not been opened successfully.
@@ -121,7 +121,7 @@ StatusCode read_file(char *file_path, State *state) {
 // Function pointers to execute functions:
 static const ExecuteFunction functions[5] = { dp_execute, m_execute, sdt_execute, b_execute, h_execute };
 
-StatusCode execute(State *state) {
+static StatusCode execute(State *state) {
     // Current instruction is ignored if the condition is not met.
     // Halt instructions are always executed.
     if (check_decoded_cond(state) || state->decoded.type == H) {
