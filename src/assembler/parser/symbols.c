@@ -38,7 +38,7 @@ static void clear_node(Symbol *symbol) {
     symbol->addr = 0u;
 }
 
-static Symbol *new_symbol(const char *label, const uint addr) {
+static Symbol *new_symbol(const char *label, const ulong hash, const uint addr) {
     Symbol *symbol = (Symbol *) malloc(sizeof(Symbol));
     if (!symbol) {
         // Calloc failed.
@@ -49,7 +49,8 @@ static Symbol *new_symbol(const char *label, const uint addr) {
     clear_node(symbol);
 
     strncpy(symbol->name, label, MAXIMUM_SYMBOL_LENGTH - 1);
-    symbol->addr        = addr;
+    symbol->hash = hash;
+    symbol->addr = addr;
 
     return symbol;
 }
@@ -294,7 +295,7 @@ bool add_to_symbol_map(SymbolMap *map, const char *symbol, const uint addr) {
         }
 
         // Insert and fix.
-        *where = new_symbol(symbol, addr);
+        *where = new_symbol(symbol, symbol_hash, addr);
         if (!where) {
             return false;
         }
@@ -302,10 +303,12 @@ bool add_to_symbol_map(SymbolMap *map, const char *symbol, const uint addr) {
         case_1(map, *where);
     } else {
         // Insert and fix.
-        map->root = new_symbol(symbol, addr);
+        map->root = new_symbol(symbol, symbol_hash, addr);
         if (!map->root) {
             return false;
         }
+
+        map->root->hash = symbol_hash;
 
         case_1(map, map->root);
     }
