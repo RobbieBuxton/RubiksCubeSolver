@@ -49,10 +49,12 @@ static size_t extend_symbol_map_with_size(SymbolMap *map, size_t new_size) {
         return 0u;
     } else {
         // Do some post-initialisation to zero out the new memory.
-        for (size_t i = map->size; i < new_size; ++i) {
-            new_arr[i].hash = 0ul;
-            new_arr[i].addr = 0u;
-            memset(new_arr[i].name, '\0', MAXIMUM_SYMBOL_LENGTH);
+        if (new_size > map->size) {
+            for (size_t i = map->size; i < new_size; ++i) {
+                new_arr[i].hash = 0ul;
+                new_arr[i].addr = 0u;
+                memset(new_arr[i].name, '\0', MAXIMUM_SYMBOL_LENGTH);
+            }
         }
 
         // Successful, assign new size and new array pointer.
@@ -89,12 +91,60 @@ bool free_symbol_map(SymbolMap *map) {
     return true;
 }
 
+// Find the left child of a node.
 static size_t left_child(size_t curr) {
     return (curr << 1u) + 1u;
 }
 
+// Find the right child of a node.
 static size_t right_child(size_t curr) {
     return left_child(curr) + 1u;
+}
+
+// Find the parent of a node.
+static size_t parent_of(size_t curr) {
+    // The root returns itself.
+    if (curr == 0u) {
+        return 0u;
+    }
+
+    return (curr - 1u) >> 1u;
+}
+
+// Is this node a left child?
+static bool is_left_child(size_t node) {
+    // Find parent.
+    size_t parent = parent_of(node);
+
+    if (node == parent) {
+        // We are at the root.
+        return false;
+    } else {
+        return node == left_child(parent);
+    }
+}
+
+// Is this node a right child?
+static bool is_right_child(size_t node) {
+    // Find parent.
+    size_t parent = parent_of(node);
+
+    if (node == parent) {
+        // We are at the root.
+        return false;
+    } else {
+        return node == right_child(parent);
+    }
+}
+
+// Shrink a map to fit its contents.
+static size_t shrink_map_to_contents(SymbolMap *map) {
+    size_t new_size = map->size;
+    while (!map->arr[--new_size].hash) {
+        --new_size;
+    }
+
+    return extend_symbol_map_with_size(map, new_size);
 }
 
 bool add_to_symbol_map(SymbolMap *map, const char *symbol, const uint addr) {

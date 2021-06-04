@@ -10,9 +10,19 @@
 #define MAXIMUM_SYMBOL_LENGTH 512
 
 /**
+ * "Colours" for the Symbol nodes.
+ * Used for balancing a symbol map.
+ */
+typedef enum {
+    RED,  /**< Red colouring for a node. */
+    BLACK /**< Black colouring for a node. */
+} SymbolColour;
+
+/**
  * A symbol-address associative pair.
  */
 typedef struct {
+    SymbolColour colour;              /**< Node colour for use in balancing. */
     ulong hash;                       /**< Hash identifier of symbol. */
     char name[MAXIMUM_SYMBOL_LENGTH]; /**< Identifier of symbol. */
     uint addr;                        /**< Address it represents. */
