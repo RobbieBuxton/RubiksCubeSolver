@@ -147,6 +147,36 @@ static size_t shrink_map_to_contents(SymbolMap *map) {
     return extend_symbol_map_with_size(map, new_size);
 }
 
+// Empty out a node.
+static void clear_node(Symbol *sym) {
+    memset(sym, 0, sizeof(Symbol));
+}
+
+// Empty out a node in a map.
+static void clear_node_in_map(SymbolMap *map, size_t where) {
+    clear_node(map->arr + where);
+}
+
+// Attempt to push down a node.
+static bool push_down(SymbolMap* map, size_t what) {
+    return false;
+}
+
+// Reparent a node, and return the ejected node.
+static Symbol reparent(SymbolMap *map, size_t current, Symbol new_node) {
+    // Ejected node.
+    Symbol cur;
+    clear_node(&cur);
+
+    // Get the current node.
+    cur = map->arr[current];
+
+    // Set the new node in place.
+    map->arr[current] = new_node;
+
+    return cur;
+}
+
 bool add_to_symbol_map(SymbolMap *map, const char *symbol, const uint addr) {
     // Extend map if it is full.
     if (map->count >= map->size) {
