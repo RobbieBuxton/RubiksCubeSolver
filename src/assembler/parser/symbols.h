@@ -87,24 +87,13 @@ typedef struct {
 
 /**
  * Query a map for a symbol name, storing its result in the returned QueryResult.
- * Uses the symbol hashes, for a binary search, O(log_2 n).
+ * Uses the symbol hashes, for a tree traversal, O(log_2 n).
  *
  * @param  map         The map to query
  * @param  symbol_name The symbol name to find
  * @return             Query result. Check the struct fields for details.
  */
 QueryResult query_symbol_map(const SymbolMap *map, const char *symbol_name);
-
-/**
- * Query a map for a symbol name, storing its result in the returned QueryResult.
- * Uses the symbol names, for a linear search, O(n).
- * Use if you aren't 100% certain that the map is sorted by hashes.
- *
- * @param  map         The map to query
- * @param  symbol_name The symbol name to find
- * @return             Query result. Check the struct fields for details.
- */
-QueryResult safe_query_symbol_map(const SymbolMap *map, const char *symbol_name);
 
 #endif  // __SYMBOLS_H__
 

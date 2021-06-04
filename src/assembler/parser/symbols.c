@@ -259,46 +259,79 @@ static void case_5(SymbolMap *map, Symbol *current) {
 }
 
 bool add_to_symbol_map(SymbolMap *map, const char *symbol, const uint addr) {
-    // Extend map if it is full.
-    if (map->count >= map->size) {
-        if (!extend_symbol_map(map)) {
-            return false;
-        }
-    }
-
     // Add symbol by its hash, while trying to maintain order in the hashes.
     ulong symbol_hash = hash_string(symbol);
-    size_t curr_ptr = 0u;
 
-    do {
-        if (curr_ptr >= map->size) {
-            // We've exited the map. Extend it to fit.
-            if (!extend_symbol_map_with_size(map, curr_ptr + 1)) {
-                return false;
+    if (map->root) {
+        Symbol *curr_ptr = map->root;
+        Symbol *next = NULL;
+        Symbol **where = NULL;
+
+        while (curr_ptr) {
+            // Traverse the tree until we find a place to add the node.
+            if (symbol_hash > curr_ptr->hash) {
+                next = curr_ptr->right_child;
+                if (next) {
+                    curr_ptr = next;
+                } else {
+                    where = &(curr_ptr->right_child);
+                    curr_ptr = next;
+                }
+            } else {
+                if (symbol_hash == curr_ptr->hash) {
+                    // Warn of hash collision.
+                    fprintf(stderr, "[Add] Warning, hash collision with strings %s and %s!\n", symbol, curr_ptr->name);
+                }
+
+                next = curr_ptr->left_child;
+                if (next) {
+                    curr_ptr = next;
+                } else {
+                    where = &(curr_ptr->left_child);
+                    curr_ptr = next;
+                }
             }
         }
 
-        ulong ptr_hash = map->arr[curr_ptr].hash;
-
-        // Found empty child. Set all fields.
-        if (!ptr_hash) {
-            strncpy(map->arr[curr_ptr].name, symbol, MAXIMUM_SYMBOL_LENGTH);
-            map->arr[curr_ptr].hash = symbol_hash;
-            map->arr[curr_ptr].addr = addr;
-            break;
+        // Insert and fix.
+        *where = new_symbol(symbol, addr);
+        if (!where) {
+            return false;
         }
 
-        if (symbol_hash > ptr_hash) {
-            curr_ptr = right_child(curr_ptr);
-        } else {
-            curr_ptr = left_child(curr_ptr);
+        case_1(map, *where);
+    } else {
+        // Insert and fix.
+        map->root = new_symbol(symbol, addr);
+        if (!map->root) {
+            return false;
         }
-    } while (true);
+
+        case_1(map, map->root);
+    }
 
     // Increment the count.
     ++(map->count);
 
     return true;
+}
+
+static void naive_search(QueryResult *put_in, Symbol *from, const char *query) {
+    if (from && !put_in->found) {
+        Symbol *has_found = NULL;
+
+        if (symbol_equals(from, query)) {
+            has_found = from;
+        } else {
+            naive_search(put_in, from->left_child, query);
+            naive_search(put_in, from->right_child, query);
+        }
+
+        if (has_found) {
+            put_in->found = true;
+            put_in->addr  = 0u;
+        }
+    }
 }
 
 QueryResult query_symbol_map(const SymbolMap *map, const char *symbol_name) {
@@ -307,58 +340,27 @@ QueryResult query_symbol_map(const SymbolMap *map, const char *symbol_name) {
 
     // Search for symbol by its hash. If a found, use strcmp to compare first.
     ulong symbol_hash = hash_string(symbol_name);
-    size_t curr_ptr = 0u;
+    Symbol *curr_ptr = map->root;
 
-    do {
-        // We've exited the map. Exit.
-        if (curr_ptr >= map->size) {
-            break;
-        }
-
-        // Get current pointer hash.
-        ulong ptr_hash = map->arr[curr_ptr].hash;
-
-        // Reached empty node. Exit.
-        if (!ptr_hash) {
-            break;
-        }
-
-        if (symbol_hash > ptr_hash) {
-            curr_ptr = right_child(curr_ptr);
-        } else if (symbol_hash < ptr_hash) {
-            curr_ptr = left_child(curr_ptr);
+    while (curr_ptr) {
+        if (symbol_hash > curr_ptr->hash) {
+            curr_ptr = curr_ptr->right_child;
+        } else if (symbol_hash < curr_ptr->hash) {
+            curr_ptr = curr_ptr->left_child;
         } else {
-            if (strcmp(symbol_name, map->arr[curr_ptr].name) == 0) {
+            // Equal...?
+            if (symbol_equals(curr_ptr, symbol_name)) {
+                // All fine.
                 out_result.found = true;
-                out_result.addr  = map->arr[curr_ptr].addr;
-
+                out_result.addr  = curr_ptr->addr;
                 return out_result;
             } else {
-                curr_ptr = left_child(curr_ptr);
+                // There was a hash collision. Fallback to naive tree traversal.
+                naive_search(&out_result, curr_ptr, symbol_name);
+                if (out_result.found) {
+                    return out_result;
+                }
             }
-        }
-    } while (true);
-
-    // Not found!
-    out_result.found = false;
-    out_result.addr  = 0u;
-
-    return out_result;
-}
-
-QueryResult safe_query_symbol_map(const SymbolMap *map, const char *symbol_name) {
-    // Storage of search result.
-    QueryResult out_result;
-
-    for (size_t i = 0; i < map->count; ++i) {
-        Symbol *symbol = map->arr + i;
-
-        if (symbol_equals(symbol, symbol_name)) {
-            // Found! Set results as necessary.
-            out_result.found = true;
-            out_result.addr  = symbol->addr;
-
-            return out_result;
         }
     }
 
