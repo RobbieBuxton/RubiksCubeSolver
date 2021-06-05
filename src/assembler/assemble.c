@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
     }
 
     // Completes first pass and rewinds file.
-    StringUintMap* string_uint_map = new_string_uint_map(1);
+    StringUintMap* string_uint_map = new_string_uint_map();
     AssemblyInfo assembly_info = collect_symbols(string_uint_map, in_file);
 
     // Creates new file and pads it for load immediate instructions
@@ -55,7 +55,7 @@ StringUintMap *translation_map = NULL;
 
 static void init_translation_map(void) {
     // Small initial size. It will self-extend later.
-    translation_map = new_string_uint_map(4);
+    translation_map = new_string_uint_map();
     assert(translation_map);
 
     // Data Processing

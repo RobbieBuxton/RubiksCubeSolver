@@ -25,7 +25,7 @@ static __StringUintPair__ *symbol_equals(const MapNode *sym, const char *name) {
     return NULL;
 }
 
-StringUintMap *new_string_uint_map(size_t initial_size) {
+StringUintMap *new_string_uint_map(void) {
     // Attempt to create a map.
     StringUintMap *map = (StringUintMap *) malloc(sizeof(StringUintMap));
     if (!map) {

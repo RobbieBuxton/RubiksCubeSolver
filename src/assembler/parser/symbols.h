@@ -52,10 +52,9 @@ typedef struct {
 /**
  * Allocate a new symbol map. This map must be freed later using free_symbol_map.
  *
- * @param  initial_size Initial size for the associative array
  * @return              If successful, the pointer to the new symbol map.
  */
-StringUintMap *new_string_uint_map(size_t initial_size);
+StringUintMap *new_string_uint_map(void);
 
 /**
  * Free a symbol map created by new_string_uint_map.
