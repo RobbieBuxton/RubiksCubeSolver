@@ -9,7 +9,7 @@
  *
  * Outside of assemble.c, do not add any symbols to this map, and do not free it.
  */
-extern SymbolMap *translation_map;
+extern StringUintMap *translation_map;
 
 #endif  // __MAINMAP_H__
 

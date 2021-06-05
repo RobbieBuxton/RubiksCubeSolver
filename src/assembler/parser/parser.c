@@ -7,7 +7,7 @@
 #include <stddef.h>
 #include <string.h>
 
-AssemblyInfo collect_symbols(SymbolMap *map, FILE *file) {
+AssemblyInfo collect_symbols(StringUintMap *map, FILE *file) {
     // Line trackers
     char line_buf[MAXIMUM_LINE_LENGTH] = { '\0' };
     char temp_buf[MAXIMUM_SYMBOL_LENGTH] = { '\0' };
@@ -61,7 +61,7 @@ AssemblyInfo collect_symbols(SymbolMap *map, FILE *file) {
                 temp_buf[len - 1] = '\0';
 
                 // Add to symbol map
-                add_to_symbol_map(
+                add_to_string_uint_map(
                     map, temp_buf,
                     (lines_found  - (++symbols_found)) * INSTRUCTION_BYTE_LENGTH
                 );

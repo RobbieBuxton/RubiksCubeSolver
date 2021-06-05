@@ -5,7 +5,7 @@
 #include <assert.h>
 #include <errno.h>
 
-StatusCode b_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo) {
+StatusCode b_translate(char **tokens, StringUintMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo) {
     // Just to make sure...
     *output = 0u;
 
@@ -13,7 +13,7 @@ StatusCode b_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
     *output |= (1u << 27u) | (1u << 25u);
 
     // Set condition bits
-    QueryResult cond_result = query_symbol_map(translation_map, tokens[0]);
+    QueryResult cond_result = query_string_uint_map(translation_map, tokens[0]);
     if (cond_result.found) {
         *output |= (cond_result.addr) << 28u;
     } else {
@@ -26,7 +26,7 @@ StatusCode b_translate(char **tokens, SymbolMap *symbols, uint current_offset, u
 
     // Get target address
     uint target_address = 0u;
-    QueryResult label_addr_result = query_symbol_map(symbols, tokens[1]);
+    QueryResult label_addr_result = query_string_uint_map(symbols, tokens[1]);
 
     if (label_addr_result.found) {
         target_address = label_addr_result.addr / INSTRUCTION_BYTE_LENGTH;

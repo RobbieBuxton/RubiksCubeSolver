@@ -5,13 +5,13 @@
 #include <assert.h>
 #include <errno.h>
 
-StatusCode m_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo) {
+StatusCode m_translate(char **tokens, StringUintMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo) {
     // The final instruction output.
     uint out = 0u;
 
     // Get the correct multiply instruction starter bits.
     // See insttypes.h for more information on the MulType enum.
-    QueryResult mul_inst_query = query_symbol_map(translation_map, tokens[0]);
+    QueryResult mul_inst_query = query_string_uint_map(translation_map, tokens[0]);
     if (!mul_inst_query.found) {
         *output = 0u;
         return INVALID_INSTRUCTION;

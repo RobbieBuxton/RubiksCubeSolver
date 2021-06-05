@@ -2,7 +2,7 @@
 
 #include <string.h>
 
-StatusCode sdt_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assembly_info) {
+StatusCode sdt_translate(char **tokens, StringUintMap *symbols, uint current_offset, uint *output, AssemblyInfo *assembly_info) {
     // The final instruction output.
     uint out = 0u;
 

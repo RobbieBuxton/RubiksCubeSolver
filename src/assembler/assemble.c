@@ -12,7 +12,7 @@
 
 #include "mainmap.h"
 
-static StatusCode translate_into_in_file(SymbolMap *, FILE *, FILE *, AssemblyInfo *);
+static StatusCode translate_into_in_file(StringUintMap *, FILE *, FILE *, AssemblyInfo *);
 static void init_translation_map(void);
 
 int main(int argc, char **argv) {
@@ -30,20 +30,20 @@ int main(int argc, char **argv) {
     }
 
     // Completes first pass and rewinds file.
-    SymbolMap* symbol_map = new_symbol_map(1);
-    AssemblyInfo assembly_info = collect_symbols(symbol_map, in_file);
+    StringUintMap* string_uint_map = new_string_uint_map(1);
+    AssemblyInfo assembly_info = collect_symbols(string_uint_map, in_file);
 
     // Creates new file and pads it for load immediate instructions
     FILE *out_file = fopen(argv[2], "wb+");
 
     // Translate assembly into output file.
-    StatusCode code = translate_into_in_file(symbol_map, in_file, out_file, &assembly_info);
+    StatusCode code = translate_into_in_file(string_uint_map, in_file, out_file, &assembly_info);
 
     fclose(out_file);
     fclose(in_file);
 
-    free_symbol_map(symbol_map);
-    free_symbol_map(translation_map);
+    free_string_uint_map(string_uint_map);
+    free_string_uint_map(translation_map);
 
     status_code_handler(code, NULL);
 
@@ -51,44 +51,44 @@ int main(int argc, char **argv) {
 }
 
 // Declaration of translation_map for mainmap.h
-SymbolMap *translation_map = NULL;
+StringUintMap *translation_map = NULL;
 
 static void init_translation_map(void) {
     // Small initial size. It will self-extend later.
-    translation_map = new_symbol_map(4);
+    translation_map = new_string_uint_map(4);
     assert(translation_map);
 
     // Data Processing
-    add_to_symbol_map(translation_map, "and", dp_and);
-    add_to_symbol_map(translation_map, "eor", dp_eor);
-    add_to_symbol_map(translation_map, "sub", dp_sub);
-    add_to_symbol_map(translation_map, "rsb", dp_rsb);
-    add_to_symbol_map(translation_map, "add", dp_add);
-    add_to_symbol_map(translation_map, "orr", dp_orr);
-    add_to_symbol_map(translation_map, "mov", dp_mov);
-    add_to_symbol_map(translation_map, "tst", dp_tst);
-    add_to_symbol_map(translation_map, "teq", dp_teq);
-    add_to_symbol_map(translation_map, "cmp", dp_cmp);
-    add_to_symbol_map(translation_map, "andeq", dp_andeq);
-    add_to_symbol_map(translation_map, "lsl", dp_lsl);
+    add_to_string_uint_map(translation_map, "and", dp_and);
+    add_to_string_uint_map(translation_map, "eor", dp_eor);
+    add_to_string_uint_map(translation_map, "sub", dp_sub);
+    add_to_string_uint_map(translation_map, "rsb", dp_rsb);
+    add_to_string_uint_map(translation_map, "add", dp_add);
+    add_to_string_uint_map(translation_map, "orr", dp_orr);
+    add_to_string_uint_map(translation_map, "mov", dp_mov);
+    add_to_string_uint_map(translation_map, "tst", dp_tst);
+    add_to_string_uint_map(translation_map, "teq", dp_teq);
+    add_to_string_uint_map(translation_map, "cmp", dp_cmp);
+    add_to_string_uint_map(translation_map, "andeq", dp_andeq);
+    add_to_string_uint_map(translation_map, "lsl", dp_lsl);
 
     // Branch
-    add_to_symbol_map(translation_map, "beq", eq);
-    add_to_symbol_map(translation_map, "bne", ne);
-    add_to_symbol_map(translation_map, "bge", ge);
-    add_to_symbol_map(translation_map, "blt", lt);
-    add_to_symbol_map(translation_map, "bgt", gt);
-    add_to_symbol_map(translation_map, "ble", le);
-    add_to_symbol_map(translation_map, "bal", al);
-    add_to_symbol_map(translation_map, "b",   al);
+    add_to_string_uint_map(translation_map, "beq", eq);
+    add_to_string_uint_map(translation_map, "bne", ne);
+    add_to_string_uint_map(translation_map, "bge", ge);
+    add_to_string_uint_map(translation_map, "blt", lt);
+    add_to_string_uint_map(translation_map, "bgt", gt);
+    add_to_string_uint_map(translation_map, "ble", le);
+    add_to_string_uint_map(translation_map, "bal", al);
+    add_to_string_uint_map(translation_map, "b",   al);
 
     // Multiply
-    add_to_symbol_map(translation_map, "mul", mul_inst);
-    add_to_symbol_map(translation_map, "mla", mla_inst);
+    add_to_string_uint_map(translation_map, "mul", mul_inst);
+    add_to_string_uint_map(translation_map, "mla", mla_inst);
 
     // Single Data Transfer
-    add_to_symbol_map(translation_map, "ldr", ldr);
-    add_to_symbol_map(translation_map, "str", str);
+    add_to_string_uint_map(translation_map, "ldr", ldr);
+    add_to_string_uint_map(translation_map, "str", str);
 }
 
 // Function pointers to translate functions
@@ -107,7 +107,7 @@ static bool check_endianness(void) {
     return checker.buf[3];
 }
 
-static StatusCode translate_into_in_file(SymbolMap *symbol_map,FILE* in_file, FILE* out_file, AssemblyInfo *assembly_info) {
+static StatusCode translate_into_in_file(StringUintMap *string_uint_map,FILE* in_file, FILE* out_file, AssemblyInfo *assembly_info) {
     char line[MAXIMUM_LINE_LENGTH] = { '\0' };
     StatusCode code;
     uint offset = 0;
@@ -156,7 +156,7 @@ static StatusCode translate_into_in_file(SymbolMap *symbol_map,FILE* in_file, FI
             }
 
             // Call translate function from array according to the type represented by the first token.
-            code = t_functions[type_from_string(tokens[0])](tokens, symbol_map, offset, &current_op, assembly_info);
+            code = t_functions[type_from_string(tokens[0])](tokens, string_uint_map, offset, &current_op, assembly_info);
 
             // Error handling here
             if (code) {
@@ -195,7 +195,7 @@ static StatusCode translate_into_in_file(SymbolMap *symbol_map,FILE* in_file, FI
     return code;
 }
 
-StatusCode h_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assembly_info) {
+StatusCode h_translate(char **tokens, StringUintMap *symbols, uint current_offset, uint *output, AssemblyInfo *assembly_info) {
     *output = 0u;
     return CONTINUE;
 }

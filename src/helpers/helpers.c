@@ -271,7 +271,7 @@ InstructionType type_from_string(char *key) {
 
 StatusCode check_parse_error(uint *output) {
     if (errno) {
-        perror("Invalid number, caused by: ");
+        perror("Invalid number, caused by");
 
         *output = 0;
         return PARSE_ERROR;

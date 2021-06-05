@@ -76,7 +76,7 @@ static StatusCode parse_operand2(char **tokens, uint *output){
     return CONTINUE;
 }
 
-StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo) {
+StatusCode dp_translate(char **tokens, StringUintMap *symbols, uint current_offset, uint *output, AssemblyInfo *assemblyInfo) {
     // The final instruction output.
     uint out = 0u;
 
@@ -85,7 +85,7 @@ StatusCode dp_translate(char **tokens, SymbolMap *symbols, uint current_offset, 
     out |= FLAG_N | FLAG_Z | FLAG_C;
 
     // Get the opcode
-    DPOpCode opcode = query_symbol_map(translation_map, tokens[0]).addr;
+    DPOpCode opcode = query_string_uint_map(translation_map, tokens[0]).addr;
     out |= opcode << 21u;
 
     // Set the I bit if immediate operands used
