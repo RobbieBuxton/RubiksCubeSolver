@@ -6,8 +6,26 @@
 #endif
 
 #include <assert.h>
-#include <stdio.h>
 #include <string.h>
+
+void intr_prntform(const char *format, ...) {
+    va_list args_prnt, args_put;
+
+    // We want two copies of this list.
+    va_start(args_prnt, format);
+    va_start(args_put, format);
+
+    // We still want console output...
+    vprintf(format, args_prnt);
+    vsnprintf(__LAST_OUTPUT__, FAKE_BUFFER_SIZE, format, args_put);
+
+    va_end(args_prnt);
+    va_end(args_put);
+}
+
+const char *get_last_output(void) {
+    return __LAST_OUTPUT__;
+}
 
 void run_test(const Test test) {
     fprintf(stderr, "Running test \"%s\":\n\n", test.name);

@@ -1,8 +1,41 @@
 #ifndef __TESTSUITE_H__
 #define __TESTSUITE_H__
 
+#include <stdarg.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
+
+/*
+ * Sometimes, it is useful to know what was printed into the console.
+ * This is an attempt to intercept all calls to printf and printf only, so that one can read it and compare with an
+ * expected result.
+ *
+ * However, this is not thread safe. We do not have such luxuries like StringStream in .NET, where we can use a buffer
+ * like an input / output stream.
+ */
+
+#define FAKE_BUFFER_SIZE 2048
+
+static char __LAST_OUTPUT__[FAKE_BUFFER_SIZE] = { '\0' };
+
+/**
+ * Our interceptor function for printf.
+ *
+ * @param format Format string for printing.
+ * @param ...    Items to interpolate.
+ */
+void intr_prntform(const char *format, ...);
+
+/**
+ * Get the last output intercepted by the program.
+ *
+ * @return Buffer holding the intercepted output (size: FAKE_BUFFER_SIZE).
+ */
+const char *get_last_output(void);
+
+// We want to intercept all calls to printf only.
+#define printf intr_prntform
 
 /**
  * Test functions are essentially void functions that take no arguments.
