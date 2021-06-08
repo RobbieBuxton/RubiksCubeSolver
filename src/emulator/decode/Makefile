@@ -9,7 +9,7 @@ BUILD   = helpers $(LIB)
 
 .PHONY: all clean rebuild
 
-all:	$(BUILD)
+all: $(BUILD)
 
 rebuild: clean all
 
