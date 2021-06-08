@@ -48,7 +48,43 @@ void assert_true(const bool condition) {
 }
 
 void assert_false(const bool condition) {
-    assert_true(!condition);
+    assert(!condition);
+}
+
+void assert_uint_equals(uint64_t a, uint64_t b) {
+    assert(a == b);
+}
+
+void assert_uint_not_equals(uint64_t a, uint64_t b) {
+    assert(a != b);
+}
+
+void assert_sint_equals(int64_t a, int64_t b) {
+    assert(a == b);
+}
+
+void assert_sint_not_equals(int64_t a, int64_t b) {
+    assert(a != b);
+}
+
+void assert_float_equals(float a, float b, float epsilon) {
+    float d = a - b;
+    assert (d > -epsilon && d < epsilon);
+}
+
+void assert_float_not_equals(float a, float b, float epsilon) {
+    float d = a - b;
+    assert (d <= -epsilon || d >= epsilon);
+}
+
+void assert_double_equals(double a, double b, double epsilon) {
+    double d = a - b;
+    assert (d > -epsilon && d < epsilon);
+}
+
+void assert_double_not_equals(double a, double b, double epsilon) {
+    double d = a - b;
+    assert (d <= -epsilon || d >= epsilon);
 }
 
 void assert_equals(const void *obj1, const void *obj2, const size_t size) {

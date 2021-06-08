@@ -1,8 +1,10 @@
 #ifndef __TESTSUITE_H__
 #define __TESTSUITE_H__
 
+#include <bits/stdint-uintn.h>
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -44,13 +46,15 @@ const char *get_last_output(void);
  */
 typedef void (*TestFunction)(void);
 
+#define TEST_NAME_MAX_LENGTH 512
+
 /**
  * A pair struct holding a test function and the test's name.
  * E.g. test: test_ints_equal | name: "test if two returned ints are equal"
  */
 typedef struct {
-    TestFunction test;  /**< Pointer to test function. */
-    char *name;         /**< Name or objective of function. */
+    TestFunction test;               /**< Pointer to test function. */
+    char name[TEST_NAME_MAX_LENGTH]; /**< Name or objective of function. */
 } Test;
 
 /**
@@ -92,6 +96,82 @@ void assert_true(const bool condition);
  * @param condition The condition to check.
  */
 void assert_false(const bool condition);
+
+/**
+ * Assert that two unsigned integers are equal.
+ * Smaller unsigned integers should be casted (sign-extended) to 64 bits.
+ *
+ * @param a First unsigned integer.
+ * @param b Second unsigned integer.
+ */
+void assert_uint_equals(uint64_t a, uint64_t b);
+
+/**
+ * Assert that two unsigned integers are not equal.
+ * Smaller unsigned integers should be casted (sign-extended) to 64 bits.
+ *
+ * @param a First unsigned integer.
+ * @param b Second unsigned integer.
+ */
+void assert_uint_not_equals(uint64_t a, uint64_t b);
+
+/**
+ * Assert that two signed integers are equal.
+ * Smaller signed integers should be casted (sign-extended) to 64 bits.
+ *
+ * @param a First signed integer.
+ * @param b Second signed integer.
+ */
+void assert_sint_equals(int64_t a, int64_t b);
+
+/**
+ * Assert that two signed integers are not equal.
+ * Smaller signed integers should be casted (sign-extended) to 64 bits.
+ *
+ * @param a First signed integer.
+ * @param b Second signed integer.
+ */
+void assert_sint_not_equals(int64_t a, int64_t b);
+
+/**
+ * Assert that two floats are "close enough to be equal".
+ * Where abs(a - b) < epsilon.
+ *
+ * @param a       First single-precision floating point number.
+ * @param b       Second single-precision floating point number.
+ * @param epsilon Maximum difference (exclusive) between the two numbers.
+ */
+void assert_float_equals(float a, float b, float epsilon);
+
+/**
+ * Assert that two floats are not "close enough to be equal".
+ * Where abs(a - b) >= epsilon.
+ *
+ * @param a       First single-precision floating point number.
+ * @param b       Second single-precision floating point number.
+ * @param epsilon Minimum difference (inclusive) between the two numbers.
+ */
+void assert_float_not_equals(float a, float b, float epsilon);
+
+/**
+ * Assert that two doubles are "close enough to be equal".
+ * Where abs(a - b) < epsilon.
+ *
+ * @param a       First double-precision floating point number.
+ * @param b       Second double-precision floating point number.
+ * @param epsilon Maximum difference (exclusive) between the two numbers.
+ */
+void assert_double_equals(double a, double b, double epsilon);
+
+/**
+ * Assert that two doubles are not "close enough to be equal".
+ * Where abs(a - b) >= epsilon.
+ *
+ * @param a       First double-precision floating point number.
+ * @param b       Second double-precision floating point number.
+ * @param epsilon Minimum difference (inclusive) between the two numbers.
+ */
+void assert_double_not_equals(double a, double b, double epsilon);
 
 /**
  * Assert that two objects are equal.
