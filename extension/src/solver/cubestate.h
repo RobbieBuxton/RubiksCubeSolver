@@ -2,6 +2,7 @@
 #define __CUBESTATE_H__
 
 #include <stdint.h>
+#include <stdlib.h>
 
 /**
  * Colours present on cube.
@@ -47,6 +48,8 @@ typedef struct {
 
 typedef struct {
     FaceData data;
+
+    size_t history_count;
     Movement history[MAXIMUM_MOVEMENTS];
 } CubeState;
 

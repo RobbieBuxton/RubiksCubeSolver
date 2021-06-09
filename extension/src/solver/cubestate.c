@@ -1,7 +1,5 @@
 #include "cubestate.h"
 
-#include <stdlib.h>
-
 // 524287 * i == (i << 19) - i; allows optimisation.
 #define HASH_CONSTANT 524287ul
 
