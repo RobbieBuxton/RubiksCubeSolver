@@ -34,8 +34,10 @@ assemble
 *.vrb
 *.nav
 *.toc
+.ccls-cache
+gede*
 
 #ignore doxygen-generated documentation
 /doc/html/*
 /doc/latex/*
-gede*
+
