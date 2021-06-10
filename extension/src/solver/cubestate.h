@@ -67,10 +67,11 @@ typedef struct {
 /**
  * Apply a movement to a cube state.
  *
- * @param[out] state    State to modify.
+ * @param[in] state     State to move from.
  * @param[in]  movement Movement to apply.
+ * @return              A new struct containing the modified state with an updated move history.
  */
-void apply_movement(CubeState *state, Movement movement);
+CubeState apply_movement(CubeState state, Movement movement);
 
 /**
  * Get the hash of a cube state.
