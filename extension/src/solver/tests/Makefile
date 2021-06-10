@@ -1,6 +1,6 @@
 CC      = gcc
 CFLAGS  = -Wall -g -D_POSIX_SOURCE -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic
-LDFLAGS = -L../../../testsuite -ltestsuite
+LDFLAGS = -L../../../testsuite -L.. -lsolver -ltestsuite
 TARGETS = testcubestate testmovequeue
 OBJECTS = $(foreach trg, $(TARGETS), $trg.o)
 
@@ -10,20 +10,27 @@ OBJECTS = $(foreach trg, $(TARGETS), $trg.o)
 
 all: build test
 
-build: testsuite testcubestate testmovequeue
+build: solver testsuite testcubestate testmovequeue
 
 testsuite:
 	+$(MAKE) -C ../../../testsuite
+
+solver:
+	+$(MAKE) -C ..
 
 testcubestate: testcubestate.o
 	gcc testcubestate.o -o $@ $(LDFLAGS)
 
 testmovequeue: testmovequeue.o
-	gcc testmovequeue.o 0o $@ $(LDFLAGS)
+	gcc testmovequeue.o -o $@ $(LDFLAGS)
 
 test: build
-	$(foreach trg, $(TARGETS) ./$trg)
+	for trg in $(TARGETS); do ./$$trg; done
 
 rebuild: clean build
-	rm -f $(TARGETS)
+
+clean:
+	rm -f $(TARGETS) *.o
+	+$(MAKE) clean -C ..
+	+$(MAKE) clean -C ../../../testsuite
 

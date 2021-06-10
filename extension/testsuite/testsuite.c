@@ -57,37 +57,45 @@ void assert_false(const bool condition) {
 }
 
 void assert_uint_equals(uint64_t a, uint64_t b) {
+    fprintf(stderr, "UINT EQ: %lu == %lu?\n", a, b);
     assert(a == b);
 }
 
 void assert_uint_not_equals(uint64_t a, uint64_t b) {
+    fprintf(stderr, "UINT NEQ: %lu != %lu?\n", a, b);
     assert(a != b);
 }
 
 void assert_sint_equals(int64_t a, int64_t b) {
+    fprintf(stderr, "SINT EQ: %ld == %ld?\n", a, b);
     assert(a == b);
 }
 
 void assert_sint_not_equals(int64_t a, int64_t b) {
+    fprintf(stderr, "SINT NEQ: %ld != %ld?\n", a, b);
     assert(a != b);
 }
 
 void assert_float_equals(float a, float b, float epsilon) {
+    fprintf(stderr, "FLOAT EQ: %f == %f (eps = %f)?\n", a, b, epsilon);
     float d = a - b;
     assert (d > -epsilon && d < epsilon);
 }
 
 void assert_float_not_equals(float a, float b, float epsilon) {
+    fprintf(stderr, "FLOAT NEQ: %f != %f (eps = %f)?\n", a, b, epsilon);
     float d = a - b;
     assert (d <= -epsilon || d >= epsilon);
 }
 
 void assert_double_equals(double a, double b, double epsilon) {
+    fprintf(stderr, "DOUBLE EQ: %f == %f (eps = %f)?\n", a, b, epsilon);
     double d = a - b;
     assert (d > -epsilon && d < epsilon);
 }
 
 void assert_double_not_equals(double a, double b, double epsilon) {
+    fprintf(stderr, "DOUBLE NEQ: %f != %f (eps = %f)?\n", a, b, epsilon);
     double d = a - b;
     assert (d <= -epsilon || d >= epsilon);
 }

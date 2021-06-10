@@ -62,7 +62,7 @@ static void sift_up(MovePriorityQueue *queue, size_t start) {
 }
 
 static void sift_down(MovePriorityQueue *queue, size_t root) {
-    if (root >= count) {
+    if (root >= queue->count) {
         // We've exited the heap.
         return;
     }
@@ -124,6 +124,8 @@ bool add_to_move_priority_queue(MovePriorityQueue *queue, const CubeState *state
     queue->state_queue[where].heuristic_value = heuristic_value;
     queue->state_queue[where].hash = hash_cubestate(state);
     queue->error = MQ_OK;
+
+    sift_up(queue, where);
 
     return true;
 }

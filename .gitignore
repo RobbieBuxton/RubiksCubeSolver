@@ -18,6 +18,8 @@
 *.a
 emulate
 assemble
+test*
+!test*.c
 *.exe
 
 #ignore junk files from compiling Haskell code
