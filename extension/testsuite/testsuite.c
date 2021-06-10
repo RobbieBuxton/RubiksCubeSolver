@@ -102,13 +102,13 @@ void assert_not_equals(const void *obj1, const void *obj2, const size_t size) {
 
 void assert_array_equals(const void *arr1, const void *arr2, const size_t n, const size_t size) {
     for (size_t i = 0; i < n * size; ++i) {
-        assert_equals(((unsigned char *) arr1) + i, (unsigned char *) arr2 + i, size);
+        assert_equals(((uint8_t *) arr1) + i, (uint8_t *) arr2 + i, size);
     }
 }
 
 void assert_array_not_equals(const void *arr1, const void *arr2, const size_t n, const size_t size) {
     for (size_t i = 0; i < n * size; ++i) {
-        if (memcmp((unsigned char *) arr1 + i, (unsigned char *) arr2 + i, size) != 0) {
+        if (memcmp((uint8_t *) arr1 + i, (uint8_t *) arr2 + i, size) != 0) {
             return;
         }
     }
