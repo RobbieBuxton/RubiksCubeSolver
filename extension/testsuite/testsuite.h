@@ -8,6 +8,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Only compile this if we want to intercept printf.
+#ifdef INTERCEPT_PRINTF
+
 /*
  * Sometimes, it is useful to know what was printed into the console.
  * This is an attempt to intercept all calls to printf and printf only, so that one can read it and compare with an
@@ -19,6 +22,9 @@
 
 #define FAKE_BUFFER_SIZE 2048
 
+/**
+ * Value last intercepted by our interceptor function.
+ */
 static char __LAST_OUTPUT__[FAKE_BUFFER_SIZE] = { '\0' };
 
 /**
@@ -38,6 +44,8 @@ const char *get_last_output(void);
 
 // We want to intercept all calls to printf only.
 #define printf intr_prntform
+
+#endif
 
 /**
  * Test functions are essentially void functions that take no arguments.

@@ -8,6 +8,9 @@
 #include <assert.h>
 #include <string.h>
 
+// Only compile this code if we want to intercept printf.
+#ifdef INTERCEPT_PRINTF
+
 void intr_prntform(const char *format, ...) {
     va_list args_prnt, args_put;
 
@@ -26,6 +29,8 @@ void intr_prntform(const char *format, ...) {
 const char *get_last_output(void) {
     return __LAST_OUTPUT__;
 }
+
+#endif
 
 void run_test(const Test test) {
     fprintf(stderr, "Running test \"%s\":\n\n", test.name);
@@ -96,14 +101,14 @@ void assert_not_equals(const void *obj1, const void *obj2, const size_t size) {
 }
 
 void assert_array_equals(const void *arr1, const void *arr2, const size_t n, const size_t size) {
-    for (size_t i = 0; i < n; ++i) {
-        assert_equals(arr1 + i, arr2 + i, size);
+    for (size_t i = 0; i < n * size; ++i) {
+        assert_equals(((unsigned char *) arr1) + i, (unsigned char *) arr2 + i, size);
     }
 }
 
 void assert_array_not_equals(const void *arr1, const void *arr2, const size_t n, const size_t size) {
-    for (size_t i = 0; i < n; ++i) {
-        if (memcmp(arr1 + i, arr2 + i, size) != 0) {
+    for (size_t i = 0; i < n * size; ++i) {
+        if (memcmp((unsigned char *) arr1 + i, (unsigned char *) arr2 + i, size) != 0) {
             return;
         }
     }
