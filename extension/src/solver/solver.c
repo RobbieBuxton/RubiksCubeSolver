@@ -8,17 +8,65 @@
 #include <stdlib.h>
 #include <string.h>
 
+int main(int argc, char const *argv[])
+{
+    int move_count = 0;
+    Movement solution[MAXIMUM_MOVEMENTS] = {0};
+    CubeState *start = (CubeState *) calloc(1, sizeof(CubeState));
+    FaceData face_data = {
+        {
+            {4, 4, 4}, {4, 4, 4}, {4, 4, 4}
+        }, {
+            {1,1,1}, {1, 1, 1}, {1, 1, 1}
+        }, {
+            {0,0,0}, {0, 0, 0}, {0, 0, 0}
+        }, {
+            {3,3,3}, {3, 3, 3}, {3, 3, 3}
+        }, {
+            {5,5,5}, {5, 5, 5}, {5, 5, 5}
+        }, {
+            {2,2,2}, {2, 2, 2}, {2, 2, 2}
+        }
+    };
 
+    // {
+    //     {
+    //         {4, 4, 4}, {4, 4, 4}, {4, 4, 4}
+    //     }, {
+    //         {0, 0, 0}, {1, 1, 1}, {1, 1, 1}
+    //     }, {
+    //         {3, 3, 3}, {0, 0, 0}, {0, 0, 0}
+    //     }, {
+    //         {5, 5, 5}, {3, 3, 3}, {3, 3, 3}
+    //     }, {
+    //         {1, 1, 1}, {5, 5, 5}, {5, 5, 5}
+    //     }, {
+    //         {2, 2, 2}, {2, 2, 2}, {2, 2, 2}
+    //     }
+    // };
+
+    memcpy(start->data, face_data, sizeof(Colour) * 36);
+
+    solve(start, &move_count, solution);
+
+    for (int move = 0; move < move_count; move++) {
+        printf("direction: %u, face: %u\n", solution[move].direction, solution[move].face);
+    }
+
+    return 0;
+}
 
 bool solve(CubeState *start, int *move_count, Movement *solution) {
     MovePriorityQueue *queue = new_move_priority_queue(100);
     add_to_move_priority_queue(queue, start, estimate_cost(start));
     CubeState *current;
+    MoveQueueNode *currentNode;
     HashTree* visitedHashes = new_hash_tree();
 
     while(queue->count > 0) {
         // Get next state from the queue
-        if (!poll_move_priority_queue(queue, current)) return false;
+        if (!poll_move_priority_queue(queue, currentNode)) return false;
+        current = &currentNode->state;
 
         if (!visit(current, visitedHashes)) {
             continue;
@@ -102,30 +150,6 @@ static MapNode *new_node(const uint64_t hash) {
 
     return symbol;
 }
-
-// static MapNode *modify_or_append_pair(MapNode *symbol, const char *label, const uint addr) {
-//     // Get old size.
-//     size_t old_amt = (symbol->amount)++;
-
-//     // If there is already the same label, modify it instead of appending a new one.
-//     __StringUintPair__ *found = symbol_equals(symbol, label);
-//     if (found) {
-//         found->value = addr;
-//         return symbol;
-//     }
-
-//     __StringUintPair__ *new_arr = realloc(symbol->pairs, symbol->amount * sizeof(__StringUintPair__));
-
-//     if (!new_arr) {
-//         // Failed to reallocate.
-//         return NULL;
-//     }
-
-//     strncpy(symbol->pairs[old_amt].string, label, MAXIMUM_SYMBOL_LENGTH - 1);
-//     symbol->pairs[old_amt].value = addr;
-
-//     return symbol;
-// }
 
 static bool free_node(MapNode *symbol) {
     if (!symbol) {
