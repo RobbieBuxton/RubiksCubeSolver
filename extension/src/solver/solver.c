@@ -12,25 +12,25 @@
 
 bool solve(CubeState *start, int *move_count, Movement *solution) {
     MovePriorityQueue *queue = new_move_priority_queue(100);
+    MoveQueueNode query_result;
     add_to_move_priority_queue(queue, start, estimate_cost(start));
-    CubeState *current;
     HashTree* visitedHashes = new_hash_tree();
 
     while(queue->count > 0) {
         // Get next state from the queue
-        if (!poll_move_priority_queue(queue, current)) return false;
+        if (!poll_move_priority_queue(queue, &query_result)) return false;
 
-        if (!visit(current, visitedHashes)) {
+        if (!visit(&(query_result.state), visitedHashes)) {
             continue;
         }
 
-        if (solved(current)) {
-            *move_count = current->history_count;
-            solution = current->history;
+        if (solved(&(query_result.state))) {
+            *move_count = query_result.state.history_count;
+            solution = query_result.state.history;
             return true;
         }
 
-        expand_all_moves(current, queue, visitedHashes);
+        expand_all_moves(&(query_result.state), queue, visitedHashes);
     }
     return false;
 }
@@ -44,15 +44,15 @@ int estimate_cost(CubeState *state) {
 }
 
 bool expand_all_moves(CubeState *current, MovePriorityQueue *queue, HashTree *visitedHashes) {
-    CubeState *next;
+    CubeState next;
     Movement movement;
     for (int direction = 0; direction < 3; direction++) {
         movement.direction = direction;
         for (int face = 0; face < 6; face++) {
             movement.face = face;
-            *next = apply_movement(current, movement);
-            if (!query_hash_tree(visitedHashes, hash_cubestate(next))) {
-                add_to_move_priority_queue(queue, next, estimate_cost(next));
+            next = apply_movement(current, movement);
+            if (!query_hash_tree(visitedHashes, hash_cubestate(&next))) {
+                add_to_move_priority_queue(queue, &next, estimate_cost(&next));
             }
         }
     }
