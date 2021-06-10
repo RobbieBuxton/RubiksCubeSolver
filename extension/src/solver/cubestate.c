@@ -4,7 +4,7 @@
 #define HASH_CONSTANT 524287ul
 
 uint64_t hash_cubestate(const CubeState *state) {
-    uint64_t hash = 0ul;
+    uint64_t hash = 1ul;
     uint64_t multiplier = 1ul;
 
     for (size_t f = 0; f < FACES; ++f) {

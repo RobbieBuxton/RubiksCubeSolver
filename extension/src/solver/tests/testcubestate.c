@@ -2,8 +2,9 @@
 #include "../cubestate.h"
 
 static void test_hash_cubestate(void) {
-    CubeState state;
-    state.data[LEFT][0][2] = BLUE;
+    CubeState state = {
+        .data = { { { RED } } }
+    };
 
     assert_uint_not_equals(0ul, hash_cubestate(&state));
 }

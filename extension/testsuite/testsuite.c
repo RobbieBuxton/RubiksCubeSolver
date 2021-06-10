@@ -25,10 +25,12 @@ void run_tests(const Test *tests, const size_t n) {
 }
 
 void assert_true(const bool condition) {
+    fprintf(stderr, "BOOL is TRUE: %d?\n", condition);
     assert(condition);
 }
 
 void assert_false(const bool condition) {
+    fprintf(stderr, "BOOL is FALSE: %d?\n", condition);
     assert(!condition);
 }
 

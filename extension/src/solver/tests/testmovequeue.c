@@ -10,7 +10,38 @@
 static MovePriorityQueue *test_queue;
 
 static const CubeState TEST_STATE = {
-    .data = { { { RED } } },
+    .data = {
+        {
+            { RED, RED, RED },
+            { RED, RED, RED },
+            { RED, RED, RED }
+        },
+        {
+            { GREEN, GREEN, GREEN },
+            { GREEN, GREEN, GREEN },
+            { GREEN, GREEN, GREEN }
+        },
+        {
+            { BLUE, BLUE, BLUE },
+            { BLUE, BLUE, BLUE },
+            { BLUE, BLUE, BLUE }
+        },
+        {
+            { YELLOW, YELLOW, YELLOW },
+            { YELLOW, YELLOW, YELLOW },
+            { YELLOW, YELLOW, YELLOW }
+        },
+        {
+            { ORANGE, ORANGE, ORANGE },
+            { ORANGE, ORANGE, ORANGE },
+            { ORANGE, ORANGE, ORANGE }
+        },
+        {
+            { WHITE, WHITE, WHITE },
+            { WHITE, WHITE, WHITE },
+            { WHITE, WHITE, WHITE }
+        }
+    },
     .history_count = 0u,
     .history = { { .face = TOP, .direction = CW } }
 };
