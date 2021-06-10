@@ -1,7 +1,7 @@
 #include "../../../testsuite/testsuite.h"
 #include "../cubestate.h"
 
-void test_hash_cubestate(void) {
+static void test_hash_cubestate(void) {
     CubeState state;
     state.data[LEFT][0][2] = BLUE;
 
@@ -13,7 +13,6 @@ static const Test TESTS[1] = {
 };
 
 int main(void) {
-    // Stack array. Should work fine.
     run_tests(TESTS, sizeof(TESTS) / sizeof(Test));
     return 0;
 }

@@ -78,7 +78,7 @@ void apply_movement(CubeState *state, Movement movement);
  * @param  state Cube state to hash.
  * @return       A 64-bit unsigned hash for a cube state.
  */
-uint64_t hash_cubestate(CubeState *state);
+uint64_t hash_cubestate(const CubeState *state);
 
 #endif  // __CUBESTATE_H__
 

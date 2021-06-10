@@ -63,7 +63,7 @@ bool free_move_priority_queue(MovePriorityQueue* queue);
  * @param[in]  heuristic_value Cube state's heuristic value.
  * @return                     If the addition is successful, returns true. Otherwise, returns false.
  */
-bool add_to_move_priority_queue(MovePriorityQueue *queue, CubeState *state, uint64_t heuristic_value);
+bool add_to_move_priority_queue(MovePriorityQueue *queue, const CubeState *state, const uint64_t heuristic_value);
 
 /**
  * Get the item with the lowest heuristic value.
