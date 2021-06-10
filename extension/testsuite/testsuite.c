@@ -8,34 +8,10 @@
 #include <assert.h>
 #include <string.h>
 
-// Only compile this code if we want to intercept printf.
-#ifdef INTERCEPT_PRINTF
-
-void intr_prntform(const char *format, ...) {
-    va_list args_prnt, args_put;
-
-    // We want two copies of this list.
-    va_start(args_prnt, format);
-    va_start(args_put, format);
-
-    // We still want console output...
-    vprintf(format, args_prnt);
-    vsnprintf(__LAST_OUTPUT__, FAKE_BUFFER_SIZE, format, args_put);
-
-    va_end(args_prnt);
-    va_end(args_put);
-}
-
-const char *get_last_output(void) {
-    return __LAST_OUTPUT__;
-}
-
-#endif
-
 void run_test(const Test test) {
     fprintf(stderr, "Running test \"%s\":\n\n", test.name);
     test.test();
-    fprintf(stderr, "Test \"%s\" passed.\n\n", test.name);
+    fprintf(stderr, "\nTest \"%s\" passed.\n\n", test.name);
 }
 
 void run_tests(const Test *tests, const size_t n) {
@@ -45,7 +21,7 @@ void run_tests(const Test *tests, const size_t n) {
         run_test(tests[i]);
     }
 
-    fprintf(stderr, "All tests passed.\n");
+    fprintf(stderr, "All tests passed.\n\n");
 }
 
 void assert_true(const bool condition) {
@@ -79,25 +55,35 @@ void assert_sint_not_equals(int64_t a, int64_t b) {
 void assert_float_equals(float a, float b, float epsilon) {
     fprintf(stderr, "FLOAT EQ: %f == %f (eps = %f)?\n", a, b, epsilon);
     float d = a - b;
-    assert (d > -epsilon && d < epsilon);
+    assert(d > -epsilon && d < epsilon);
 }
 
 void assert_float_not_equals(float a, float b, float epsilon) {
     fprintf(stderr, "FLOAT NEQ: %f != %f (eps = %f)?\n", a, b, epsilon);
     float d = a - b;
-    assert (d <= -epsilon || d >= epsilon);
+    assert(d <= -epsilon || d >= epsilon);
 }
 
 void assert_double_equals(double a, double b, double epsilon) {
     fprintf(stderr, "DOUBLE EQ: %f == %f (eps = %f)?\n", a, b, epsilon);
     double d = a - b;
-    assert (d > -epsilon && d < epsilon);
+    assert(d > -epsilon && d < epsilon);
 }
 
 void assert_double_not_equals(double a, double b, double epsilon) {
     fprintf(stderr, "DOUBLE NEQ: %f != %f (eps = %f)?\n", a, b, epsilon);
     double d = a - b;
-    assert (d <= -epsilon || d >= epsilon);
+    assert(d <= -epsilon || d >= epsilon);
+}
+
+void assert_string_equals(const char *str1, const char *str2) {
+    fprintf(stderr, "STRING EQ: \"%s\" == \"%s\"?\n", str1, str2);
+    assert(strcmp(str1, str2) == 0);
+}
+
+void assert_string_not_equals(const char *str1, const char *str2) {
+    fprintf(stderr, "STRING EQ: \"%s\" != \"%s\"?\n", str1, str2);
+    assert(strcmp(str1, str2) != 0);
 }
 
 void assert_equals(const void *obj1, const void *obj2, const size_t size) {

@@ -8,7 +8,7 @@ OBJECTS = $(foreach trg, $(TARGETS), $trg.o)
 
 .PHONY: all clean build test rebuild
 
-all: build test
+all: rebuild test
 
 build: solver testsuite testcubestate testmovequeue
 

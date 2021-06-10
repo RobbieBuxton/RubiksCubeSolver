@@ -13,6 +13,7 @@ static const Test TESTS[1] = {
 };
 
 int main(void) {
+    fprintf(stderr, "--- %s ---\n", __FILE__);
     run_tests(TESTS, sizeof(TESTS) / sizeof(Test));
     return 0;
 }

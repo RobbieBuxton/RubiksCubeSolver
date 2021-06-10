@@ -3,6 +3,8 @@
 #include "../movequeue.h"
 
 #include <assert.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
 static MovePriorityQueue *test_queue;
@@ -22,22 +24,20 @@ static void test_add_to_queue(void) {
 
 static void test_poll_from_queue(void) {
     MoveQueueNode result;
+    uint64_t polls[4] = { 0 };
 
-    poll_move_priority_queue(test_queue, &result);
-    assert_sint_equals(MQ_OK, test_queue->error);
-    assert_uint_equals(2, result.heuristic_value);
+    for (int i = 0; i < 4; ++i) {
+        poll_move_priority_queue(test_queue, &result);
+        assert_sint_equals(MQ_OK, test_queue->error);
+        polls[i] = result.heuristic_value;
+    }
 
-    poll_move_priority_queue(test_queue, &result);
-    assert_sint_equals(MQ_OK, test_queue->error);
-    assert_uint_equals(3, result.heuristic_value);
+    fprintf(stderr, "GOT: { %lu, %lu, %lu, %lu }.\n", polls[0], polls[1], polls[2], polls[3]);
 
-    poll_move_priority_queue(test_queue, &result);
-    assert_sint_equals(MQ_OK, test_queue->error);
-    assert_uint_equals(4, result.heuristic_value);
-
-    poll_move_priority_queue(test_queue, &result);
-    assert_sint_equals(MQ_OK, test_queue->error);
-    assert_uint_equals(5, result.heuristic_value);
+    assert_uint_equals(2, polls[0]);
+    assert_uint_equals(3, polls[1]);
+    assert_uint_equals(4, polls[2]);
+    assert_uint_equals(5, polls[3]);
 }
 
 static void test_queue_underflow(void) {
@@ -59,6 +59,7 @@ static const Test TESTS[3] = {
 };
 
 int main(void) {
+    fprintf(stderr, "--- %s ---\n", __FILE__);
     test_queue = new_move_priority_queue(4);
     assert(test_queue);
 
