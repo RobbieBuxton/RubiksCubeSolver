@@ -8,11 +8,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-bool solve(CubeState *start, int *move_count, Movement* solution) {
+
+
+bool solve(CubeState *start, int *move_count, Movement *solution) {
     MovePriorityQueue *queue = new_move_priority_queue(100);
     add_to_move_priority_queue(queue, start, estimate_cost(start));
     CubeState *current;
-    u_int64_t* visitedHashes;
+    HashTree* visitedHashes = new_hash_tree();
 
     while(queue->count > 0) {
         // Get next state from the queue
@@ -41,13 +43,27 @@ int estimate_cost(CubeState *state) {
     return heuristic(state) + state->history_count;
 }
 
-bool expand_all_moves(CubeState *current, MovePriorityQueue *queue, uint64_t *visitedHashes) {
+bool expand_all_moves(CubeState *current, MovePriorityQueue *queue, HashTree *visitedHashes) {
+    CubeState *next;
+    Movement movement;
+    for (int direction = 0; direction < 3; direction++) {
+        movement.direction = direction;
+        for (int face = 0; face < 6; face++) {
+            movement.face = face;
+            *next = apply_movement(current, movement);
+            if (!query_hash_tree(visitedHashes, hash_cubestate(next))) {
+                add_to_move_priority_queue(queue, next, estimate_cost(next));
+            }
+        }
+    }
+}
 
+bool visit(CubeState *current, HashTree *visitedHashes) {
+    return add_to_hash_tree(visitedHashes, hash_cubestate(current));
 }
 
 
-
-
+// ----------------------------------- tree implementation -------------------------------------
 
 HashTree *new_hash_tree(void) {
     // Attempt to create a map.
@@ -65,7 +81,7 @@ HashTree *new_hash_tree(void) {
 
 // Empty out a node.
 static void clear_node(MapNode *symbol) {
-    symbol->colour      = RED;
+    symbol->colour      = RED_NODE;
     symbol->hash        = 0u;
     symbol->parent      = NULL;
     symbol->left_child  = NULL;
@@ -231,7 +247,7 @@ static void case_5(HashTree *map, MapNode *current);
 
 static void case_1(HashTree *map, MapNode *current) {
     if (!current->parent) {
-        current->colour = BLACK;
+        current->colour = BLACK_NODE;
     } else {
         case_2(map, current);
     }
@@ -240,7 +256,7 @@ static void case_1(HashTree *map, MapNode *current) {
 static void case_2(HashTree *map, MapNode *current) {
     assert(current->parent);
 
-    if (current->parent->colour != BLACK) {
+    if (current->parent->colour != BLACK_NODE) {
         case_3(map, current);
     }
 }
@@ -263,10 +279,10 @@ static void case_3(HashTree *map, MapNode *current) {
         assert(false);
     }
 
-    if (unc->colour == RED) {
-        par->colour = BLACK;
-        unc->colour = BLACK;
-        gpar->colour = RED;
+    if (unc->colour == RED_NODE) {
+        par->colour = BLACK_NODE;
+        unc->colour = BLACK_NODE;
+        gpar->colour = RED_NODE;
 
         case_1(map, gpar);
     } else {
@@ -300,8 +316,8 @@ static void case_5(HashTree *map, MapNode *current) {
     gpar = par->parent;
     assert(gpar);
 
-    par->colour = BLACK;
-    gpar->colour = RED;
+    par->colour = BLACK_NODE;
+    gpar->colour = RED_NODE;
 
     if (is_left_child(current)) {
         // 5a

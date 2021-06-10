@@ -4,6 +4,36 @@
 #include "cubestate.h"
 #include "movequeue.h"
 
+/**
+ * "Colours" for the Hash nodes.
+ * Used for balancing a hash tree.
+ */
+typedef enum {
+    RED_NODE,  /**< Red colouring for a node. */
+    BLACK_NODE /**< Black colouring for a node. */
+} NodeColour;
+
+/**
+ * A Node for a hash bst.
+ */
+typedef struct MapNode_t {
+    uint64_t hash;                 /**< Hash identifier of node. */
+
+    NodeColour colour;             /**< hash colour for use in balancing. */
+    struct MapNode_t *parent;      /**< Parent hash for this hash. */
+    struct MapNode_t *left_child;  /**< Left child for this hash. */
+    struct MapNode_t *right_child; /**< Right child for this hash. */
+} MapNode;
+
+
+/**
+ * An red-black tree of uint64_t
+ */
+typedef struct {
+    size_t count;  /**< Number of items currently stored in the tree. */
+    MapNode *root; /**< Pointer to the root of the map's hash tree. */
+} HashTree;
+
 /** 
  * Finds a solution set of moves for a cube starting in position represented by start.
  * 
@@ -55,36 +85,6 @@ bool expand_all_moves(CubeState *current, MovePriorityQueue *queue, HashTree *vi
  */
 bool visit(CubeState *current, HashTree *visitedHashes);
 
-
-/**
- * "Colours" for the Hash nodes.
- * Used for balancing a hash tree.
- */
-typedef enum {
-    RED,  /**< Red colouring for a node. */
-    BLACK /**< Black colouring for a node. */
-} NodeColour;
-
-/**
- * A Node for a hash bst.
- */
-typedef struct MapNode_t {
-    uint64_t hash;                 /**< Hash identifier of node. */
-
-    NodeColour colour;             /**< hash colour for use in balancing. */
-    struct MapNode_t *parent;      /**< Parent hash for this hash. */
-    struct MapNode_t *left_child;  /**< Left child for this hash. */
-    struct MapNode_t *right_child; /**< Right child for this hash. */
-} MapNode;
-
-
-/**
- * An red-black tree of uint64_t
- */
-typedef struct {
-    size_t count;  /**< Number of items currently stored in the tree. */
-    MapNode *root; /**< Pointer to the root of the map's hash tree. */
-} HashTree;
 
 /**
  * Allocate a new hash map. This map must be freed later using free_hash_tree.
