@@ -37,25 +37,47 @@ typedef enum {
 // Not making the same mistake here.
 typedef Colour FaceData[FACES][HEIGHT][WIDTH];
 
+/**
+ * Rotation direction enum.
+ */
 typedef enum {
-    CW, CCW, DOUBLE
+    CW,    /**< Clockwise relative to face. */
+    CCW,   /**< Counterclockwise relative to face. */
+    DOUBLE /**< Double rotation relative to face. */
 } Rotation;
 
+/**
+ * Pair of values that describe a movement.
+ */
 typedef struct {
-    Face face;
-    Rotation direction;
+    Face face;          /**< Face to rotate. */
+    Rotation direction; /**< Rotation direction. */
 } Movement;
 
+/**
+ * The current state of a cube, and the set of moves it took to get here.
+ */
 typedef struct {
-    FaceData data;
+    FaceData data;                       /**< What the faces look like. */
 
-    size_t history_count;
-    Movement history[MAXIMUM_MOVEMENTS];
+    size_t history_count;                /**< How much of the history is filled. */
+    Movement history[MAXIMUM_MOVEMENTS]; /**< The rotation history. */
 } CubeState;
 
-// TODO
+/**
+ * Apply a movement to a cube state.
+ *
+ * @param[out] state    State to modify.
+ * @param[in]  movement Movement to apply.
+ */
 void apply_movement(CubeState *state, Movement movement);
 
+/**
+ * Get the hash of a cube state.
+ *
+ * @param  state Cube state to hash.
+ * @return       A 64-bit unsigned hash for a cube state.
+ */
 uint64_t hash_cubestate(CubeState *state);
 
 #endif  // __CUBESTATE_H__
