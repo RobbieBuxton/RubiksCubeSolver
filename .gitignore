@@ -43,3 +43,6 @@ gede*
 /doc/html/*
 /doc/latex/*
 
+#ignore vscode junk
+*.vscode*
+
