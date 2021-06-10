@@ -81,5 +81,13 @@ CubeState apply_movement(CubeState state, Movement movement);
  */
 uint64_t hash_cubestate(const CubeState *state);
 
+/**
+ * Check whether a given cube state is in solved position.
+ * 
+ * @param  state Cube state to check.
+ * @return       True if solved.
+ */
+bool solved(CubeState state);
+
 #endif  // __CUBESTATE_H__
 
