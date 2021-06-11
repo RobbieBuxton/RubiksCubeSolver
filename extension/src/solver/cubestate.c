@@ -72,8 +72,8 @@ void unfold(Face face, CubeState *state, UnfoldedFace output) {
 void rotate(UnfoldedFace uf, Rotation rotation) {
     UnfoldedFace rotated;
     for (size_t n = 0; n <= rotation; n++) {
-        for (size_t i = 0; i < SIDE_LENGTH + 1; i++) {
-            for (size_t j = 0; j < SIDE_LENGTH + 1; j++) {
+        for (size_t i = 0; i < SIDE_LENGTH + 2; i++) {
+            for (size_t j = 0; j < SIDE_LENGTH + 2; j++) {
                 rotated[i][j] = uf[SIDE_LENGTH + 1 - j][i];
             }
         }
@@ -89,7 +89,7 @@ void project(UnfoldedFace source, UnfoldedFace target) {
         for (size_t j = 0; j < SIDE_LENGTH + 2; j++) {
             // The below if makes sure we're not trying to access the corners of the array
             if (!((i == 0 || i == SIDE_LENGTH + 1) && (j == 0 || j == SIDE_LENGTH + 1))) {
-                target[i][j] = source[i][j];
+                *target[i][j] = *source[i][j];
             }
         }
     }
