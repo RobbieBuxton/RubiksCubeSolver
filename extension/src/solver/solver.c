@@ -8,54 +8,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// int main(int argc, char const *argv[])
-// {
-//     int move_count = 0;
-//     Movement solution[MAXIMUM_MOVEMENTS] = {0};
-//     CubeState *start = (CubeState *) calloc(1, sizeof(CubeState));
-//     FaceData face_data = {
-//         {
-//             {4, 4, 4}, {4, 4, 4}, {4, 4, 4}
-//         }, {
-//             {1,1,1}, {1, 1, 1}, {1, 1, 1}
-//         }, {
-//             {0,0,0}, {0, 0, 0}, {0, 0, 0}
-//         }, {
-//             {3,3,3}, {3, 3, 3}, {3, 3, 3}
-//         }, {
-//             {5,5,5}, {5, 5, 5}, {5, 5, 5}
-//         }, {
-//             {2,2,2}, {2, 2, 2}, {2, 2, 2}
-//         }
-//     };
-
-//     // {
-//     //     {
-//     //         {4, 4, 4}, {4, 4, 4}, {4, 4, 4}
-//     //     }, {
-//     //         {0, 0, 0}, {1, 1, 1}, {1, 1, 1}
-//     //     }, {
-//     //         {3, 3, 3}, {0, 0, 0}, {0, 0, 0}
-//     //     }, {
-//     //         {5, 5, 5}, {3, 3, 3}, {3, 3, 3}
-//     //     }, {
-//     //         {1, 1, 1}, {5, 5, 5}, {5, 5, 5}
-//     //     }, {
-//     //         {2, 2, 2}, {2, 2, 2}, {2, 2, 2}
-//     //     }
-//     // };
-
-//     memcpy(start->data, face_data, sizeof(Colour) * 36);
-
-//     solve(start, &move_count, solution);
-
-//     for (int move = 0; move < move_count; move++) {
-//         printf("direction: %u, face: %u\n", solution[move].direction, solution[move].face);
-//     }
-
-//     return 0;
-// }
-
 bool solve(CubeState *start, int *move_count, Movement *solution) {
     MovePriorityQueue *queue = new_move_priority_queue(100);
     MoveQueueNode query_result;
@@ -63,6 +15,8 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
     HashTree* visitedHashes = new_hash_tree();
 
     while(queue->count > 0) {
+        printf("added to queue correctly\n");
+
         // Get next state from the queue
         if (!poll_move_priority_queue(queue, &query_result)) return false;
 
@@ -102,6 +56,7 @@ bool expand_all_moves(CubeState *current, MovePriorityQueue *queue, HashTree *vi
             }
         }
     }
+    return true;
 }
 
 bool visit(CubeState *current, HashTree *visitedHashes) {

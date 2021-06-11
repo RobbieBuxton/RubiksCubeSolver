@@ -1,7 +1,7 @@
 CC      = gcc
 CFLAGS  = -Wall -g -D_POSIX_SOURCE -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic
 LIB     = libsolver.a
-LIBOBJS = cubestate.o movequeue.o
+LIBOBJS = cubestate.o movequeue.o solver.o
 BUILD   = $(LIB)
 
 .SUFFIXES: .c .o
@@ -21,4 +21,6 @@ $(LIB): $(LIBOBJS)
 cubestate.o: cubestate.h
 
 movequeue.o: movequeue.h
+
+solver.o: solver.h
 
