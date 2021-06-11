@@ -5,7 +5,7 @@
 #define HASH_CONSTANT 524287ul
 
 uint64_t hash_cubestate(const CubeState *state) {
-    uint64_t hash = 0ul;
+    uint64_t hash = 1ul;
     uint64_t multiplier = 1ul;
 
     for (size_t f = 0; f < FACES; ++f) {
@@ -20,13 +20,13 @@ uint64_t hash_cubestate(const CubeState *state) {
     return hash;
 }
 
-CubeState apply_movement(CubeState state, Movement movement) {
+CubeState apply_movement(const CubeState *state, Movement movement) {
     UnfoldedFace uf;
-    unfold(movement.face, &state, uf);
+    unfold(movement.face, state, uf);
     rotate(uf, movement.direction);
     
     CubeState moved;
-    memcpy(&moved, &state, sizeof(CubeState));
+    memcpy(&moved, state, sizeof(CubeState));
     UnfoldedFace target_uf;
     unfold(movement.face, &moved, target_uf);
     project(uf, target_uf);
@@ -244,3 +244,32 @@ void unfold(Face face, CubeState *state, Colour ***output) {
         }
     }
 }
+bool solved(const CubeState *state) {
+    static const int REQUIRED_COLOUR_COUNTS = HEIGHT * WIDTH;
+    int found_colours[COLOURS] = { 0 };
+
+    for (size_t f = 0; f < FACES; ++f) {
+        Colour previous_colour = -1;
+        for (size_t r = 0; r < HEIGHT; ++r) {
+            for (size_t c = 0; c < WIDTH; ++c) {
+                Colour cur = state->data[f][r][c];
+
+                ++(found_colours[cur]);
+                if (previous_colour >= RED && previous_colour != cur) {
+                    return false;
+                } else {
+                    previous_colour = cur;
+                }
+            }
+        }
+    }
+
+    for (size_t i = 0; i < COLOURS; ++i) {
+        if (found_colours[i] != REQUIRED_COLOUR_COUNTS) {
+            return false;
+        }
+    }
+
+    return true;
+}
+

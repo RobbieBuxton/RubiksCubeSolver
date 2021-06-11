@@ -1,6 +1,7 @@
 #ifndef __CUBESTATE_H__
 #define __CUBESTATE_H__
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -8,8 +9,15 @@
  * Colours present on cube.
  */
 typedef enum {
-    RED, BLUE, YELLOW, GREEN, WHITE, ORANGE
+    RED = 0,
+    BLUE = 1,
+    YELLOW = 2,
+    GREEN = 3,
+    WHITE = 4,
+    ORANGE = 5
 } Colour;
+
+#define COLOURS 6
 
 /**
  * Enums for the 6 faces of the cube.
@@ -41,9 +49,9 @@ typedef Colour FaceData[FACES][HEIGHT][WIDTH];
  * Rotation direction enum.
  */
 typedef enum {
-    CW,     /**< Clockwise relative to face. */
-    DOUBLE, /**< Double rotation relative to face. */
-    CCW     /**< Counterclockwise relative to face. */
+    CW = 0,     /**< Clockwise relative to face. */
+    DOUBLE = 1, /**< Double rotation relative to face. */
+    CCW = 2     /**< Counterclockwise relative to face. */
 } Rotation;
 
 /**
@@ -71,7 +79,7 @@ typedef struct {
  * @param[in]  movement Movement to apply.
  * @return              A new struct containing the modified state with an updated move history.
  */
-CubeState apply_movement(CubeState state, Movement movement);
+CubeState apply_movement(const CubeState *state, Movement movement);
 
 /**
  * Get the hash of a cube state.
@@ -80,6 +88,14 @@ CubeState apply_movement(CubeState state, Movement movement);
  * @return       A 64-bit unsigned hash for a cube state.
  */
 uint64_t hash_cubestate(const CubeState *state);
+
+/**
+ * Check whether a given cube state is in solved position.
+ *
+ * @param  state Cube state to check.
+ * @return       True if solved.
+ */
+bool solved(const CubeState *state);
 
 #endif  // __CUBESTATE_H__
 

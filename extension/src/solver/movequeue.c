@@ -52,7 +52,7 @@ static void sift_up(MovePriorityQueue *queue, size_t start) {
 
     // This is a min heap, so swap if current < parent.
     size_t par = parent(start);
-    if (queue->state_queue[start].heuristic_value < queue->state_queue[par].heuristic_value) {
+    if (queue->state_queue[start].cost < queue->state_queue[par].cost) {
         MoveQueueNode temp = queue->state_queue[par];
         queue->state_queue[par] = queue->state_queue[start];
         queue->state_queue[start] = temp;
@@ -62,7 +62,7 @@ static void sift_up(MovePriorityQueue *queue, size_t start) {
 }
 
 static void sift_down(MovePriorityQueue *queue, size_t root) {
-    if (root >= count) {
+    if (root >= queue->count) {
         // We've exited the heap.
         return;
     }
@@ -81,10 +81,10 @@ static void sift_down(MovePriorityQueue *queue, size_t root) {
     } else {
         // Both children are in the heap, check as normal.
         // Swap with smaller child...
-        to_swap = (queue->state_queue[left].heuristic_value <= queue->state_queue[right].heuristic_value) ? left : right;
+        to_swap = (queue->state_queue[left].cost <= queue->state_queue[right].cost) ? left : right;
     }
 
-    if (queue->state_queue[root].heuristic_value > queue->state_queue[to_swap].heuristic_value) {
+    if (queue->state_queue[root].cost > queue->state_queue[to_swap].cost) {
         // Swap if larger.
         MoveQueueNode temp = queue->state_queue[to_swap];
         queue->state_queue[to_swap] = queue->state_queue[root];
@@ -111,7 +111,7 @@ static bool extend_move_priority_queue(MovePriorityQueue *queue) {
     return true;
 }
 
-bool add_to_move_priority_queue(MovePriorityQueue *queue, const CubeState *state, const uint64_t heuristic_value) {
+bool add_to_move_priority_queue(MovePriorityQueue *queue, const CubeState *state, const uint64_t cost) {
     if (queue->count >= queue->size) {
         // Extend the queue first.
         if (!extend_move_priority_queue(queue)) {
@@ -121,9 +121,11 @@ bool add_to_move_priority_queue(MovePriorityQueue *queue, const CubeState *state
 
     size_t where = (queue->count)++;
     memcpy(&queue->state_queue[where].state, state, sizeof(CubeState));
-    queue->state_queue[where].heuristic_value = heuristic_value;
+    queue->state_queue[where].cost = cost;
     queue->state_queue[where].hash = hash_cubestate(state);
     queue->error = MQ_OK;
+
+    sift_up(queue, where);
 
     return true;
 }

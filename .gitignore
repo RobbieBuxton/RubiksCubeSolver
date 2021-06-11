@@ -20,6 +20,11 @@ emulate
 assemble
 *.exe
 
+#ignore test executables, but add the test files
+*test*
+!*test*.c
+!*test*/
+
 #ignore junk files from compiling Haskell code
 *.hi
 
@@ -40,4 +45,7 @@ gede*
 #ignore doxygen-generated documentation
 /doc/html/*
 /doc/latex/*
+
+#ignore vscode junk
+*.vscode*
 

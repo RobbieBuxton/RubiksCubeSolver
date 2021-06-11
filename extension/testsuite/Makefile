@@ -13,7 +13,7 @@ all: $(BUILD)
 rebuild: clean all
 
 clean:
-	rm -rf $(BUILD) *.o
+	rm -f $(BUILD) *.o
 
 $(LIB): $(LIBOBJS)
 	ar rcs $(LIB) $(LIBOBJS)

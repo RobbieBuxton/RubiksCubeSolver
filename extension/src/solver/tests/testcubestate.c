@@ -2,8 +2,9 @@
 #include "../cubestate.h"
 
 static void test_hash_cubestate(void) {
-    CubeState state;
-    state.data[LEFT][0][2] = BLUE;
+    CubeState state = {
+        .data = { { { RED } } }
+    };
 
     assert_uint_not_equals(0ul, hash_cubestate(&state));
 }
@@ -13,6 +14,7 @@ static const Test TESTS[1] = {
 };
 
 int main(void) {
+    fprintf(stderr, "--- %s ---\n", __FILE__);
     run_tests(TESTS, sizeof(TESTS) / sizeof(Test));
     return 0;
 }
