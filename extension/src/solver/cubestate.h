@@ -172,5 +172,125 @@ static const CubeState EXAMPLE_UNSOLVED_STATE = {
     .history = { { .face = TOP, .direction = CW } }
 };
 
+/*
+UnfoldedFace is a 5x5 array of pointers pointing to a given face of a cube and
+the face's neighbouring edges.
+*/
+typedef Colour *UnfoldedFace[WIDTH + 2][WIDTH + 2];
+
+/*
+UnfoldedFaces are generated based on pre-computed "templates" which tell you
+how each face connects to its neighbours
+*/
+typedef struct {
+    Face this_face;
+    Face neighbouring_faces[4];
+    uint8_t xs[WIDTH + 2][WIDTH + 2];
+    uint8_t ys[WIDTH + 2][WIDTH + 2];
+} UnfoldTemplate;
+
+static const UnfoldTemplate top_unfold = {
+    .this_face = TOP,
+    .neighbouring_faces = {BACK, RIGHT, FRONT, LEFT},
+
+    .xs = {{0,2,1,0,0},
+           {0,0,1,2,2},
+           {1,0,1,2,1},
+           {2,0,1,2,0},
+           {0,0,1,2,0}},
+
+    .ys = {{0,0,0,0,0},
+           {0,0,0,0,0},
+           {0,1,1,1,0},
+           {0,2,2,2,0},
+           {0,0,0,0,0}},
+};
+
+static const UnfoldTemplate bottom_unfold = {
+    .this_face = BOTTOM,
+    .neighbouring_faces = {FRONT, RIGHT, BACK, LEFT},
+
+    .xs = {{0,0,1,2,0},
+           {2,0,1,2,0},
+           {1,0,1,2,1},
+           {0,0,1,2,2},
+           {0,2,1,0,0}},
+
+    .ys = {{0,2,2,2,0},
+           {2,0,0,0,2},
+           {2,1,1,1,2},
+           {2,2,2,2,2},
+           {0,2,2,2,0}},
+};
+
+static const UnfoldTemplate front_unfold = {
+    .this_face = FRONT,
+    .neighbouring_faces = {TOP, RIGHT, BOTTOM, LEFT},
+
+    .xs = {{0,0,1,2,0},
+           {2,0,1,2,0},
+           {2,0,1,2,0},
+           {2,0,1,2,0},
+           {0,0,1,2,0}},
+
+    .ys = {{0,2,2,2,0},
+           {0,0,0,0,0},
+           {1,1,1,1,1},
+           {2,2,2,2,2},
+           {0,0,0,0,0}},
+};
+
+static const UnfoldTemplate back_unfold = {
+    .this_face = BACK,
+    .neighbouring_faces = {TOP, LEFT, BOTTOM, RIGHT},
+
+    .xs = {{0,2,1,0,0},
+           {2,0,1,2,0},
+           {2,0,1,2,0},
+           {2,0,1,2,0},
+           {0,2,1,0,0}},
+
+    .ys = {{0,0,0,0,0},
+           {0,0,0,0,0},
+           {1,1,1,1,1},
+           {2,2,2,2,2},
+           {0,2,2,2,0}},
+};
+
+static const UnfoldTemplate left_unfold = {
+    .this_face = LEFT,
+    .neighbouring_faces = {TOP, FRONT, BOTTOM, BACK},
+
+    .xs = {{0,0,0,0,0},
+           {2,0,1,2,0},
+           {2,0,1,2,0},
+           {2,0,1,2,0},
+           {0,0,0,0,0}},
+
+    .ys = {{0,0,1,2,0},
+           {0,0,0,0,0},
+           {1,1,1,1,1},
+           {2,2,2,2,2},
+           {0,2,1,0,0}},
+};
+
+UnfoldTemplate right_unfold = {
+    .this_face = RIGHT,
+    .neighbouring_faces = {TOP, BACK, BOTTOM, FRONT},
+
+    .xs = {{0,2,2,2,0},
+           {2,0,1,2,0},
+           {2,0,1,2,0},
+           {2,0,1,2,0},
+           {0,2,2,2,0}},
+
+    .ys = {{0,2,1,0,0},
+           {0,0,0,0,0},
+           {1,1,1,1,1},
+           {2,2,2,2,2},
+           {0,0,1,2,0}},
+};
+
+
 #endif  // __CUBESTATE_H__
 
