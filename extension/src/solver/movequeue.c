@@ -111,7 +111,7 @@ static bool extend_move_priority_queue(MovePriorityQueue *queue) {
     return true;
 }
 
-bool add_to_move_priority_queue(MovePriorityQueue *queue, const CubeState *state, const uint64_t cost) {
+bool add_to_move_priority_queue(MovePriorityQueue *queue, const CubeState *state, const double cost) {
     if (queue->count >= queue->size) {
         // Extend the queue first.
         if (!extend_move_priority_queue(queue)) {

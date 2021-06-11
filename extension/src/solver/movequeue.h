@@ -23,7 +23,7 @@ typedef enum {
 typedef struct {
     CubeState state; /**< The state of the cube in this node. */
     uint64_t hash;   /**< The hash of the cube state in this node. */
-    uint64_t cost;   /**< The cost value used for the priority sorting. */
+    double cost;     /**< The cost value used for the priority sorting. */
 } MoveQueueNode;
 
 // This is a min-heap priority queue.
@@ -63,7 +63,7 @@ bool free_move_priority_queue(MovePriorityQueue* queue);
  * @param[in]  heuristic_value Cube state's movement cost.
  * @return                     If the addition is successful, returns true. Otherwise, returns false.
  */
-bool add_to_move_priority_queue(MovePriorityQueue *queue, const CubeState *state, const uint64_t cost);
+bool add_to_move_priority_queue(MovePriorityQueue *queue, const CubeState *state, const double cost);
 
 /**
  * Get the item with the lowest heuristic value.
