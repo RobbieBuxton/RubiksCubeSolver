@@ -95,9 +95,9 @@ void project(UnfoldedFace source, UnfoldedFace target) {
     }
 }
 
-CubeState apply_movement(const CubeState *state, Movement movement) {
+CubeState apply_movement(CubeState *state, Movement movement) {
     UnfoldedFace uf;
-    unfold(movement.face, (CubeState *)state, uf);
+    unfold(movement.face, state, uf);
     rotate(uf, movement.direction);
 
     CubeState moved;
@@ -106,7 +106,7 @@ CubeState apply_movement(const CubeState *state, Movement movement) {
     unfold(movement.face, &moved, target_uf);
     project(uf, target_uf);
 
-    //Update move history
+    // Update move history
     moved.history[moved.history_count] = movement;
     moved.history_count++;
 

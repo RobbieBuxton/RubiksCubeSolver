@@ -1,6 +1,9 @@
 #include "../../../testsuite/testsuite.h"
 #include "../cubestate.h"
 
+#include <stdio.h>
+#include <string.h>
+
 static void test_hash_cubestate(void) {
     CubeState state = {
         .data = { { { RED } } }
@@ -15,11 +18,14 @@ static void test_solved_check(void) {
 }
 
 static void test_movements(void) {
-    CubeState state;
+    CubeState old, state;
     Movement move;
+
+    memcpy(&old, &EXAMPLE_UNSOLVED_STATE, sizeof(CubeState));
     move.face = TOP;
     move.direction = CCW;
-    state = apply_movement(&EXAMPLE_UNSOLVED_STATE, move);
+    state = apply_movement(&old, move);
+
     printCubeState(&state);
 }
 

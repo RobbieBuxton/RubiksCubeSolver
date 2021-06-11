@@ -78,7 +78,7 @@ typedef struct {
  * @param[in]  movement Movement to apply.
  * @return              A new struct containing the modified state with an updated move history.
  */
-CubeState apply_movement(const CubeState *state, Movement movement);
+CubeState apply_movement(CubeState *state, Movement movement);
 
 /**
  * Get the hash of a cube state.
@@ -98,7 +98,7 @@ bool solved(const CubeState *state);
 
 /**
  * Print CubeState's face data.
- * 
+ *
  * @param state State to print.
  */
 void printCubeState(const CubeState *state);
