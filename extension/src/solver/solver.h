@@ -54,7 +54,7 @@ bool solve(CubeState *start, int *move_count, Movement* solution);
  * @return      The heuristic value
  * 
  */
-int heuristic(CubeState *state);
+double heuristic(CubeState *state);
 
 /**
  * Calculates estimated cost of a solution through state.
@@ -63,7 +63,7 @@ int heuristic(CubeState *state);
  * @return      The estimated cost.
  * 
  */
-int estimate_cost(CubeState *state);
+double estimate_cost(CubeState *state);
 
 /**
  * Adds all states reachable in a single move from current to queue which have not yet been visited

@@ -180,4 +180,5 @@ void printCubeState(const CubeState *state) {
         }
         printf("},\n");
     }
+    printf("move_count = %ld\n most_recent_move = %u, %u\n", state->history_count, state->history[state->history_count - 1].direction, state->history[state->history_count - 1].face);
 }
