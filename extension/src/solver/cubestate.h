@@ -36,14 +36,13 @@ typedef enum {
     BOTTOM = 5
 } Face;
 
-#define FACES  6
-#define HEIGHT 3
-#define WIDTH  3
+#define FACES       6
+#define SIDE_LENGTH 3
 
 #define MAXIMUM_MOVEMENTS 20
 
 // Not making the same mistake here.
-typedef Colour FaceData[FACES][HEIGHT][WIDTH];
+typedef Colour FaceData[FACES][SIDE_LENGTH][SIDE_LENGTH];
 
 /**
  * Rotation direction enum.
@@ -173,20 +172,20 @@ static const CubeState EXAMPLE_UNSOLVED_STATE = {
 };
 
 /*
-UnfoldedFace is a 5x5 array of pointers pointing to a given face of a cube and
-the face's neighbouring edges.
-*/
-typedef Colour *UnfoldedFace[WIDTH + 2][WIDTH + 2];
+ * UnfoldedFace is a 5x5 array of pointers pointing to a given face of a cube and
+ * the face's neighbouring edges.
+ */
+typedef Colour *UnfoldedFace[SIDE_LENGTH + 2][SIDE_LENGTH + 2];
 
 /*
-UnfoldedFaces are generated based on pre-computed "templates" which tell you
-how each face connects to its neighbours
-*/
+ * UnfoldedFaces are generated based on pre-computed "templates" which tell you
+ * how each face connects to its neighbours
+ */
 typedef struct {
     Face this_face;
     Face neighbouring_faces[4];
-    uint8_t xs[WIDTH + 2][WIDTH + 2];
-    uint8_t ys[WIDTH + 2][WIDTH + 2];
+    uint8_t xs[SIDE_LENGTH + 2][SIDE_LENGTH + 2];
+    uint8_t ys[SIDE_LENGTH + 2][SIDE_LENGTH + 2];
 } UnfoldTemplate;
 
 static const UnfoldTemplate top_unfold = {

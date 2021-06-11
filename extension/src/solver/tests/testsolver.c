@@ -13,7 +13,7 @@ static void test_solver_solved_already(void) {
     Movement solution[MAXIMUM_MOVEMENTS] = {0};
     CubeState *start = (CubeState *) calloc(1, sizeof(CubeState));
 
-    memcpy(start->data, &EXAMPLE_SOLVED_STATE, sizeof(Colour) * 36);
+    memcpy(start->data, &(EXAMPLE_SOLVED_STATE.data), sizeof(Colour) * 36);
 
     assert_true(solve(start, &move_count, solution));
 

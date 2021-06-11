@@ -17,7 +17,9 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
     while(queue->count > 0) {
 
         // Get next state from the queue
-        if (!poll_move_priority_queue(queue, &query_result)) return false;
+        if (!poll_move_priority_queue(queue, &query_result)) {
+            return false;
+        }
 
         if (!visit(&(query_result.state), visitedHashes)) {
             continue;
