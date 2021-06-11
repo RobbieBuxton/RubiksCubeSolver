@@ -1,5 +1,6 @@
 #include "cubestate.h"
 #include <string.h>
+#include <stdio.h>
 
 // 524287 * i == (i << 19) - i; allows optimisation.
 #define HASH_CONSTANT 524287ul
@@ -141,3 +142,42 @@ bool solved(const CubeState *state) {
     return true;
 }
 
+
+void printCubeState(const CubeState *state) {
+    for (Face face = TOP; face < 6; face++) {
+        printf("{\n");
+        for (int row = 0; row < 3; row++) {
+            printf("{");
+            for (int col = 0; col < 3; col++) {
+                char colour[7] = {0};
+                switch (state->data[face][row][col])
+                {
+                case RED:
+                    strcpy(colour, "Red   ");
+                    break;
+                case BLUE:
+                    strcpy(colour, "Blue  ");
+                    break;
+                case YELLOW:
+                    strcpy(colour, "Yellow");
+                    break;
+                case GREEN:
+                    strcpy(colour, "Green ");
+                    break;
+                case WHITE:
+                    strcpy(colour, "White ");
+                    break;
+                case ORANGE:
+                    strcpy(colour, "Orange");
+                    break;
+                default:
+                    strcpy(colour, "N/A   ");
+                    break;
+                }
+                printf("%s, ", colour);
+            }
+            printf("}\n");
+        }
+        printf("},\n");
+    }
+}

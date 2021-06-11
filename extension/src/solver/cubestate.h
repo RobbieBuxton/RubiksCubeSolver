@@ -96,6 +96,13 @@ uint64_t hash_cubestate(const CubeState *state);
  */
 bool solved(const CubeState *state);
 
+/**
+ * Print CubeState's face data.
+ * 
+ * @param state State to print.
+ */
+void printCubeState(const CubeState *state);
+
 static const CubeState EXAMPLE_SOLVED_STATE = {
     .data = {
         {

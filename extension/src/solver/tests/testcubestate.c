@@ -14,9 +14,20 @@ static void test_solved_check(void) {
     assert_false(solved(&EXAMPLE_UNSOLVED_STATE));
 }
 
-static const Test TESTS[2] = {
+static void test_movements(void) {
+    CubeState state;
+    Movement move;
+    move.face = FRONT;
+    move.direction = CCW;
+    printCubeState(&EXAMPLE_SOLVED_STATE);
+    state = apply_movement(&EXAMPLE_SOLVED_STATE, move);
+    printCubeState(&state);
+}
+
+static const Test TESTS[3] = {
     { .test = test_hash_cubestate, .name = "Hash cube state does not error during calculation" },
-    { .test = test_solved_check, .name = "Solved function detects correctly"}
+    { .test = test_solved_check, .name = "Solved function detects correctly"},
+    { .test = test_movements, .name = "Apply movement works correctly"}
 };
 
 int main(void) {
