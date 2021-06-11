@@ -117,13 +117,13 @@ bool solved(const CubeState *state) {
     int found_colours[COLOURS] = { 0 };
 
     for (size_t f = 0; f < FACES; ++f) {
-        Colour previous_colour = -1;
+        Colour previous_colour = COLOURS + 1;
         for (size_t r = 0; r < SIDE_LENGTH; ++r) {
             for (size_t c = 0; c < SIDE_LENGTH; ++c) {
                 Colour cur = state->data[f][r][c];
 
                 ++(found_colours[cur]);
-                if (previous_colour >= RED && previous_colour != cur) {
+                if (previous_colour < COLOURS && previous_colour != cur) {
                     return false;
                 } else {
                     previous_colour = cur;

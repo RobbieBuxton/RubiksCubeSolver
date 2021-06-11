@@ -14,7 +14,7 @@ static void test_solver_solved_already(void) {
     Movement solution[MAXIMUM_MOVEMENTS] = {0};
     CubeState *start = (CubeState *) calloc(1, sizeof(CubeState));
 
-    memcpy(start->data, &(EXAMPLE_SOLVED_STATE.data), sizeof(Colour) * 36);
+    memcpy(start->data, &(EXAMPLE_SOLVED_STATE.data), sizeof(FaceData));
 
     assert_true(solve(start, &move_count, solution));
 
@@ -34,7 +34,7 @@ static void test_solver_one_move(void) {
     Movement expected_solution[MAXIMUM_MOVEMENTS] = { { .face = TOP, .direction = CCW } };
     CubeState *start = (CubeState *) calloc(1, sizeof(CubeState));
 
-    memcpy(start->data, &EXAMPLE_UNSOLVED_STATE, sizeof(Colour) * 36);
+    memcpy(start->data, &EXAMPLE_UNSOLVED_STATE, sizeof(FaceData));
 
     assert_true(solve(start, &move_count, solution));
 

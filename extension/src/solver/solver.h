@@ -4,6 +4,8 @@
 #include "cubestate.h"
 #include "movequeue.h"
 
+#define MATCHES_CENTRE(f, r, c, cube) (cube->data[f][r][c] == cube->data[f][1][1])
+
 /**
  * "Colours" for the Hash nodes.
  * Used for balancing a hash tree.
