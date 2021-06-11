@@ -41,6 +41,7 @@ assemble
 *.toc
 .ccls-cache
 gede*
+vgcore*
 
 #ignore doxygen-generated documentation
 /doc/html/*
