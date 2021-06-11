@@ -77,8 +77,8 @@ void rotate(UnfoldedFace uf, Rotation rotation) {
                 rotated[i][j] = uf[SIDE_LENGTH + 1 - j][i];
             }
         }
-    }
     memcpy(uf, rotated, sizeof(UnfoldedFace));
+    }
 }
 
 /*
