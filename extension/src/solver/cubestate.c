@@ -63,13 +63,13 @@ const Colour *get_square_pointer(const CubeState *state, UnfoldTemplate template
     return state->data[get_face_from_template(template, x, y)][template.ys[y][x]] + template.xs[y][x];
 }
 
-void unfold(Face face, const CubeState *state, UnfoldedFace output) {
+void unfold(Face face, CubeState *state, UnfoldedFace output) {
     UnfoldTemplate template = get_template_of(face);
     for (size_t i = 0; i < WIDTH + 2; i++)
     {
         for (size_t j = 0; j < WIDTH + 2; j++)
         {
-            output[i][j] = get_square_pointer(state, template, j, i);
+            output[i][j] = (Colour *) get_square_pointer(state, template, j, i);
         }
     }
 }
@@ -108,7 +108,7 @@ void project(UnfoldedFace source, UnfoldedFace target) {
 
 CubeState apply_movement(const CubeState *state, Movement movement) {
     UnfoldedFace uf;
-    unfold(movement.face, state, uf);
+    unfold(movement.face, (CubeState *)state, uf);
     rotate(uf, movement.direction);
     
     CubeState moved;
