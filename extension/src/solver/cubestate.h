@@ -134,5 +134,43 @@ static const CubeState EXAMPLE_SOLVED_STATE = {
     .history = { { .face = TOP, .direction = CW } }
 };
 
+// update this once I know which way up our faces are represented
+static const CubeState EXAMPLE_UNSOLVED_STATE = {
+    .data = {
+        {
+            { RED, RED, RED },
+            { RED, RED, RED },
+            { RED, RED, RED }
+        },
+        {
+            { ORANGE, ORANGE, ORANGE },
+            { GREEN, GREEN, GREEN },
+            { GREEN, GREEN, GREEN }
+        },
+        {
+            { GREEN, GREEN, GREEN },
+            { BLUE, BLUE, BLUE },
+            { BLUE, BLUE, BLUE }
+        },
+        {
+            { BLUE, BLUE, BLUE },
+            { YELLOW, YELLOW, YELLOW },
+            { YELLOW, YELLOW, YELLOW }
+        },
+        {
+            { YELLOW, YELLOW, YELLOW },
+            { ORANGE, ORANGE, ORANGE },
+            { ORANGE, ORANGE, ORANGE }
+        },
+        {
+            { WHITE, WHITE, WHITE },
+            { WHITE, WHITE, WHITE },
+            { WHITE, WHITE, WHITE }
+        }
+    },
+    .history_count = 0u,
+    .history = { { .face = TOP, .direction = CW } }
+};
+
 #endif  // __CUBESTATE_H__
 
