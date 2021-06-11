@@ -90,7 +90,7 @@ static void sift_down(MovePriorityQueue *queue, size_t root) {
         queue->state_queue[to_swap] = queue->state_queue[root];
         queue->state_queue[root] = temp;
 
-        sift_up(queue, to_swap);
+        sift_down(queue, to_swap);
     }
 }
 
@@ -140,6 +140,7 @@ bool poll_move_priority_queue(MovePriorityQueue *queue, MoveQueueNode *out_node)
     memcpy(out_node, queue->state_queue, sizeof(MoveQueueNode));
 
     queue->state_queue[0u] = queue->state_queue[last];
+    assert(queue->state_queue[0u].cost == queue->state_queue[last].cost);
     sift_down(queue, 0u);
 
     return true;

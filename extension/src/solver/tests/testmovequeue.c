@@ -48,27 +48,62 @@ static const CubeState TEST_STATE = {
 
 static void test_add_to_queue(void) {
     assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 4));
+    assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 4));
+    assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 4));
+    assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 4));
+    assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 4));
+
     assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 2));
+    assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 2));
+    assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 2));
+    assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 2));
+    assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 2));
+
     assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 5));
+    assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 5));
+    assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 5));
+    assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 5));
+    assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 5));
+
+    assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 3));
+    assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 3));
+    assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 3));
+    assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 3));
     assert_true(add_to_move_priority_queue(test_queue, &TEST_STATE, 3));
 }
 
 static void test_poll_from_queue(void) {
     MoveQueueNode result;
-    uint64_t polls[4] = { 0 };
+    uint64_t polls[20] = { 0 };
 
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 20; ++i) {
+        for (int j = 0; j < 20-i; j++) {
+            fprintf(stderr, "%f, ", test_queue->state_queue[j].cost);
+        }
+        fprintf(stderr, "\n");
         poll_move_priority_queue(test_queue, &result);
         assert_sint_equals(MQ_OK, test_queue->error);
         polls[i] = result.cost;
+        fprintf(stderr, "%f\n", result.cost);
+
     }
 
-    fprintf(stderr, "GOT: { %lu, %lu, %lu, %lu }.\n", polls[0], polls[1], polls[2], polls[3]);
+    fprintf(stderr, "GOT: { %lu, %lu, %lu, %lu }.\n", polls[7], polls[12], polls[15], polls[19]);
 
     assert_uint_equals(2, polls[0]);
-    assert_uint_equals(3, polls[1]);
-    assert_uint_equals(4, polls[2]);
-    assert_uint_equals(5, polls[3]);
+    assert_uint_equals(2, polls[1]);
+    assert_uint_equals(2, polls[2]);
+    assert_uint_equals(2, polls[3]);
+    assert_uint_equals(2, polls[4]);
+
+    assert_uint_equals(3, polls[5]);
+    assert_uint_equals(3, polls[6]);
+    assert_uint_equals(3, polls[7]);
+    assert_uint_equals(3, polls[8]);
+    assert_uint_equals(3, polls[9]);
+    
+    assert_uint_equals(4, polls[10]);
+    assert_uint_equals(5, polls[15]);
 }
 
 static void test_queue_underflow(void) {
