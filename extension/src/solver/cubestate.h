@@ -49,9 +49,9 @@ typedef Colour FaceData[FACES][HEIGHT][WIDTH];
  * Rotation direction enum.
  */
 typedef enum {
-    CW = 0,    /**< Clockwise relative to face. */
-    CCW = 1,   /**< Counterclockwise relative to face. */
-    DOUBLE = 2 /**< Double rotation relative to face. */
+    CW = 0,     /**< Clockwise relative to face. */
+    DOUBLE = 1, /**< Double rotation relative to face. */
+    CCW = 2     /**< Counterclockwise relative to face. */
 } Rotation;
 
 /**
