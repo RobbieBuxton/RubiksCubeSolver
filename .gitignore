@@ -18,9 +18,12 @@
 *.a
 emulate
 assemble
-test*
-!test*.c
 *.exe
+
+#ignore test executables, but add the test files
+*test*
+!*test*.c
+!*test*/
 
 #ignore junk files from compiling Haskell code
 *.hi

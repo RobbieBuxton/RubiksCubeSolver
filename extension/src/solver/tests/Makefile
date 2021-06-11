@@ -1,7 +1,7 @@
 CC      = gcc
 CFLAGS  = -Wall -g -D_POSIX_SOURCE -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic
 LDFLAGS = -L../../../testsuite -L.. -lsolver -ltestsuite
-TARGETS = testcubestate testmovequeue
+TARGETS = testcubestate testmovequeue testsolver
 OBJECTS = $(foreach trg, $(TARGETS), $trg.o)
 
 .SUFFIXES: .c .o
@@ -10,12 +10,12 @@ OBJECTS = $(foreach trg, $(TARGETS), $trg.o)
 
 all: build test
 
-build: solver mod testsuite testcubestate testmovequeue testsolver
+build: solverlib mod testsuite testcubestate testmovequeue testsolver
 
 testsuite:
 	+$(MAKE) -C ../../../testsuite
 
-solver:
+solverlib:
 	+$(MAKE) -C ..
 
 mod:
