@@ -2,8 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <assert.h>
-
 // 524287 * i == (i << 19) - i; allows optimisation.
 #define HASH_CONSTANT 524287ul
 
@@ -111,16 +109,6 @@ CubeState apply_movement(CubeState *state, Movement movement) {
     // Update move history
     moved.history[moved.history_count] = movement;
     moved.history_count++;
-
-    if (moved.history_count >= MAXIMUM_MOVEMENTS) {
-        fprintf(stderr, "COUNT: %zu\n", moved.history_count);
-
-        for (int i = 0; i < MAXIMUM_MOVEMENTS; ++i) {
-            fprintf(stderr, "F: %d, Dir: %d\n", moved.history[i].face, moved.history[i].direction);
-        }
-
-        assert(moved.history_count < MAXIMUM_MOVEMENTS);
-    }
 
     return moved;
 }
