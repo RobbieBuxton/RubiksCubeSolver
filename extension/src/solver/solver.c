@@ -15,7 +15,6 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
     HashTree* visitedHashes = new_hash_tree();
 
     while(queue->count > 0) {
-        printf("added to queue correctly\n");
 
         // Get next state from the queue
         if (!poll_move_priority_queue(queue, &query_result)) return false;

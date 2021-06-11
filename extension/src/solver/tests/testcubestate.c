@@ -9,7 +9,7 @@ static void test_hash_cubestate(void) {
     assert_uint_not_equals(0ul, hash_cubestate(&state));
 }
 
-static const test_solved_check(void) {
+static void test_solved_check(void) {
     assert_true(solved(&EXAMPLE_SOLVED_STATE));
     assert_false(solved(&EXAMPLE_UNSOLVED_STATE));
 }
