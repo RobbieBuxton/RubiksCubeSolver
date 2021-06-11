@@ -60,7 +60,7 @@ static void test_poll_from_queue(void) {
     for (int i = 0; i < 4; ++i) {
         poll_move_priority_queue(test_queue, &result);
         assert_sint_equals(MQ_OK, test_queue->error);
-        polls[i] = result.heuristic_value;
+        polls[i] = result.cost;
     }
 
     fprintf(stderr, "GOT: { %lu, %lu, %lu, %lu }.\n", polls[0], polls[1], polls[2], polls[3]);
@@ -72,13 +72,13 @@ static void test_poll_from_queue(void) {
 }
 
 static void test_queue_underflow(void) {
-    MoveQueueNode result = { .state = TEST_STATE, .hash = 0u, .heuristic_value = 0u };
+    MoveQueueNode result = { .state = TEST_STATE, .hash = 0u, .cost = 0u };
 
     poll_move_priority_queue(test_queue, &result);
 
     assert_sint_equals(MQ_UNDERFLOW, test_queue->error);
     assert_uint_equals(0u, result.hash);
-    assert_uint_equals(0u, result.heuristic_value);
+    assert_uint_equals(0u, result.cost);
 
     assert_sint_equals(0, memcmp(&result.state, &TEST_STATE, sizeof(CubeState)));
 }

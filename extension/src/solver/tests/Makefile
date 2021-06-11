@@ -8,15 +8,18 @@ OBJECTS = $(foreach trg, $(TARGETS), $trg.o)
 
 .PHONY: all clean build test rebuild
 
-all: rebuild test
+all: build test
 
-build: solver testsuite testcubestate testmovequeue
+build: solver mod testsuite testcubestate testmovequeue
 
 testsuite:
 	+$(MAKE) -C ../../../testsuite
 
 solver:
 	+$(MAKE) -C ..
+
+mod:
+	for trg in $(TARGETS); do touch ./$$trg.c; done
 
 testcubestate: testcubestate.o
 	gcc testcubestate.o -o $@ $(LDFLAGS)
