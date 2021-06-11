@@ -9,7 +9,8 @@
 #include <string.h>
 
 static void test_solver_solved_already(void) {
-    int move_count = 5; // not 0 as it should have to change for the test to pass.
+    // not 0 as it should have to change for the test to pass.
+    int move_count = 5;
     Movement solution[MAXIMUM_MOVEMENTS] = {0};
     CubeState *start = (CubeState *) calloc(1, sizeof(CubeState));
 
@@ -22,7 +23,8 @@ static void test_solver_solved_already(void) {
     }
 
     assert_sint_equals(0, move_count);
-    return;
+
+    free(start);
 }
 
 // This should be updated once apply_movement is explored"
@@ -42,11 +44,13 @@ static void test_solver_one_move(void) {
 
     assert_sint_equals(1, move_count);
     assert_array_equals(expected_solution, solution, 1, sizeof(Movement));
+
+    free(start);
 }
 
 static const Test TESTS[2] = {
-    { .test = test_solver_solved_already, .name = "Solver runs without error and detects solved state." },
-    { .test = test_solver_one_move, .name = "Solver updates output fields and can solve single move puzzle."}
+    { .test = test_solver_solved_already, .name = "Solver runs without error and detects solved state" },
+    { .test = test_solver_one_move, .name = "Solver updates output fields and can solve single move puzzle"}
 };
 
 int main(void) {

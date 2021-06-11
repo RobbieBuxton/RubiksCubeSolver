@@ -18,6 +18,9 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
 
         // Get next state from the queue
         if (!poll_move_priority_queue(queue, &query_result)) {
+            free_hash_tree(visitedHashes);
+            free_move_priority_queue(queue);
+
             return false;
         }
 
@@ -28,11 +31,19 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
         if (solved(&(query_result.state))) {
             *move_count = query_result.state.history_count;
             solution = query_result.state.history;
+
+            free_hash_tree(visitedHashes);
+            free_move_priority_queue(queue);
+
             return true;
         }
 
         expand_all_moves(&(query_result.state), queue, visitedHashes);
     }
+
+    free_hash_tree(visitedHashes);
+    free_move_priority_queue(queue);
+
     return false;
 }
 
