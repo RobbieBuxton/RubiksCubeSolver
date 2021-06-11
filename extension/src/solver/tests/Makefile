@@ -10,7 +10,7 @@ OBJECTS = $(foreach trg, $(TARGETS), $trg.o)
 
 all: build test
 
-build: solver mod testsuite testcubestate testmovequeue
+build: solver mod testsuite testcubestate testmovequeue testsolver
 
 testsuite:
 	+$(MAKE) -C ../../../testsuite
@@ -26,6 +26,9 @@ testcubestate: testcubestate.o
 
 testmovequeue: testmovequeue.o
 	gcc testmovequeue.o -o $@ $(LDFLAGS)
+
+testsolver: testsolver.o
+	gcc testsolver.o -o $@ $(LDFLAGS)
 
 test: build
 	for trg in $(TARGETS); do ./$$trg; done
