@@ -10,7 +10,7 @@ OBJECTS = $(foreach trg, $(TARGETS), $trg.o)
 
 all: build test
 
-build: solverlib mod testsuite testcubestate testmovequeue testsolver
+build: solverlib mod testsuite $(TARGETS)
 
 testsuite:
 	+$(MAKE) -C ../../../testsuite
