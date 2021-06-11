@@ -18,8 +18,8 @@ static void test_movements(void) {
     CubeState state;
     Movement move;
     move.face = TOP;
-    move.direction = CW;
-    state = apply_movement(&EXAMPLE_SOLVED_STATE, move);
+    move.direction = CCW;
+    state = apply_movement(&EXAMPLE_UNSOLVED_STATE, move);
     printCubeState(&state);
 }
 

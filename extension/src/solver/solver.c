@@ -16,7 +16,6 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
 
     while(queue->count > 0) {
 
-        printf("round the loop\n");
         // Get next state from the queue
         if (!poll_move_priority_queue(queue, &query_result)) {
             free_hash_tree(visitedHashes);
