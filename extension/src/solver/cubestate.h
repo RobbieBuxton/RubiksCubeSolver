@@ -274,7 +274,7 @@ static const UnfoldTemplate left_unfold = {
            {0,2,1,0,0}},
 };
 
-UnfoldTemplate right_unfold = {
+static const UnfoldTemplate right_unfold = {
     .this_face = RIGHT,
     .neighbouring_faces = {TOP, BACK, BOTTOM, FRONT},
 
