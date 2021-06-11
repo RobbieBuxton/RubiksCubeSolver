@@ -7,21 +7,35 @@
 
 #include <assert.h>
 #include <string.h>
+#include <time.h>
 
 void run_test(const Test test) {
     fprintf(stderr, "Running test \"%s\":\n\n", test.name);
+
+    clock_t time;
+    time = clock();
+
     test.test();
-    fprintf(stderr, "\nTest \"%s\" passed.\n\n", test.name);
+
+    time = clock() - time;
+
+    fprintf(stderr, "\nTest \"%s\" passed in %f seconds.\n\n", test.name, (double) time / CLOCKS_PER_SEC);
 }
 
 void run_tests(const Test *tests, const size_t n) {
     fprintf(stderr, "Running %zu tests.\n\n", n);
+
+    clock_t time;
+    time = clock();
+
     for (size_t i = 0; i < n; ++i) {
         fprintf(stderr, "[%zu / %zu] ", i + 1u, n);
         run_test(tests[i]);
     }
 
-    fprintf(stderr, "All tests passed.\n\n");
+    time = clock() - time;
+
+    fprintf(stderr, "All tests passed in %f seconds.\n\n", (double) time / CLOCKS_PER_SEC);
 }
 
 void assert_true(const bool condition) {

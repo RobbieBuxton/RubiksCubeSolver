@@ -30,7 +30,7 @@ static void test_solver_solved_already(void) {
 // This should be updated once apply_movement is explored"
 static void test_solver_one_move(void) {
     int move_count = 0;
-    Movement solution[MAXIMUM_MOVEMENTS] = {0};
+    Movement solution[MAXIMUM_MOVEMENTS] = { { .face = TOP, .direction = CW } };
     Movement expected_solution[MAXIMUM_MOVEMENTS] = { { .face = TOP, .direction = CCW } };
     CubeState *start = (CubeState *) calloc(1, sizeof(CubeState));
 
