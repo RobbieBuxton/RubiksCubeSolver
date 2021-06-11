@@ -140,7 +140,7 @@ static const CubeState EXAMPLE_SOLVED_STATE = {
     .history = { { .face = TOP, .direction = CW } }
 };
 
-// update this once I know which way up our faces are represented
+// One move away from solved
 static const CubeState EXAMPLE_UNSOLVED_STATE = {
     .data = {
         {
@@ -172,6 +172,44 @@ static const CubeState EXAMPLE_UNSOLVED_STATE = {
             { WHITE, WHITE, WHITE },
             { WHITE, WHITE, WHITE },
             { WHITE, WHITE, WHITE }
+        }
+    },
+    .history_count = 0u,
+    .history = { { .face = TOP, .direction = CW } }
+};
+
+// scarmbled cube
+static const CubeState EXAMPLE_SCRAMBLED_STATE = {
+    .data = {
+        {
+            { BLUE, RED, YELLOW },
+            { BLUE, WHITE, ORANGE },
+            { WHITE, WHITE, ORANGE }
+        },
+        {
+            { RED, RED, WHITE },
+            { BLUE, BLUE, ORANGE },
+            { ORANGE, BLUE, ORANGE }
+        },
+        {
+            { RED, YELLOW, GREEN },
+            { ORANGE, RED, WHITE },
+            { YELLOW, YELLOW, GREEN }
+        },
+        {
+            { ORANGE, GREEN, WHITE },
+            { WHITE, GREEN, WHITE },
+            { RED, GREEN, RED }
+        },
+        {
+            { BLUE, BLUE, GREEN },
+            { YELLOW, ORANGE, GREEN },
+            { YELLOW, GREEN, YELLOW }
+        },
+        {
+            { WHITE, RED, BLUE },
+            { RED, YELLOW, YELLOW },
+            { GREEN, ORANGE, BLUE }
         }
     },
     .history_count = 0u,

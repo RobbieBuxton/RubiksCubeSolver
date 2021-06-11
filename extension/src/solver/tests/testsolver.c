@@ -27,7 +27,6 @@ static void test_solver_solved_already(void) {
     free(start);
 }
 
-// This should be updated once apply_movement is explored"
 static void test_solver_one_move(void) {
     int move_count = 0;
     Movement solution[MAXIMUM_MOVEMENTS] = { { .face = TOP, .direction = CCW } };
@@ -48,9 +47,26 @@ static void test_solver_one_move(void) {
     free(start);
 }
 
-static const Test TESTS[2] = {
+static void test_solver_scrambled(void) {
+    int move_count = 0;
+    Movement solution[MAXIMUM_MOVEMENTS] = { { .face = TOP, .direction = CCW } };
+    CubeState *start = (CubeState *) calloc(1, sizeof(CubeState));
+
+    memcpy(start->data, &EXAMPLE_SCRAMBLED_STATE, sizeof(FaceData));
+
+    assert_true(solve(start, &move_count, solution));
+
+    for (int move = 0; move < move_count; move++) {
+        printf("direction: %u, face: %u\n", solution[move].direction, solution[move].face);
+    }
+
+    free(start);
+}
+
+static const Test TESTS[3] = {
     { .test = test_solver_solved_already, .name = "Solver runs without error and detects solved state" },
-    { .test = test_solver_one_move, .name = "Solver updates output fields and can solve single move puzzle"}
+    { .test = test_solver_one_move, .name = "Solver updates output fields and can solve single move puzzle"},
+    { .test = test_solver_scrambled, .name = "Solve an arbitrarily scrambled cube"}
 };
 
 int main(void) {
