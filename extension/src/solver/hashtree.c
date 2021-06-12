@@ -6,99 +6,100 @@
 #include <stdlib.h>
 
 HashTree *new_hash_tree(void) {
-    // Attempt to create a map.
-    HashTree *map = (HashTree *) malloc(sizeof(HashTree));
-    if (!map) {
+    // Attempt to create a tree.
+    HashTree *tree = (HashTree *) malloc(sizeof(HashTree));
+    if (!tree) {
         return NULL;
     }
 
-    // Populate the map's fields.
-    map->count = 0;
-    map->root  = NULL;
+    // Populate the tree's fields.
+    tree->count = 0;
+    tree->root  = NULL;
 
-    return map;
+    return tree;
 }
 
 // Empty out a node.
-static void clear_node(MapNode *symbol) {
-    symbol->colour      = RED_NODE;
-    symbol->hash        = 0u;
-    symbol->parent      = NULL;
-    symbol->left_child  = NULL;
-    symbol->right_child = NULL;
+static void clear_node(TreeNode *node) {
+    node->colour      = RED_NODE;
+    node->hash        = 0u;
+    node->any_ptr     = NULL;
+    node->parent      = NULL;
+    node->left_child  = NULL;
+    node->right_child = NULL;
 }
 
-static MapNode *new_node(const uint64_t hash) {
-    MapNode *symbol = (MapNode *) malloc(sizeof(MapNode));
-    if (!symbol) {
+static TreeNode *new_node(const uint64_t hash) {
+    TreeNode *node = (TreeNode *) malloc(sizeof(TreeNode));
+    if (!node) {
         // Calloc failed.
         return NULL;
     }
 
     // Initialise fields.
-    clear_node(symbol);
+    clear_node(node);
 
-    symbol->hash = hash;
+    node->hash = hash;
 
-    return symbol;
+    return node;
 }
 
-static bool free_node(MapNode *symbol) {
-    if (!symbol) {
+static bool free_node(TreeNode *node) {
+    if (!node) {
         return false;
     }
 
     // First, free the children:
-    if (symbol->left_child) {
-        assert(free_node(symbol->left_child));
+    if (node->left_child) {
+        assert(free_node(node->left_child));
     }
 
-    if (symbol->right_child) {
-        assert(free_node(symbol->right_child));
+    if (node->right_child) {
+        assert(free_node(node->right_child));
     }
 
     // Then, free the given node.
-    free(symbol);
+    free(node);
 
     return true;
 }
 
-bool free_hash_tree(HashTree *map) {
-    if (!map) {
+bool free_hash_tree(HashTree *tree) {
+    if (!tree) {
         return false;
     }
 
     // First, free the nodes of the tree
-    if (map->root && !free_node(map->root)) {
-        fprintf(stderr, "Warning: symbols from map at addr %zu failed to be freed!\n", (size_t) map);
+    if (tree->root && !free_node(tree->root)) {
+        fprintf(stderr, "Warning: nodes from tree at addr %zu failed to be freed!\n", (size_t) tree);
     }
 
-    // Then free the map itself.
-    free(map);
+    // Then free the tree itself.
+    free(tree);
 
     return true;
 }
 
 // Is this node a left child?
-static bool is_left_child(MapNode *node) {
+static bool is_left_child(TreeNode *node) {
     return node->parent && ((node->parent)->left_child == node);
 }
 
 // Is this node a right child?
-static bool is_right_child(MapNode *node) {
+static bool is_right_child(TreeNode *node) {
     return node->parent && ((node->parent)->right_child == node);
 }
 
 // Reparent a node, and return the ejected node.
 // If the reparenting fails for any reason, return NULL.
-static MapNode *reparent(HashTree *map, MapNode *current_node, MapNode *new_node) {
+static TreeNode *reparent(HashTree *tree, TreeNode *current_node, TreeNode *new_node) {
     // Ejected node.
-    MapNode *cur = current_node;
-    MapNode *par = cur->parent;
+    TreeNode *cur = current_node;
+    TreeNode *par = cur->parent;
 
     if (!par) {
         // At root.
-        map->root = new_node;
+        tree->root = new_node;
         new_node->parent = NULL;
     } else if (is_left_child(current_node)) {
         // Current node is left child of parent.
@@ -119,17 +120,17 @@ static MapNode *reparent(HashTree *map, MapNode *current_node, MapNode *new_node
 }
 
 // Pre: current has a right child.
-static void rotate_left(HashTree *map, MapNode *current) {
+static void rotate_left(HashTree *tree, TreeNode *current) {
     assert(current->right_child);
 
-    MapNode *right = current->right_child;
-    MapNode *rights_left_child = right->left_child;
+    TreeNode *right = current->right_child;
+    TreeNode *rights_left_child = right->left_child;
 
     // Set current's right to right's leftt child:
     current->right_child = rights_left_child;
 
     // Reparent right.
-    current = reparent(map, current, right);
+    current = reparent(tree, current, right);
     assert(current);
 
     // Set right's left child to current.
@@ -137,17 +138,17 @@ static void rotate_left(HashTree *map, MapNode *current) {
 }
 
 // Pre: current has a left child.
-static void rotate_right(HashTree *map, MapNode *current) {
+static void rotate_right(HashTree *tree, TreeNode *current) {
     assert(current->left_child);
 
-    MapNode *left = current->left_child;
-    MapNode *lefts_right_child = left->right_child;
+    TreeNode *left = current->left_child;
+    TreeNode *lefts_right_child = left->right_child;
 
     // Set current's left to left's right child:
     current->left_child = lefts_right_child;
 
     // Reparent left.
-    current = reparent(map, current, left);
+    current = reparent(tree, current, left);
     assert(current);
 
     // Set left's right child to current.
@@ -155,30 +156,30 @@ static void rotate_right(HashTree *map, MapNode *current) {
 }
 
 // Cases for post-insertion rebalancing and fixing of the tree.
-static void case_1(HashTree *map, MapNode *current);
-static void case_2(HashTree *map, MapNode *current);
-static void case_3(HashTree *map, MapNode *current);
-static void case_4(HashTree *map, MapNode *current);
-static void case_5(HashTree *map, MapNode *current);
+static void case_1(HashTree *tree, TreeNode *current);
+static void case_2(HashTree *tree, TreeNode *current);
+static void case_3(HashTree *tree, TreeNode *current);
+static void case_4(HashTree *tree, TreeNode *current);
+static void case_5(HashTree *tree, TreeNode *current);
 
-static void case_1(HashTree *map, MapNode *current) {
+static void case_1(HashTree *tree, TreeNode *current) {
     if (!current->parent) {
         current->colour = BLACK_NODE;
     } else {
-        case_2(map, current);
+        case_2(tree, current);
     }
 }
 
-static void case_2(HashTree *map, MapNode *current) {
+static void case_2(HashTree *tree, TreeNode *current) {
     assert(current->parent);
 
     if (current->parent->colour != BLACK_NODE) {
-        case_3(map, current);
+        case_3(tree, current);
     }
 }
 
-static void case_3(HashTree *map, MapNode *current) {
-    MapNode *par, *gpar, *unc;
+static void case_3(HashTree *tree, TreeNode *current) {
+    TreeNode *par, *gpar, *unc;
 
     par = current->parent;
     assert(par);
@@ -200,31 +201,31 @@ static void case_3(HashTree *map, MapNode *current) {
         unc->colour = BLACK_NODE;
         gpar->colour = RED_NODE;
 
-        case_1(map, gpar);
+        case_1(tree, gpar);
     } else {
-        case_4(map, current);
+        case_4(tree, current);
     }
 }
 
-static void case_4(HashTree *map, MapNode *current) {
-    MapNode *par = current->parent;
+static void case_4(HashTree *tree, TreeNode *current) {
+    TreeNode *par = current->parent;
     assert(par);
 
     if (is_left_child(par) && is_right_child(current)) {
         // 4a
-        rotate_left(map, par);
-        case_5(map, par);
+        rotate_left(tree, par);
+        case_5(tree, par);
     } else if (is_right_child(par) && is_left_child(current)) {
         // 4b
-        rotate_right(map, par);
-        case_5(map, par);
+        rotate_right(tree, par);
+        case_5(tree, par);
     } else {
-        case_5(map, current);
+        case_5(tree, current);
     }
 }
 
-static void case_5(HashTree *map, MapNode *current) {
-    MapNode *par, *gpar;
+static void case_5(HashTree *tree, TreeNode *current) {
+    TreeNode *par, *gpar;
 
     par = current->parent;
     assert(par);
@@ -237,26 +238,26 @@ static void case_5(HashTree *map, MapNode *current) {
 
     if (is_left_child(current)) {
         // 5a
-        rotate_right(map, gpar);
+        rotate_right(tree, gpar);
     } else if (is_right_child(current)) {
         // 5b
-        rotate_left(map, gpar);
+        rotate_left(tree, gpar);
     } else {
         fprintf(stderr, "[Case 5] Error, the tree is in an invalid state!\n");
         assert(false);
     }
 }
 
-bool add_to_hash_tree(HashTree *map, uint64_t hash) {
+bool add_to_hash_tree(HashTree *tree, uint64_t hash) {
     if (hash == 0ul) {
         fprintf(stderr, "Warning, zero hash!\n");
         return false;
     }
 
-    if (map->root) {
-        MapNode *curr_ptr = map->root;
-        MapNode *next = NULL;
-        MapNode **where = NULL;
+    if (tree->root) {
+        TreeNode *curr_ptr = tree->root;
+        TreeNode *next = NULL;
+        TreeNode **where = NULL;
 
         while (curr_ptr) {
             // Traverse the tree until we find a place to add the node.
@@ -290,29 +291,28 @@ bool add_to_hash_tree(HashTree *map, uint64_t hash) {
             return false;
         }
 
-        case_1(map, *where);
+        case_1(tree, *where);
     } else {
         // Insert and fix.
-        map->root = new_node(hash);
-        if (!map->root) {
+        tree->root = new_node(hash);
+        if (!tree->root) {
             return false;
         }
 
-        map->root->hash = hash;
+        tree->root->hash = hash;
 
-        case_1(map, map->root);
+        case_1(tree, tree->root);
     }
 
     // Increment the count.
-    ++(map->count);
+    ++(tree->count);
 
     return true;
 }
 
-bool query_hash_tree(const HashTree *map, const uint64_t hash) {
-
+static TreeNode *navigate_tree(const HashTree *tree, uint64_t hash) {
     // Search for a hash.
-    MapNode *curr_ptr = map->root;
+    TreeNode *curr_ptr = tree->root;
 
     while (curr_ptr) {
         if (hash > curr_ptr->hash) {
@@ -320,11 +320,37 @@ bool query_hash_tree(const HashTree *map, const uint64_t hash) {
         } else if (hash < curr_ptr->hash) {
             curr_ptr = curr_ptr->left_child;
         } else {
-            return true;
+            return curr_ptr;
         }
     }
 
     // Not found.
-    return false;
+    return NULL;
+}
+
+bool modify_pointer_in_hash_tree(HashTree *tree, uint64_t hash, void *ptr) {
+    TreeNode *curr_ptr = navigate_tree(tree, hash);
+
+    if (curr_ptr) {
+        curr_ptr->any_ptr = ptr;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void *get_pointer_from_hash_tree(const HashTree *tree, const uint64_t hash) {
+    TreeNode *curr_ptr = navigate_tree(tree, hash);
+
+    if (curr_ptr) {
+        return curr_ptr->any_ptr;
+    } else {
+        return NULL;
+    }
+}
+
+bool query_hash_tree(const HashTree *tree, const uint64_t hash) {
+    TreeNode *curr_ptr = navigate_tree(tree, hash);
+    return !!curr_ptr;
 }
 
