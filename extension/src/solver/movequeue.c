@@ -72,12 +72,12 @@ static void sift_down(MovePriorityQueue *queue, size_t root) {
 
     size_t to_swap;
 
-    if (right >= queue->count) {
-        // Right is out of heap, just use left.
-        to_swap = left;
-    } else if (left >= queue->count) {
+    if (left >= queue->count) {
         // Both left and right are our of heap, exit.
         return;
+    } else if (right >= queue->count) {
+        // Right is out of heap, just use left.
+        to_swap = left;
     } else {
         // Both children are in the heap, check as normal.
         // Swap with smaller child...
@@ -140,7 +140,6 @@ bool poll_move_priority_queue(MovePriorityQueue *queue, MoveQueueNode *out_node)
     memcpy(out_node, queue->state_queue, sizeof(MoveQueueNode));
 
     queue->state_queue[0u] = queue->state_queue[last];
-    assert(queue->state_queue[0u].cost == queue->state_queue[last].cost);
     sift_down(queue, 0u);
 
     return true;
