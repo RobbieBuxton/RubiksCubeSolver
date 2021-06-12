@@ -55,6 +55,7 @@ bool free_move_priority_queue(MovePriorityQueue* queue) {
 static void sift_up(MovePriorityQueue *queue, size_t start) {
     if (start <= 0u) {
         // We are at the heap root. Stop sifting.
+        modify_pointer_in_hash_tree(queue->pointer_tracker, queue->state_queue[start].hash, queue->state_queue + start);
         return;
     }
 
@@ -130,7 +131,7 @@ static bool extend_move_priority_queue(MovePriorityQueue *queue) {
 
 bool add_to_move_priority_queue(MovePriorityQueue *queue, const CubeState *state, const double cost) {
     uint64_t hash = hash_cubestate(state);
-    MoveQueueNode *found;
+    MoveQueueNode *found = NULL;
 
     if ((found = get_pointer_from_hash_tree(queue->pointer_tracker, hash))) {
         if (cost < found->cost) {
@@ -177,8 +178,12 @@ bool poll_move_priority_queue(MovePriorityQueue *queue, MoveQueueNode *out_node)
     size_t last = --queue->count;
     memcpy(out_node, queue->state_queue, sizeof(MoveQueueNode));
 
-    queue->state_queue[0u] = queue->state_queue[last];
-    sift_down(queue, 0u);
+    modify_pointer_in_hash_tree(queue->pointer_tracker, out_node->hash, NULL);
+
+    if (queue->count > 0u) {
+        queue->state_queue[0u] = queue->state_queue[last];
+        sift_down(queue, 0u);
+    }
 
     return true;
 }
