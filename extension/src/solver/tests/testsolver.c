@@ -50,8 +50,8 @@ static void test_solver_one_move(void) {
 static void test_solver_scrambled(void) {
     CubeState *start = (CubeState *) calloc(1, sizeof(CubeState));
     memcpy(start->data, &EXAMPLE_SOLVED_STATE, sizeof(FaceData));
-    srand(1u);
-    int length = 3;
+    srand(6u);
+    int length = 4;
     printf("Solve cube length %d\n", length);
     CubeState temp = *start;
     CubeState nMoves;
