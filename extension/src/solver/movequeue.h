@@ -7,6 +7,7 @@
 #include <stdlib.h>
 
 #include "cubestate.h"
+#include "hashtree.h"
 
 /**
  * Error state of a movement priority queue.
@@ -34,8 +35,11 @@ typedef struct {
 typedef struct {
     size_t size;                /**< Size of the queue array. */
     size_t count;               /**< Number of nodes in this queue. */
+
     MoveQueueNode *state_queue; /**< The internal node array. */
     MoveQueueError error;       /**< Error state of the queue. Check this after most operations. */
+
+    HashTree *pointer_tracker;  /**< Tree used to keep track of pointer locations. */
 } MovePriorityQueue;
 
 /**
@@ -74,16 +78,6 @@ bool add_to_move_priority_queue(MovePriorityQueue *queue, const CubeState *state
  * @return              True if queue was successfully polled. Returns false otherwise.
  */
 bool poll_move_priority_queue(MovePriorityQueue *queue, MoveQueueNode *out_node);
-
-/**
- * Get a pointer to the node in the queue with the given hash.
- * Has the worst case O(n), average case n / 2.
- *
- * @param  queue Queue to query.
- * @param  hash  Hash to look for.
- * @return       A pointer to a node if the hash is found. NULL otherwise.
- */
-MoveQueueNode *find_node_in_move_priority_queue(MovePriorityQueue *queue, uint64_t hash);
 
 #endif  // __MOVEQUEUE_H__
 
