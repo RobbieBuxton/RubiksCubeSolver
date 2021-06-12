@@ -89,26 +89,26 @@ static double edge_piece_heuristic(CubeState *state) {
 
     return count / 4;
 }
+// not yet implemented
+// static double corner_piece_heuristic(CubeState *state) {
+//     double count = 12;
+//     if (MATCHES_CENTRE(TOP, 0, 1, state) && MATCHES_CENTRE(BACK, 0, 1, state)) count--;
+//     if (MATCHES_CENTRE(TOP, 1, 0, state) && MATCHES_CENTRE(LEFT, 0, 1, state)) count--;
+//     if (MATCHES_CENTRE(TOP, 1, 2, state) && MATCHES_CENTRE(RIGHT, 0, 1, state)) count--;
+//     if (MATCHES_CENTRE(TOP, 2, 1, state) && MATCHES_CENTRE(FRONT, 0, 1, state)) count--;
 
-static double edge_piece_heuristic(CubeState *state) {
-    double count = 12;
-    if (MATCHES_CENTRE(TOP, 0, 1, state) && MATCHES_CENTRE(BACK, 0, 1, state)) count--;
-    if (MATCHES_CENTRE(TOP, 1, 0, state) && MATCHES_CENTRE(LEFT, 0, 1, state)) count--;
-    if (MATCHES_CENTRE(TOP, 1, 2, state) && MATCHES_CENTRE(RIGHT, 0, 1, state)) count--;
-    if (MATCHES_CENTRE(TOP, 2, 1, state) && MATCHES_CENTRE(FRONT, 0, 1, state)) count--;
+//     if (MATCHES_CENTRE(LEFT, 1, 0, state) && MATCHES_CENTRE(BACK, 1, 2, state)) count--;
+//     if (MATCHES_CENTRE(BACK, 1, 0, state) && MATCHES_CENTRE(RIGHT, 1, 2, state)) count--;
+//     if (MATCHES_CENTRE(RIGHT, 1, 0, state) && MATCHES_CENTRE(FRONT, 1, 2, state)) count--;
+//     if (MATCHES_CENTRE(FRONT, 1, 0, state) && MATCHES_CENTRE(LEFT, 1, 2, state)) count--;
 
-    if (MATCHES_CENTRE(LEFT, 1, 0, state) && MATCHES_CENTRE(BACK, 1, 2, state)) count--;
-    if (MATCHES_CENTRE(BACK, 1, 0, state) && MATCHES_CENTRE(RIGHT, 1, 2, state)) count--;
-    if (MATCHES_CENTRE(RIGHT, 1, 0, state) && MATCHES_CENTRE(FRONT, 1, 2, state)) count--;
-    if (MATCHES_CENTRE(FRONT, 1, 0, state) && MATCHES_CENTRE(LEFT, 1, 2, state)) count--;
+//     if (MATCHES_CENTRE(BOTTOM, 0, 1, state) && MATCHES_CENTRE(FRONT, 2, 1, state)) count--;
+//     if (MATCHES_CENTRE(BOTTOM, 1, 0, state) && MATCHES_CENTRE(LEFT, 2, 1, state)) count--;
+//     if (MATCHES_CENTRE(BOTTOM, 1, 2, state) && MATCHES_CENTRE(RIGHT, 2, 1, state)) count--;
+//     if (MATCHES_CENTRE(BOTTOM, 2, 1, state) && MATCHES_CENTRE(BACK, 2, 1, state)) count--;
 
-    if (MATCHES_CENTRE(BOTTOM, 0, 1, state) && MATCHES_CENTRE(FRONT, 2, 1, state)) count--;
-    if (MATCHES_CENTRE(BOTTOM, 1, 0, state) && MATCHES_CENTRE(LEFT, 2, 1, state)) count--;
-    if (MATCHES_CENTRE(BOTTOM, 1, 2, state) && MATCHES_CENTRE(RIGHT, 2, 1, state)) count--;
-    if (MATCHES_CENTRE(BOTTOM, 2, 1, state) && MATCHES_CENTRE(BACK, 2, 1, state)) count--;
-
-    return count / 4;
-}
+//     return count / 4;
+// }
 
 
 double heuristic(CubeState *state) {
