@@ -36,15 +36,18 @@ emulator.
     memory locations and secondly to translate assembly inputs to their respective
     enum representations to be parsed. The root (a MapNode) and number of nodes is stored.
     
-    \item \textbf{TreeNode} (\texttt{MapNode}) A node in the red-black tree that 
+    \item \textbf{Tree Node} (\texttt{MapNode}) A node in the red-black tree that 
     stores the hash identifier of the node, the number of symbols with this hash, 
     a list of symbols (\_\_StringUintPair\_\_), the colour of the node which is used for balancing, the 
     parent node, and the left and right children.
 
-    \item \textbf{SymbolPair} (\texttt{\_\_StringUintPair\_\_}) a strut holding a
+    \item \textbf{Symbol Pair} (\texttt{\_\_StringUintPair\_\_}) a strut holding a
     string (identifier of the symbol) and a corresponding value (either an 
     address or enum value). 
-   
+
+    
+    \item \textbf{Query Result} (\texttt{QueryResult}) a strut returned when searching the map
+    holding the if a result was found and what it is if it was.
     
     \end{itemize}
 
@@ -52,20 +55,13 @@ emulator.
 \subsection{Emulator Program Structure}
 
 \begin{itemize}
-    \item \texttt{decoder.c} \\ Decodes raw binary into one of the 5 instruction 
-    types.
-    \item \texttt{branch.c} \\ Simulates the branch instruction.
-    \item \texttt{dataprocessing.c} \\ Simulates one of the ten data processing 
-    instructions.
-    \item \texttt{halt.c} \\  Halts the program.
-    \item \texttt{multiply.c} \\ Simulates the multiply instruction.
-    \item \texttt{singledatatransfer.c} \\ Simulates single data transfer instructions.
-    \item \texttt{fetcher.c} \\ Fetches the next instruction from memory and
-    increments the PC.
-    \item \texttt{emulate.c} \\ Initializes the processor and starts the fetch-decode-execute
-    cycle on the binary file provided. 
-    \item \texttt{printstate.c} \\ Prints the final state of the program after 
-    halting.
+    \item \texttt{parser.c} 
+    \item \texttt{symbols.c}
+    \item \texttt{assemble.c}
+    \item \texttt{branch.c}
+    \item \texttt{dataprocessing.c}
+    \item \texttt{multiply.c}
+    \item \texttt{singledatatransfer.c}
 \end{itemize}
 \end{minipage}%
 \hfill
