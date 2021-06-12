@@ -35,7 +35,7 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
         }
 
         if (!visit(&(query_result.state), visitedHashes)) {
-            fprintf(stderr, "never seen before, shouldn't have been in queue!\n");
+            fprintf(stderr, "visited before, shouldn't have been in queue!\n");
             continue;
         }
 
