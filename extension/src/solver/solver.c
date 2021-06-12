@@ -35,7 +35,7 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
         }
 
         if (!visit(&(query_result.state), visitedHashes)) {
-            // printf("visited before\n");
+            fprintf(stderr, "visited before, shouldn't have been in queue!\n");
             continue;
         }
 
@@ -156,6 +156,10 @@ bool expand_all_moves(CubeState *current, MovePriorityQueue *queue, HashTree *vi
             next = apply_movement(current, movement);
             if (!query_hash_tree(visitedHashes, hash_cubestate(&next))) {
                 add_to_move_priority_queue(queue, &next, estimate_cost(&next));
+            } else {
+                if (get_pointer_from_hash_tree(visitedHashes, hash_cubestate(&next))) {
+                    add_to_move_priority_queue(queue, &next, estimate_cost(&next));
+                }
             }
         }
     }
@@ -163,6 +167,6 @@ bool expand_all_moves(CubeState *current, MovePriorityQueue *queue, HashTree *vi
 }
 
 bool visit(CubeState *current, HashTree *visitedHashes) {
-    return add_to_hash_tree(visitedHashes, hash_cubestate(current));
+    return modify_pointer_in_hash_tree(visitedHashes, hash_cubestate(current), NULL);
 }
 
