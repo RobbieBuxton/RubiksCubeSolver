@@ -13,6 +13,7 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
     MoveQueueNode query_result;
     add_to_move_priority_queue(queue, start, estimate_cost(start));
     HashTree* visitedHashes = new_hash_tree();
+    add_to_hash_tree(visitedHashes, hash_cubestate(start));
     int count = 0;
     int count2 = 0;
 
@@ -35,7 +36,7 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
         }
 
         if (!visit(&(query_result.state), visitedHashes)) {
-            fprintf(stderr, "visited before, shouldn't have been in queue!\n");
+            fprintf(stderr, "never seen before, shouldn't have been in queue!\n");
             continue;
         }
 
