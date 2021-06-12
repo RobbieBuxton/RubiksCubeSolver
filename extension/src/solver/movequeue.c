@@ -1,5 +1,6 @@
 #include "movequeue.h"
 
+#include <stdio.h>
 #include <string.h>
 
 static inline size_t left_child(size_t curr) {
@@ -26,6 +27,12 @@ MovePriorityQueue *new_move_priority_queue(size_t initial_size) {
         return NULL;
     }
 
+    queue->pointer_tracker = new_hash_tree();
+    if (!queue->pointer_tracker) {
+        free(queue);
+        return NULL;
+    }
+
     queue->size = initial_size;
     queue->count = 0u;
     queue->error = MQ_OK;
@@ -39,6 +46,7 @@ bool free_move_priority_queue(MovePriorityQueue* queue) {
     }
 
     free(queue->state_queue);
+    free(queue->pointer_tracker);
     free(queue);
 
     return true;
@@ -53,11 +61,15 @@ static void sift_up(MovePriorityQueue *queue, size_t start) {
     // This is a min heap, so swap if current < parent.
     size_t par = parent(start);
     if (queue->state_queue[start].cost < queue->state_queue[par].cost) {
+        modify_pointer_in_hash_tree(queue->pointer_tracker, queue->state_queue[par].hash, queue->state_queue + start);
+
         MoveQueueNode temp = queue->state_queue[par];
         queue->state_queue[par] = queue->state_queue[start];
         queue->state_queue[start] = temp;
 
         sift_up(queue, par);
+    } else {
+        modify_pointer_in_hash_tree(queue->pointer_tracker, queue->state_queue[start].hash, queue->state_queue + start);
     }
 }
 
@@ -74,6 +86,7 @@ static void sift_down(MovePriorityQueue *queue, size_t root) {
 
     if (left >= queue->count) {
         // Both left and right are our of heap, exit.
+        modify_pointer_in_hash_tree(queue->pointer_tracker, queue->state_queue[root].hash, queue->state_queue + root);
         return;
     } else if (right >= queue->count) {
         // Right is out of heap, just use left.
@@ -85,12 +98,16 @@ static void sift_down(MovePriorityQueue *queue, size_t root) {
     }
 
     if (queue->state_queue[root].cost > queue->state_queue[to_swap].cost) {
+        modify_pointer_in_hash_tree(queue->pointer_tracker, queue->state_queue[to_swap].hash, queue->state_queue + root);
+
         // Swap if larger.
         MoveQueueNode temp = queue->state_queue[to_swap];
         queue->state_queue[to_swap] = queue->state_queue[root];
         queue->state_queue[root] = temp;
 
         sift_down(queue, to_swap);
+    } else {
+        modify_pointer_in_hash_tree(queue->pointer_tracker, queue->state_queue[root].hash, queue->state_queue + root);
     }
 }
 
@@ -115,7 +132,7 @@ bool add_to_move_priority_queue(MovePriorityQueue *queue, const CubeState *state
     uint64_t hash = hash_cubestate(state);
     MoveQueueNode *found;
 
-    if ((found = find_node_in_move_priority_queue(queue, hash))) {
+    if ((found = get_pointer_from_hash_tree(queue->pointer_tracker, hash))) {
         if (cost < found->cost) {
             found->cost = cost;
             memcpy(found->state.history, state->history, sizeof(state->history));
@@ -123,7 +140,6 @@ bool add_to_move_priority_queue(MovePriorityQueue *queue, const CubeState *state
 
             sift_up(queue, found - queue->state_queue);
         }
-
 
         queue->error = MQ_OK;
         return true;
@@ -143,6 +159,10 @@ bool add_to_move_priority_queue(MovePriorityQueue *queue, const CubeState *state
     queue->state_queue[where].hash = hash;
     queue->error = MQ_OK;
 
+    if (!add_to_hash_tree(queue->pointer_tracker, hash)) {
+        fprintf(stderr, "Failed to add hash %lu to hash tree in queue.\n", hash);
+    }
+
     sift_up(queue, where);
 
     return true;
@@ -161,15 +181,5 @@ bool poll_move_priority_queue(MovePriorityQueue *queue, MoveQueueNode *out_node)
     sift_down(queue, 0u);
 
     return true;
-}
-
-MoveQueueNode *find_node_in_move_priority_queue(MovePriorityQueue *queue, uint64_t hash) {
-    for (size_t i = 0; i < queue->count; ++i) {
-        if (queue->state_queue[i].hash == hash) {
-            return queue->state_queue + i;
-        }
-    }
-
-    return NULL;
 }
 
