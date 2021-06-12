@@ -13,7 +13,6 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
     MoveQueueNode query_result;
     add_to_move_priority_queue(queue, start, estimate_cost(start));
     HashTree* visitedHashes = new_hash_tree();
-    add_to_hash_tree(visitedHashes, hash_cubestate(start));
     int count = 0;
     int count2 = 0;
 
@@ -157,10 +156,6 @@ bool expand_all_moves(CubeState *current, MovePriorityQueue *queue, HashTree *vi
             next = apply_movement(current, movement);
             if (!query_hash_tree(visitedHashes, hash_cubestate(&next))) {
                 add_to_move_priority_queue(queue, &next, estimate_cost(&next));
-            } else {
-                if (get_pointer_from_hash_tree(visitedHashes, hash_cubestate(&next))) {
-                    add_to_move_priority_queue(queue, &next, estimate_cost(&next));
-                }
             }
         }
     }
@@ -168,6 +163,6 @@ bool expand_all_moves(CubeState *current, MovePriorityQueue *queue, HashTree *vi
 }
 
 bool visit(CubeState *current, HashTree *visitedHashes) {
-    return modify_pointer_in_hash_tree(visitedHashes, hash_cubestate(current), NULL);
+    return add_to_hash_tree(visitedHashes, hash_cubestate(current));
 }
 
