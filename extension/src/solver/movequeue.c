@@ -112,9 +112,27 @@ static bool extend_move_priority_queue(MovePriorityQueue *queue) {
 }
 
 bool add_to_move_priority_queue(MovePriorityQueue *queue, const CubeState *state, const double cost) {
+    uint64_t hash = hash_cubestate(state);
+    MoveQueueNode *found;
+
+    if ((found = find_node_in_move_priority_queue(queue, hash))) {
+        if (cost < found->cost) {
+            found->cost = cost;
+            memcpy(found->state.history, state->history, sizeof(state->history));
+            found->state.history_count = state->history_count;
+
+            sift_up(queue, found - queue->state_queue);
+        }
+
+
+        queue->error = MQ_OK;
+        return true;
+    }
+
     if (queue->count >= queue->size) {
         // Extend the queue first.
         if (!extend_move_priority_queue(queue)) {
+            queue->error = MQ_ALLOC_ERROR;
             return false;
         }
     }
@@ -122,7 +140,7 @@ bool add_to_move_priority_queue(MovePriorityQueue *queue, const CubeState *state
     size_t where = (queue->count)++;
     memcpy(&queue->state_queue[where].state, state, sizeof(CubeState));
     queue->state_queue[where].cost = cost;
-    queue->state_queue[where].hash = hash_cubestate(state);
+    queue->state_queue[where].hash = hash;
     queue->error = MQ_OK;
 
     sift_up(queue, where);
@@ -143,5 +161,15 @@ bool poll_move_priority_queue(MovePriorityQueue *queue, MoveQueueNode *out_node)
     sift_down(queue, 0u);
 
     return true;
+}
+
+MoveQueueNode *find_node_in_move_priority_queue(MovePriorityQueue *queue, uint64_t hash) {
+    for (size_t i = 0; i < queue->count; ++i) {
+        if (queue->state_queue[i].hash == hash) {
+            return queue->state_queue + i;
+        }
+    }
+
+    return NULL;
 }
 
