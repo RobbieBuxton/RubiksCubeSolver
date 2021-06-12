@@ -48,9 +48,26 @@ static void test_solver_one_move(void) {
 }
 
 static void test_solver_scrambled(void) {
+    printf("Solve cube length 6\n");
+    CubeState *start = (CubeState *) calloc(1, sizeof(CubeState));
+    memcpy(start->data, &EXAMPLE_SOLVED_STATE, sizeof(FaceData));
+
+    CubeState oneMove = apply_movement(start, (Movement) { .face = TOP, .direction = CW});
+    CubeState twoMoves = apply_movement(&oneMove, (Movement) { .face = FRONT, .direction = DOUBLE});
+    CubeState threeMoves = apply_movement(&twoMoves, (Movement) { .face = BACK, .direction = CCW});
+    CubeState fourMoves = apply_movement(&threeMoves, (Movement) { .face = LEFT, .direction = CW});
+    CubeState fiveMoves = apply_movement(&fourMoves, (Movement) { .face = TOP, .direction = CCW});
+    CubeState sixMoves = apply_movement(&fiveMoves, (Movement) { .face = RIGHT, .direction = CCW});
+    CubeState sevenMoves = apply_movement(&sixMoves, (Movement) { .face = BOTTOM, .direction = DOUBLE});
+
+    
+
     int move_count = 0;
     Movement solution[MAXIMUM_MOVEMENTS] = { { .face = TOP, .direction = CCW } };
-    CubeState *start = (CubeState *) calloc(1, sizeof(CubeState));
+
+    memcpy(start->data, &sevenMoves, sizeof(FaceData));
+
+    assert_true(solve(start, &move_count, solution));
 
     memcpy(start->data, &EXAMPLE_SCRAMBLED_STATE, sizeof(FaceData));
 

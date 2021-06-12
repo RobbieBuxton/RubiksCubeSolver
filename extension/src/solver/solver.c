@@ -13,7 +13,7 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
     MoveQueueNode query_result;
     add_to_move_priority_queue(queue, start, estimate_cost(start));
     HashTree* visitedHashes = new_hash_tree();
-    // int count = 0;
+    int count = 0;
 
     while(queue->count > 0) {
 
@@ -26,11 +26,11 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
         }
 
 
-        // if ((query_result.state.history_count < 7)) {
-        //     printf("%ld \n", query_result.state.history_count);
-            // printf("%d count\n", count++);
+        if (count++%10000 == 0) {
+            // printf("%ld \n", query_result.state.history_count);
+            // printf("%d count\n", count);
             // printCubeState(&(query_result.state));
-        // }
+        }
 
         if (!visit(&(query_result.state), visitedHashes)) {
             // printf("visited before\n");
@@ -39,7 +39,7 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
 
         if (solved(&(query_result.state))) {
             *move_count = query_result.state.history_count;
-            solution = query_result.state.history;
+            memcpy(solution, query_result.state.history, sizeof(query_result.state.history));
 
             free_hash_tree(visitedHashes);
             free_move_priority_queue(queue);
@@ -74,7 +74,7 @@ double heuristic(CubeState *state) {
     double h = 0;
     // add in more future heuristics
     h += spot_colour_heuristic(state);
-    return 0;
+    return h;
 }
 
 double estimate_cost(CubeState *state) {
