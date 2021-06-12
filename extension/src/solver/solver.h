@@ -5,6 +5,7 @@
 #include "movequeue.h"
 
 #define MATCHES_CENTRE(f, r, c, cube) (cube->data[f][r][c] == cube->data[f][1][1])
+#define MISPLACED_CORNER(f, r, c, cube) (cube->data[f][r][c] != cube->data[f][r][1] && cube->data[f][r][c] != cube->data[f][1][c])
 
 /**
  * "Colours" for the Hash nodes.
