@@ -77,7 +77,7 @@ bool modify_pointer_in_hash_tree(HashTree *tree, uint64_t hash, void *ptr);
  * @param  hash The hash to find
  * @return      NULL if the associated pointer is null or if the node does not exist. A different pointer otherwise.
  */
-void *get_pointer_from_hash_tree(const HashTree *tree, const uint64_t hash);
+void *get_pointer_from_hash_tree(HashTree *tree, const uint64_t hash);
 
 /**
  * Query a tree for a Hash
@@ -87,7 +87,7 @@ void *get_pointer_from_hash_tree(const HashTree *tree, const uint64_t hash);
  * @param  hash The hash to find
  * @return      True if it is present
  */
-bool query_hash_tree(const HashTree *tree, const uint64_t hash);
+bool query_hash_tree(HashTree *tree, const uint64_t hash);
 
 #endif  // __HASHTREE_H__
 

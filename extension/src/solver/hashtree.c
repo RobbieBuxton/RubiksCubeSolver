@@ -310,7 +310,7 @@ bool add_to_hash_tree(HashTree *tree, uint64_t hash) {
     return true;
 }
 
-static TreeNode *navigate_tree(const HashTree *tree, uint64_t hash) {
+static TreeNode *navigate_tree(HashTree *tree, uint64_t hash) {
     // Search for a hash.
     TreeNode *curr_ptr = tree->root;
 
@@ -339,7 +339,7 @@ bool modify_pointer_in_hash_tree(HashTree *tree, uint64_t hash, void *ptr) {
     }
 }
 
-void *get_pointer_from_hash_tree(const HashTree *tree, const uint64_t hash) {
+void *get_pointer_from_hash_tree(HashTree *tree, const uint64_t hash) {
     TreeNode *curr_ptr = navigate_tree(tree, hash);
 
     if (curr_ptr) {
@@ -349,7 +349,7 @@ void *get_pointer_from_hash_tree(const HashTree *tree, const uint64_t hash) {
     }
 }
 
-bool query_hash_tree(const HashTree *tree, const uint64_t hash) {
+bool query_hash_tree(HashTree *tree, const uint64_t hash) {
     TreeNode *curr_ptr = navigate_tree(tree, hash);
     return !!curr_ptr;
 }
