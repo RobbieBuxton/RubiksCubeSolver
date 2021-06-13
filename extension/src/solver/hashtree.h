@@ -19,7 +19,7 @@ typedef enum {
  */
 typedef struct TreeNode_t {
     uint64_t hash;                  /**< Hash identifier of node. */
-    void *any_ptr;                  /**< Generic use pointer. Can be allocated to, or to store an existing pointer. */
+    ssize_t queue_pos;               /**< Index of where the hash lives on the queue. */
 
     NodeColour colour;              /**< hash colour for use in balancing. */
     struct TreeNode_t *parent;      /**< Parent hash for this hash. */
@@ -63,21 +63,21 @@ bool add_to_hash_tree(HashTree *tree, uint64_t hash);
 /**
  * Modify a hash's pointer association.
  *
- * @param[out] tree Hash tree to modify pointer
- * @param[in]  hash Hash of node to modify
- * @param[in]  ptr  Pointer to use
- * @return          True if pointer successfully modified. False otherwise.
+ * @param[out] tree  Hash tree to modify pointer
+ * @param[in]  hash  Hash of node to modify
+ * @param[in]  where Offset in queue
+ * @return           True if pointer successfully modified. False otherwise.
  */
-bool modify_pointer_in_hash_tree(HashTree *tree, uint64_t hash, void *ptr);
+bool modify_offset_in_hash_tree(HashTree *tree, uint64_t hash, ssize_t where);
 
 /**
  * Query a binary tree for a pointer associated with a hash.
  *
  * @param  tree The tree to query
  * @param  hash The hash to find
- * @return      NULL if the associated pointer is null or if the node does not exist. A different pointer otherwise.
+ * @return      NULL if the node does not exist or the queue offset is < 0. A valid pointer otherwise.
  */
-void *get_pointer_from_hash_tree(HashTree *tree, const uint64_t hash);
+ssize_t *get_offset_from_hash_tree(HashTree *tree, const uint64_t hash);
 
 /**
  * Query a tree for a Hash

@@ -23,7 +23,7 @@ HashTree *new_hash_tree(void) {
 static void clear_node(TreeNode *node) {
     node->colour      = RED_NODE;
     node->hash        = 0u;
-    node->any_ptr     = NULL;
+    node->queue_pos   = -1;
     node->parent      = NULL;
     node->left_child  = NULL;
     node->right_child = NULL;
@@ -328,22 +328,22 @@ static TreeNode *navigate_tree(HashTree *tree, uint64_t hash) {
     return NULL;
 }
 
-bool modify_pointer_in_hash_tree(HashTree *tree, uint64_t hash, void *ptr) {
+bool modify_offset_in_hash_tree(HashTree *tree, uint64_t hash, ssize_t where) {
     TreeNode *curr_ptr = navigate_tree(tree, hash);
 
     if (curr_ptr) {
-        curr_ptr->any_ptr = ptr;
+        curr_ptr->queue_pos = where;
         return true;
     } else {
         return false;
     }
 }
 
-void *get_pointer_from_hash_tree(HashTree *tree, const uint64_t hash) {
+ssize_t *get_offset_from_hash_tree(HashTree *tree, const uint64_t hash) {
     TreeNode *curr_ptr = navigate_tree(tree, hash);
 
-    if (curr_ptr) {
-        return curr_ptr->any_ptr;
+    if (curr_ptr && curr_ptr->queue_pos >= 0) {
+        return &(curr_ptr->queue_pos);
     } else {
         return NULL;
     }

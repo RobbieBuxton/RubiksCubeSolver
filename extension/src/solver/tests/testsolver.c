@@ -4,9 +4,11 @@
 #include "../solver.h"
 
 #include <assert.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 static void test_solver_solved_already(void) {
     // not 0 as it should have to change for the test to pass.
@@ -50,9 +52,10 @@ static void test_solver_one_move(void) {
 static void test_solver_scrambled(void) {
     CubeState *start = (CubeState *) calloc(1, sizeof(CubeState));
     memcpy(start->data, &EXAMPLE_SOLVED_STATE, sizeof(FaceData));
-    srand(1u);
-    int length = 3;
-    printf("Solve cube length %d\n", length);
+    srand(time(NULL));
+    // srand(1u);
+    int length = 12;
+    fprintf(stderr, "Solve cube length %d\n", length);
     CubeState temp = *start;
     CubeState nMoves;
 
@@ -60,8 +63,6 @@ static void test_solver_scrambled(void) {
         nMoves = apply_movement(&temp, (Movement) { .face = (rand() % 6), .direction = (rand() % 3)});
         temp = nMoves;
     }
-
-    
 
     int move_count = 0;
     Movement solution[MAXIMUM_MOVEMENTS] = { { .face = TOP, .direction = CCW } };
@@ -75,7 +76,7 @@ static void test_solver_scrambled(void) {
     // assert_true(solve(start, &move_count, solution));
 
     for (int move = 0; move < move_count; move++) {
-        printf("direction: %u, face: %u\n", solution[move].direction, solution[move].face);
+        fprintf(stderr, "direction: %u, face: %u\n", solution[move].direction, solution[move].face);
     }
 
     free(start);
