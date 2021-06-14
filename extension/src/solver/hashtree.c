@@ -128,6 +128,9 @@ static void rotate_left(HashTree *tree, TreeNode *current) {
 
     // Set current's right to right's leftt child:
     current->right_child = rights_left_child;
+    if (rights_left_child) {
+        rights_left_child->parent = current;
+    }
 
     // Reparent right.
     current = reparent(tree, current, right);
@@ -135,6 +138,7 @@ static void rotate_left(HashTree *tree, TreeNode *current) {
 
     // Set right's left child to current.
     right->left_child = current;
+    current->parent = right;
 }
 
 // Pre: current has a left child.
@@ -146,6 +150,9 @@ static void rotate_right(HashTree *tree, TreeNode *current) {
 
     // Set current's left to left's right child:
     current->left_child = lefts_right_child;
+    if (lefts_right_child) {
+        lefts_right_child->parent = current;
+    }
 
     // Reparent left.
     current = reparent(tree, current, left);
@@ -153,6 +160,7 @@ static void rotate_right(HashTree *tree, TreeNode *current) {
 
     // Set left's right child to current.
     left->right_child = current;
+    current->parent = left;
 }
 
 // Cases for post-insertion rebalancing and fixing of the tree.
@@ -196,7 +204,7 @@ static void case_3(HashTree *tree, TreeNode *current) {
         assert(false);
     }
 
-    if (unc->colour == RED_NODE) {
+    if (unc && unc->colour == RED_NODE) {
         par->colour = BLACK_NODE;
         unc->colour = BLACK_NODE;
         gpar->colour = RED_NODE;
@@ -257,6 +265,7 @@ bool add_to_hash_tree(HashTree *tree, uint64_t hash) {
     if (tree->root) {
         TreeNode *curr_ptr = tree->root;
         TreeNode *next = NULL;
+        TreeNode *parent = NULL;
         TreeNode **where = NULL;
 
         while (curr_ptr) {
@@ -268,6 +277,7 @@ bool add_to_hash_tree(HashTree *tree, uint64_t hash) {
                     curr_ptr = next;
                 } else {
                     where = &(curr_ptr->right_child);
+                    parent = curr_ptr;
                     curr_ptr = next;
                 }
             } else if (hash < curr_ptr->hash) {
@@ -277,6 +287,7 @@ bool add_to_hash_tree(HashTree *tree, uint64_t hash) {
                     curr_ptr = next;
                 } else {
                     where = &(curr_ptr->left_child);
+                    parent = curr_ptr;
                     curr_ptr = next;
                 }
             } else {
@@ -287,10 +298,11 @@ bool add_to_hash_tree(HashTree *tree, uint64_t hash) {
 
         // Insert and fix.
         *where = new_node(hash);
-        if (!where) {
+        if (!*where) {
             return false;
         }
 
+        (*where)->parent = parent;
         case_1(tree, *where);
     } else {
         // Insert and fix.
@@ -298,8 +310,6 @@ bool add_to_hash_tree(HashTree *tree, uint64_t hash) {
         if (!tree->root) {
             return false;
         }
-
-        tree->root->hash = hash;
 
         case_1(tree, tree->root);
     }
