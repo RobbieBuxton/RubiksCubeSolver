@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
     StringUintMap* symbols_map = new_string_uint_map();
     AssemblyInfo assembly_info = collect_symbols(symbols_map, in_file);
 
-    // Creates new file and pads it for load immediate instructions
+    // Creates a new file
     FILE *out_file = fopen(argv[2], "wb+");
 
     // Translate assembly into output file.
