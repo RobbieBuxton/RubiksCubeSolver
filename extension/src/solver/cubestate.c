@@ -56,7 +56,7 @@ Face get_face_from_template(UnfoldTemplate template, int x, int y) {
     }
 }
 
-const Colour *get_square_pointer(const CubeState *state, UnfoldTemplate template, int x, int y) {
+const UColour *get_square_pointer(const CubeState *state, UnfoldTemplate template, int x, int y) {
     return state->data[get_face_from_template(template, x, y)][template.ys[y][x]] + template.xs[y][x];
 }
 
@@ -64,7 +64,7 @@ void unfold(Face face, CubeState *state, UnfoldedFace output) {
     UnfoldTemplate template = get_template_of(face);
     for (size_t i = 0; i < SIDE_LENGTH + 2; i++) {
         for (size_t j = 0; j < SIDE_LENGTH + 2; j++) {
-            output[i][j] = (Colour *) get_square_pointer(state, template, j, i);
+            output[i][j] = (UColour *) get_square_pointer(state, template, j, i);
         }
     }
 }
@@ -118,10 +118,10 @@ bool solved(const CubeState *state) {
     int found_colours[COLOURS] = { 0 };
 
     for (size_t f = 0; f < FACES; ++f) {
-        Colour previous_colour = COLOURS + 1;
+        UColour previous_colour = COLOURS + 1;
         for (size_t r = 0; r < SIDE_LENGTH; ++r) {
             for (size_t c = 0; c < SIDE_LENGTH; ++c) {
-                Colour cur = state->data[f][r][c];
+                UColour cur = state->data[f][r][c];
 
                 ++(found_colours[cur]);
                 if (previous_colour < COLOURS && previous_colour != cur) {
