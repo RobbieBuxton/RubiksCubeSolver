@@ -6,20 +6,47 @@
 #endif
 
 #include <assert.h>
+#include <setjmp.h>
+#include <signal.h>
+#include <stdio.h>
 #include <string.h>
 #include <time.h>
 
+// Assert abort handlers.
+static jmp_buf env;
+static int failures = 0;
+
+static void handle_sigabrt(int signum) {
+    ++failures;
+
+    signal(signum, SIG_DFL);
+    longjmp(env, 1);
+}
+
+static void run_and_handle_test_aborts(const Test test) {
+    if (setjmp(env) == 0) {
+        signal(SIGABRT, handle_sigabrt);
+        test.test();
+        signal(SIGABRT, SIG_DFL);
+
+        fprintf(stderr, "\nTest passed. ");
+    } else {
+        fprintf(stderr, "\nTest failed. ");
+    }
+}
+
+// Test runner utilities.
 void run_test(const Test test) {
     fprintf(stderr, "Running test \"%s\":\n\n", test.name);
 
     clock_t time;
     time = clock();
 
-    test.test();
+    run_and_handle_test_aborts(test);
 
     time = clock() - time;
 
-    fprintf(stderr, "\nTest \"%s\" passed in %f seconds.\n\n", test.name, (double) time / CLOCKS_PER_SEC);
+    fprintf(stderr, "\"%s\" completed in %f seconds.\n\n", test.name, (double) time / CLOCKS_PER_SEC);
 }
 
 void run_tests(const Test *tests, const size_t n) {
@@ -181,4 +208,6 @@ void assert_numm(const void *ptr) {
     fprintf(stderr, "PTR is NULL: %zu == %zu?\n", (size_t) ptr, (size_t) NULL);
     assert(!ptr);
 }
+
+#undef __assert
 
