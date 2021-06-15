@@ -49,27 +49,35 @@ static void test_solver_one_move(void) {
     free(start);
 }
 
-static void test_solver_scrambled(void) {
-    CubeState *start = (CubeState *) calloc(1, sizeof(CubeState));
-    memcpy(start->data, &EXAMPLE_SOLVED_STATE, sizeof(FaceData));
-    srand(time(NULL));
-    // srand(1u);
-    int length = 12;
-    fprintf(stderr, "Solve cube length %d\n", length);
-    CubeState temp = *start;
-    CubeState nMoves;
-
-    for (int n = 0; n < length; n++) {
-        nMoves = apply_movement(&temp, (Movement) { .face = (rand() % 6), .direction = (rand() % 3)});
-        temp = nMoves;
-    }
-
     int move_count = 0;
     Movement solution[MAXIMUM_MOVEMENTS] = { { .face = TOP, .direction = CCW } };
 
-    memcpy(start->data, &nMoves, sizeof(FaceData));
+static void test_solver_scrambled(void) {
+    CubeState *start = (CubeState *) calloc(1, sizeof(CubeState));
+    int solved_count = 0;
+    srand(time(NULL));
 
-    assert_true(solve(start, &move_count, solution));
+    for (int i = 0; i < 20; i++) {
+        memcpy(start->data, &EXAMPLE_SOLVED_STATE, sizeof(FaceData));
+
+        // srand(1u);
+        int length = 12;
+        fprintf(stderr, "Solve cube length %d\n", length);
+        CubeState temp = *start;
+        CubeState nMoves;
+
+        for (int n = 0; n < length; n++) {
+            nMoves = apply_movement(&temp, (Movement) { .face = (rand() % 6), .direction = (rand() % 3)});
+            memcpy(temp.data, &nMoves, sizeof(FaceData));
+        }
+
+        memcpy(start->data, &nMoves, sizeof(FaceData));
+
+        if (solve(start, &move_count, solution)) {
+            solved_count++;
+            fprintf(stderr, "solved\n");
+        }
+    }
 
     // memcpy(start->data, &EXAMPLE_SCRAMBLED_STATE, sizeof(FaceData));
 
@@ -78,6 +86,8 @@ static void test_solver_scrambled(void) {
     for (int move = 0; move < move_count; move++) {
         fprintf(stderr, "direction: %u, face: %u\n", solution[move].direction, solution[move].face);
     }
+
+    fprintf(stderr, "solved this many out of 5: %d\n", solved_count);
 
     free(start);
 }

@@ -27,10 +27,17 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
         }
         count2++;
 
+        if (queue->count > 4000000) {
+            free_hash_tree(visitedHashes);
+            free_move_priority_queue(queue);
+            return false;
+        }
+
         if (query_result.state.history_count > count) {
-            // printf("%ld \n", query_result.state.history_count);
+
             printf("%d count\t", ++count);
-            printf("%d count\n", count2);
+            printf("%d count\t", count2);
+            printf("%ld in queue\n", queue->count);
             // printCubeState(&(query_result.state));
         }
 
