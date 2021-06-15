@@ -49,7 +49,7 @@
  */
 
 bool load_in_file(const char *filename, CubeState *out_state);
-bool export_solution(const char *filename, int moves, Movement moves[static 20]);
+bool export_solution(const char *filename, int move_count, Movement moves[static 20]);
 
 int main(int argc, char **argv) {
     // Check argument count.
