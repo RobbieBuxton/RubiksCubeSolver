@@ -43,7 +43,9 @@ typedef enum {
 
 // Not making the same mistake here.
 // We are using unsigned char to reduce space usage.
-typedef unsigned char UColour;
+typedef uint8_t UColour;
+typedef uint8_t UFace;
+typedef uint8_t URotation;
 
 typedef UColour FaceData[FACES][SIDE_LENGTH][SIDE_LENGTH];
 
@@ -60,8 +62,8 @@ typedef enum {
  * Pair of values that describe a movement.
  */
 typedef struct {
-    Face face;          /**< Face to rotate. */
-    Rotation direction; /**< Rotation direction. */
+    UFace face;          /**< Face to rotate. */
+    URotation direction; /**< Rotation direction. */
 } Movement;
 
 /**
