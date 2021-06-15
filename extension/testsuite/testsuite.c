@@ -204,7 +204,7 @@ void assert_not_null(const void *ptr) {
     assert(ptr);
 }
 
-void assert_numm(const void *ptr) {
+void assert_null(const void *ptr) {
     fprintf(stderr, "PTR is NULL: %zu == %zu?\n", (size_t) ptr, (size_t) NULL);
     assert(!ptr);
 }
