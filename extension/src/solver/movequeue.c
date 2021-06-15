@@ -45,8 +45,8 @@ bool free_move_priority_queue(MovePriorityQueue* queue) {
         return false;
     }
 
+    free_hash_tree(queue->pointer_tracker);
     free(queue->state_queue);
-    free(queue->pointer_tracker);
     free(queue);
 
     return true;

@@ -30,19 +30,19 @@ int main(int argc, char **argv) {
     }
 
     // Completes first pass and rewinds file.
-    StringUintMap* string_uint_map = new_string_uint_map();
-    AssemblyInfo assembly_info = collect_symbols(string_uint_map, in_file);
+    StringUintMap* symbols_map = new_string_uint_map();
+    AssemblyInfo assembly_info = collect_symbols(symbols_map, in_file);
 
-    // Creates new file and pads it for load immediate instructions
+    // Creates a new file
     FILE *out_file = fopen(argv[2], "wb+");
 
     // Translate assembly into output file.
-    StatusCode code = translate_into_in_file(string_uint_map, in_file, out_file, &assembly_info);
+    StatusCode code = translate_into_in_file(symbols_map, in_file, out_file, &assembly_info);
 
     fclose(out_file);
     fclose(in_file);
 
-    free_string_uint_map(string_uint_map);
+    free_string_uint_map(symbols_map);
     free_string_uint_map(translation_map);
 
     status_code_handler(code, NULL);

@@ -185,6 +185,9 @@ static void rotate_left(StringUintMap *map, MapNode *current) {
 
     // Set current's right to right's leftt child:
     current->right_child = rights_left_child;
+    if (rights_left_child) {
+        rights_left_child->parent = current;
+    }
 
     // Reparent right.
     current = reparent(map, current, right);
@@ -192,6 +195,7 @@ static void rotate_left(StringUintMap *map, MapNode *current) {
 
     // Set right's left child to current.
     right->left_child = current;
+    current->parent = right;
 }
 
 // Pre: current has a left child.
@@ -203,6 +207,9 @@ static void rotate_right(StringUintMap *map, MapNode *current) {
 
     // Set current's left to left's right child:
     current->left_child = lefts_right_child;
+    if (lefts_right_child) {
+        lefts_right_child->parent = current;
+    }
 
     // Reparent left.
     current = reparent(map, current, left);
@@ -210,6 +217,7 @@ static void rotate_right(StringUintMap *map, MapNode *current) {
 
     // Set left's right child to current.
     left->right_child = current;
+    current->parent = left;
 }
 
 // Cases for post-insertion rebalancing and fixing of the tree.
@@ -253,7 +261,7 @@ static void case_3(StringUintMap *map, MapNode *current) {
         assert(false);
     }
 
-    if (unc->colour == RED) {
+    if (unc && unc->colour == RED) {
         par->colour = BLACK;
         unc->colour = BLACK;
         gpar->colour = RED;
@@ -316,6 +324,7 @@ bool add_to_string_uint_map(StringUintMap *map, const char *symbol, const uint a
     if (map->root) {
         MapNode *curr_ptr = map->root;
         MapNode *next = NULL;
+        MapNode *parent = NULL;
         MapNode **where = NULL;
 
         while (curr_ptr) {
@@ -327,6 +336,7 @@ bool add_to_string_uint_map(StringUintMap *map, const char *symbol, const uint a
                     curr_ptr = next;
                 } else {
                     where = &(curr_ptr->right_child);
+                    parent = curr_ptr;
                     curr_ptr = next;
                 }
             } else if (symbol_hash < curr_ptr->hash) {
@@ -336,6 +346,7 @@ bool add_to_string_uint_map(StringUintMap *map, const char *symbol, const uint a
                     curr_ptr = next;
                 } else {
                     where = &(curr_ptr->left_child);
+                    parent = curr_ptr;
                     curr_ptr = next;
                 }
             } else {
@@ -351,10 +362,11 @@ bool add_to_string_uint_map(StringUintMap *map, const char *symbol, const uint a
 
         // Insert and fix.
         *where = new_node(symbol, symbol_hash, addr);
-        if (!where) {
+        if (!*where) {
             return false;
         }
 
+        (*where)->parent = parent;
         case_1(map, *where);
     } else {
         // Insert and fix.
@@ -362,8 +374,6 @@ bool add_to_string_uint_map(StringUintMap *map, const char *symbol, const uint a
         if (!map->root) {
             return false;
         }
-
-        map->root->hash = symbol_hash;
 
         case_1(map, map->root);
     }

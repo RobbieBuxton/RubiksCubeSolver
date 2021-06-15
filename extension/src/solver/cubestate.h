@@ -42,7 +42,12 @@ typedef enum {
 #define MAXIMUM_MOVEMENTS 20
 
 // Not making the same mistake here.
-typedef Colour FaceData[FACES][SIDE_LENGTH][SIDE_LENGTH];
+// We are using unsigned char to reduce space usage.
+typedef uint8_t UColour;
+typedef uint8_t UFace;
+typedef uint8_t URotation;
+
+typedef UColour FaceData[FACES][SIDE_LENGTH][SIDE_LENGTH];
 
 /**
  * Rotation direction enum.
@@ -57,8 +62,8 @@ typedef enum {
  * Pair of values that describe a movement.
  */
 typedef struct {
-    Face face;          /**< Face to rotate. */
-    Rotation direction; /**< Rotation direction. */
+    UFace face : 3;          /**< Face to rotate. */
+    URotation direction : 2; /**< Rotation direction. */
 } Movement;
 
 /**
@@ -220,7 +225,7 @@ static const CubeState EXAMPLE_SCRAMBLED_STATE = {
  * UnfoldedFace is a 5x5 array of pointers pointing to a given face of a cube and
  * the face's neighbouring edges.
  */
-typedef Colour *UnfoldedFace[SIDE_LENGTH + 2][SIDE_LENGTH + 2];
+typedef UColour *UnfoldedFace[SIDE_LENGTH + 2][SIDE_LENGTH + 2];
 
 /*
  * UnfoldedFaces are generated based on pre-computed "templates" which tell you
