@@ -14,7 +14,7 @@
 
 // Assert abort handlers.
 static jmp_buf env;
-static int failures = 0;
+static size_t failures = 0;
 
 static void handle_sigabrt(int signum) {
     ++failures;
@@ -46,7 +46,7 @@ void run_test(const Test test) {
 
     time = clock() - time;
 
-    fprintf(stderr, "\"%s\" completed in %f seconds.\n\n", test.name, (double) time / CLOCKS_PER_SEC);
+    fprintf(stderr, "\"%s\" terminated in %f seconds.\n\n", test.name, (double) time / CLOCKS_PER_SEC);
 }
 
 void run_tests(const Test *tests, const size_t n) {
@@ -62,7 +62,7 @@ void run_tests(const Test *tests, const size_t n) {
 
     time = clock() - time;
 
-    fprintf(stderr, "All tests passed in %f seconds.\n\n", (double) time / CLOCKS_PER_SEC);
+    fprintf(stderr, "Tests completed in %f seconds with %zu / %zu passed (%zu failed).\n\n", (double) time / CLOCKS_PER_SEC, n - failures, n, failures);
 }
 
 void assert_true(const bool condition) {
