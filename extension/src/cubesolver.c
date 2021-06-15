@@ -54,7 +54,7 @@ bool export_solution(const char *filename, int move_count, Movement moves[static
 int main(int argc, char **argv) {
     // Check argument count.
     if (argc != 3) {
-        printf("Usage: cubesolver [infile] [outfile]");
+        printf("Usage: cubesolver [infile] [outfile]\n");
         return 0;
     }
 
