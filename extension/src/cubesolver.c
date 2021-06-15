@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
     solve(&main_state, &total_moves, solution);
 
     // Write output
-    export_solution(argv[2], &main_state);
+    export_solution(argv[2], total_moves, solution);
 
     return 0;
 }
