@@ -10,11 +10,12 @@
 #include <string.h>
 #include <time.h>
 
+static CubeState *start;
+
 static void test_solver_solved_already(void) {
     // not 0 as it should have to change for the test to pass.
     int move_count = 5;
     Movement solution[MAXIMUM_MOVEMENTS] = {0};
-    CubeState *start = (CubeState *) calloc(1, sizeof(CubeState));
 
     memcpy(start->data, &(EXAMPLE_SOLVED_STATE.data), sizeof(FaceData));
 
@@ -25,15 +26,12 @@ static void test_solver_solved_already(void) {
     }
 
     assert_sint_equals(0, move_count);
-
-    free(start);
 }
 
 static void test_solver_one_move(void) {
     int move_count = 0;
     Movement solution[MAXIMUM_MOVEMENTS] = { { .face = TOP, .direction = CCW } };
     Movement expected_solution[MAXIMUM_MOVEMENTS] = { { .face = TOP, .direction = CCW } };
-    CubeState *start = (CubeState *) calloc(1, sizeof(CubeState));
 
     memcpy(start->data, &EXAMPLE_UNSOLVED_STATE, sizeof(FaceData));
 
@@ -45,15 +43,12 @@ static void test_solver_one_move(void) {
 
     assert_sint_equals(1, move_count);
     assert_array_equals(expected_solution, solution, 1, sizeof(Movement));
-
-    free(start);
 }
 
     int move_count = 0;
     Movement solution[MAXIMUM_MOVEMENTS] = { { .face = TOP, .direction = CCW } };
 
 static void test_solver_scrambled(void) {
-    CubeState *start = (CubeState *) calloc(1, sizeof(CubeState));
     int solved_count = 0;
     srand(time(NULL));
 
@@ -88,12 +83,9 @@ static void test_solver_scrambled(void) {
     }
 
     fprintf(stderr, "solved this many out of 5: %d\n", solved_count);
-
-    free(start);
 }
 
 static void test_k_solve_scrambled(void) {
-    CubeState *start = (CubeState *) calloc(1, sizeof(CubeState));
     CubeState g1_midpoint;
     int solved_count = 0;
     srand(time(NULL));
@@ -132,8 +124,6 @@ static void test_k_solve_scrambled(void) {
     }
 
     fprintf(stderr, "solved this many out of 5: %d\n", solved_count);
-
-    free(start);
 }
 
 static const Test TESTS[4] = {
@@ -145,7 +135,12 @@ static const Test TESTS[4] = {
 
 int main(void) {
     fprintf(stderr, "--- %s ---\n", __FILE__);
+
+    start = (CubeState *) calloc(1, sizeof(CubeState));
+
     run_tests(TESTS, sizeof(TESTS) / sizeof(Test));
+
+    free(start);
 
     return 0;
 }
