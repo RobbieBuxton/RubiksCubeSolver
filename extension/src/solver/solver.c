@@ -65,19 +65,19 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
     return false;
 }
 
-// static double spot_colour_heuristic(CubeState *state) {
-//     double count = 36;
-//     for (int face = TOP; face < FACES; face++) {
-//         for (int row = 0; row < SIDE_LENGTH; row++) {
-//             for (int col = 0; col < SIDE_LENGTH; col++) {
-//                 if (MATCHES_CENTRE(face, row, col, state)) {
-//                     count--;
-//                 }
-//             }
-//         }
-//     }
-//     return count / 12;
-// }
+static double spot_colour_heuristic(CubeState *state) {
+    double count = 36;
+    for (int face = TOP; face < FACES; face++) {
+        for (int row = 0; row < SIDE_LENGTH; row++) {
+            for (int col = 0; col < SIDE_LENGTH; col++) {
+                if (MATCHES_CENTRE(face, row, col, state)) {
+                    count--;
+                }
+            }
+        }
+    }
+    return count / 12;
+}
 
 // static double edge_piece_heuristic(CubeState *state) {
 //     double count = 12;
@@ -114,6 +114,33 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
 //     return count / 4;
 // }
 
+static double kociemba_heuristic(CubeState *state) {
+    double count = 20;
+    if (MATCHES_CENTRE(TOP, 0, 0, state)) count--;
+    if (MATCHES_CENTRE(TOP, 0, 2, state)) count--;
+    if (MATCHES_CENTRE(TOP, 2, 0, state)) count--;
+    if (MATCHES_CENTRE(TOP, 2, 2, state)) count--;
+    if (MATCHES_CENTRE(BOTTOM, 0, 0, state)) count--;
+    if (MATCHES_CENTRE(BOTTOM, 0, 2, state)) count--;
+    if (MATCHES_CENTRE(BOTTOM, 2, 0, state)) count--;
+    if (MATCHES_CENTRE(BOTTOM, 2, 2, state)) count--;
+
+    if (MATCHES_EITHER_CENTRE(TOP, BOTTOM, 0, 1, state)) count--;
+    if (MATCHES_EITHER_CENTRE(TOP, BOTTOM, 1, 0, state)) count--;
+    if (MATCHES_EITHER_CENTRE(TOP, BOTTOM, 1, 2, state)) count--;
+    if (MATCHES_EITHER_CENTRE(TOP, BOTTOM, 2, 1, state)) count--;
+    if (MATCHES_EITHER_CENTRE(BOTTOM, TOP, 0, 1, state)) count--;
+    if (MATCHES_EITHER_CENTRE(BOTTOM, TOP, 1, 0, state)) count--;
+    if (MATCHES_EITHER_CENTRE(BOTTOM, TOP, 1, 2, state)) count--;
+    if (MATCHES_EITHER_CENTRE(BOTTOM, TOP, 2, 1, state)) count--;
+
+    if (MATCHES_EITHER_CENTRE(FRONT, BACK, 1, 2, state)) count--;
+    if (MATCHES_EITHER_CENTRE(FRONT, BACK, 2, 1, state)) count--;
+    if (MATCHES_EITHER_CENTRE(BACK, FRONT, 1, 2, state)) count--;
+    if (MATCHES_EITHER_CENTRE(BACK, FRONT, 2, 1, state)) count--;
+    return count/3;
+}
+
 static double misplaced_pieces_heuristic(CubeState *state) {
     int max = 0;
     int min = 8;
@@ -142,7 +169,8 @@ double heuristic(CubeState *state) {
     // h += spot_colour_heuristic(state) * 0;
     // h += edge_piece_heuristic(state) * 0;
     // h += corner_piece_heuristic(state) * 0;
-    h += misplaced_pieces_heuristic(state);
+    h += misplaced_pieces_heuristic(state) * 0;
+    h += kociemba_heuristic(state);
     return h;
 }
 
@@ -173,3 +201,175 @@ bool visit(CubeState *current, HashTree *visitedHashes) {
     return add_to_hash_tree(visitedHashes, hash_cubestate(current));
 }
 
+static bool within_g1(CubeState *state) {
+    if (
+           MATCHES_CENTRE(TOP, 0, 0, state)
+        && MATCHES_CENTRE(TOP, 0, 2, state)
+        && MATCHES_CENTRE(TOP, 2, 0, state)
+        && MATCHES_CENTRE(TOP, 2, 2, state)
+        && MATCHES_CENTRE(BOTTOM, 0, 0, state)
+        && MATCHES_CENTRE(BOTTOM, 0, 2, state)
+        && MATCHES_CENTRE(BOTTOM, 2, 0, state)
+        && MATCHES_CENTRE(BOTTOM, 2, 2, state)
+
+        && MATCHES_EITHER_CENTRE(TOP, BOTTOM, 0, 1, state)
+        && MATCHES_EITHER_CENTRE(TOP, BOTTOM, 1, 0, state)
+        && MATCHES_EITHER_CENTRE(TOP, BOTTOM, 1, 2, state)
+        && MATCHES_EITHER_CENTRE(TOP, BOTTOM, 2, 1, state)
+        && MATCHES_EITHER_CENTRE(BOTTOM, TOP, 0, 1, state)
+        && MATCHES_EITHER_CENTRE(BOTTOM, TOP, 1, 0, state)
+        && MATCHES_EITHER_CENTRE(BOTTOM, TOP, 1, 2, state)
+        && MATCHES_EITHER_CENTRE(BOTTOM, TOP, 2, 1, state)
+
+        && MATCHES_EITHER_CENTRE(FRONT, BACK, 1, 2, state)
+        && MATCHES_EITHER_CENTRE(FRONT, BACK, 2, 1, state)
+
+        && MATCHES_EITHER_CENTRE(BACK, FRONT, 1, 2, state)
+        && MATCHES_EITHER_CENTRE(BACK, FRONT, 2, 1, state)
+        ) 
+    {
+        return true;
+    }
+    return false;
+}
+
+CubeState k_solve(CubeState *start, int *move_count, Movement *solution) {
+    MovePriorityQueue *queue = new_move_priority_queue(100);
+    MoveQueueNode query_result;
+    add_to_move_priority_queue(queue, start, estimate_cost(start));
+    HashTree* visitedHashes = new_hash_tree();
+    int count = 0;
+    int count2 = 0;
+
+    while(queue->count > 0) {
+
+        // Get next state from the queue
+        if (!poll_move_priority_queue(queue, &query_result)) {
+            free_hash_tree(visitedHashes);
+            free_move_priority_queue(queue);
+
+            return *start;
+        }
+        count2++;
+
+        if (queue->count > 4000000) {
+            free_hash_tree(visitedHashes);
+            free_move_priority_queue(queue);
+            return *start;
+        }
+
+        if (query_result.state.history_count > count) {
+
+            printf("%d count\t", ++count);
+            printf("%d count\t", count2);
+            printf("%ld in queue\n", queue->count);
+            // printCubeState(&(query_result.state));
+        }
+
+        if (!visit(&(query_result.state), visitedHashes)) {
+            fprintf(stderr, "visited before, shouldn't have been in queue!\n");
+            continue;
+        }
+
+        if (within_g1(&(query_result.state))) {
+            *move_count = query_result.state.history_count;
+            memcpy(solution, query_result.state.history, sizeof(query_result.state.history));
+
+            free_hash_tree(visitedHashes);
+            free_move_priority_queue(queue);
+
+            return query_result.state;
+        }
+
+        expand_all_moves(&(query_result.state), queue, visitedHashes);
+    }
+
+    free_hash_tree(visitedHashes);
+    free_move_priority_queue(queue);
+
+    return *start;
+}
+
+static bool expand_g1_moves(CubeState *current, MovePriorityQueue *queue, HashTree *visitedHashes) {
+    if (current->history_count == MAXIMUM_MOVEMENTS) {
+        return false;
+    }
+    CubeState next;
+    Movement movement;
+    for (int direction = 0; direction < 3; direction++) {
+        movement.direction = direction;
+        for (int face = 0; face < 6; face += 5) { // all moves top and bottom
+            movement.face = face;
+            next = apply_movement(current, movement);
+            if (!query_hash_tree(visitedHashes, hash_cubestate(&next))) {
+                add_to_move_priority_queue(queue, &next, estimate_cost(&next));
+            }
+        }
+    }
+    movement.direction = DOUBLE;
+    for (int face = 1; face < 5; face++) { // F2, L2, B2, R2
+        movement.face = face;
+        next = apply_movement(current, movement);
+        if (!query_hash_tree(visitedHashes, hash_cubestate(&next))) {
+            add_to_move_priority_queue(queue, &next, spot_colour_heuristic(&next) + next.history_count);
+        }
+    }
+    return true;
+}
+
+bool g1_solve(CubeState *start, int *move_count, Movement *solution) {
+    MovePriorityQueue *queue = new_move_priority_queue(100);
+    MoveQueueNode query_result;
+    add_to_move_priority_queue(queue, start, estimate_cost(start));
+    HashTree* visitedHashes = new_hash_tree();
+    int count = 0;
+    int count2 = 0;
+
+    while(queue->count > 0) {
+
+        // Get next state from the queue
+        if (!poll_move_priority_queue(queue, &query_result)) {
+            free_hash_tree(visitedHashes);
+            free_move_priority_queue(queue);
+
+            return false;
+        }
+        count2++;
+
+        if (queue->count > 4000000) {
+            free_hash_tree(visitedHashes);
+            free_move_priority_queue(queue);
+            return false;
+        }
+
+        if (query_result.state.history_count > count) {
+
+            printf("%d count\t", ++count);
+            printf("%d count\t", count2);
+            printf("%ld in queue\n", queue->count);
+            // printCubeState(&(query_result.state));
+        }
+
+        if (!visit(&(query_result.state), visitedHashes)) {
+            fprintf(stderr, "visited before, shouldn't have been in queue!\n");
+            continue;
+        }
+
+        if (solved(&(query_result.state))) {
+            *move_count = query_result.state.history_count;
+            memcpy(solution, query_result.state.history, sizeof(query_result.state.history));
+
+            free_hash_tree(visitedHashes);
+            free_move_priority_queue(queue);
+
+            return true;
+        }
+
+        expand_g1_moves(&(query_result.state), queue, visitedHashes);
+    }
+
+    free_hash_tree(visitedHashes);
+    free_move_priority_queue(queue);
+
+    return false;
+}

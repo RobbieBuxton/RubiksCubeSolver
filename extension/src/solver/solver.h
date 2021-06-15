@@ -7,6 +7,7 @@
 
 #define MATCHES_CENTRE(f, r, c, cube) (cube->data[f][r][c] == cube->data[f][1][1])
 #define MISPLACED_CORNER(f, r, c, cube) (cube->data[f][r][c] != cube->data[f][r][1] && cube->data[f][r][c] != cube->data[f][1][c])
+#define MATCHES_EITHER_CENTRE(f1, f2, r, c, cube) (MATCHES_CENTRE(f1, r, c, cube) || state->data[f1][r][c] == state->data[f2][1][1])
 
 /**
  * Finds a solution set of moves for a cube starting in position represented by start.
@@ -57,5 +58,32 @@ bool expand_all_moves(CubeState *current, MovePriorityQueue *queue, HashTree *vi
  * @return                  True if it has been added (it was not previously visited).
  */
 bool visit(CubeState *current, HashTree *visitedHashes);
+
+
+/**
+ * Finds a set of moves to put start into a position in G1.
+ *
+ * @param[in]   start       The starting position, history should be empty.
+ * @param[out]  move_count  The number of moves in the solution.
+ * @param[out]  solution    An array of moves which transform start to a solved cube
+ * @return                  The state in G1 that was reached.
+ *
+ */
+CubeState k_solve(CubeState *start, int *move_count, Movement* solution);
+
+
+/**
+ * Finds a solution set of moves for a cube starting in position represented by start.
+ * pre: start must be in G1.
+ *
+ * @param[in]   start       The starting position, history should be empty.
+ * @param[out]  move_count  The number of moves in the solution.
+ * @param[out]  solution    An array of moves which transform start to a solved cube
+ * @return                  True if a solution was found.
+ *
+ */
+bool g1_solve(CubeState *start, int *move_count, Movement* solution);
+
+
 
 #endif

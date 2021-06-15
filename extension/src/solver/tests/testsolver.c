@@ -61,7 +61,7 @@ static void test_solver_scrambled(void) {
         memcpy(start->data, &EXAMPLE_SOLVED_STATE, sizeof(FaceData));
 
         // srand(1u);
-        int length = 12;
+        int length = 5;
         fprintf(stderr, "Solve cube length %d\n", length);
         CubeState temp = *start;
         CubeState nMoves;
@@ -92,10 +92,55 @@ static void test_solver_scrambled(void) {
     free(start);
 }
 
-static const Test TESTS[3] = {
+static void test_k_solve_scrambled(void) {
+    CubeState *start = (CubeState *) calloc(1, sizeof(CubeState));
+    CubeState g1_midpoint;
+    int solved_count = 0;
+    srand(time(NULL));
+
+    for (int i = 0; i < 5; i++) {
+        memcpy(start->data, &EXAMPLE_SOLVED_STATE, sizeof(FaceData));
+
+        // srand(1u);
+        int length = 13;
+        fprintf(stderr, "Solve cube length %d\n", length);
+        CubeState temp = *start;
+        CubeState nMoves;
+
+        for (int n = 0; n < length; n++) {
+            nMoves = apply_movement(&temp, (Movement) { .face = (rand() % 6), .direction = (rand() % 3)});
+            memcpy(temp.data, &nMoves, sizeof(FaceData));
+        }
+
+        memcpy(start->data, &nMoves, sizeof(FaceData));
+
+        g1_midpoint = k_solve(start, &move_count, solution);
+        fprintf(stderr, "solved to g1");
+        move_count = 0;
+        if (g1_solve(&g1_midpoint, &move_count, solution)) {
+            solved_count++;
+            fprintf(stderr, "solved\n");
+        }
+    }
+
+    // memcpy(start->data, &EXAMPLE_SCRAMBLED_STATE, sizeof(FaceData));
+
+    // assert_true(solve(start, &move_count, solution));
+
+    for (int move = 0; move < move_count; move++) {
+        fprintf(stderr, "direction: %u, face: %u\n", solution[move].direction, solution[move].face);
+    }
+
+    fprintf(stderr, "solved this many out of 5: %d\n", solved_count);
+
+    free(start);
+}
+
+static const Test TESTS[4] = {
     { .test = test_solver_solved_already, .name = "Solver runs without error and detects solved state" },
     { .test = test_solver_one_move, .name = "Solver updates output fields and can solve single move puzzle"},
-    { .test = test_solver_scrambled, .name = "Solve an arbitrarily scrambled cube"}
+    { .test = test_solver_scrambled, .name = "Solve an arbitrarily scrambled cube"},
+    { .test = test_k_solve_scrambled, .name = "Solve cubes useing kociemba method"}
 };
 
 int main(void) {
