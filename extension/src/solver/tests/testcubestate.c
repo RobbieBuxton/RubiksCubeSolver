@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include <string.h>
 
+static void test_movement_packing(void) {
+    assert_uint_equals(1u, sizeof(Movement));
+}
+
 static void test_hash_cubestate(void) {
     CubeState state = {
         .data = { { { RED } } }
@@ -29,7 +33,8 @@ static void test_movements(void) {
     printCubeState(&state);
 }
 
-static const Test TESTS[3] = {
+static const Test TESTS[4] = {
+    { .test = test_movement_packing, .name = "Movement is successfully packed into one byte" },
     { .test = test_hash_cubestate, .name = "Hash cube state does not error during calculation" },
     { .test = test_solved_check, .name = "Solved function detects correctly"},
     { .test = test_movements, .name = "Apply movement works correctly"}

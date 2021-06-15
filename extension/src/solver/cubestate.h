@@ -62,8 +62,8 @@ typedef enum {
  * Pair of values that describe a movement.
  */
 typedef struct {
-    UFace face;          /**< Face to rotate. */
-    URotation direction; /**< Rotation direction. */
+    UFace face : 3;          /**< Face to rotate. */
+    URotation direction : 2; /**< Rotation direction. */
 } Movement;
 
 /**
