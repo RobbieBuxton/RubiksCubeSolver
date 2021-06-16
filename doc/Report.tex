@@ -299,6 +299,22 @@ rotate
     \end{tikzpicture}
     \caption{A flowchart demonstrating program flow in solver.c.}
     \end{figure}
-    \end{minipage}
+\end{minipage}
+
+\subsection{Testing and Debugging}
+
+\subsubsection{Test Suite}
+
+All testing for this extension was handled using a unit testing library (created ourselves, found in \texttt{[root]/extension/testsuite}).
+
+The code was tested in parts, with behaviour mimicking the behavior of such unit testing libraries as \texttt{JUnit}, where a test file comprises of tester functions (a \texttt{void} function that takes no parameters), and an array of tagged function pointers to those functions to give friendly names in the output log for each test function.
+
+The main function in a test file effectively iterates through all the tagged functions and runs them.
+If a test function fails (i.e. an ``assertion" fails), the test function terminates and the next test function is executed.
+A \texttt{setjmp} / \texttt{longjmp} pair was used to provide this functionality, in order to avoid using C's default \texttt{assert} function.
+
+\subsubsection{Debugging}
+
+GDB was used in order to help track down infinite loops and errant logic errors in our code, and Valgrind was used to help point out where memory was leaking, as the program deals with a lot of recursive data structures in the form of the \texttt{HashTree} type (used for backing the solver and the move queue).
 
 \end{document}
