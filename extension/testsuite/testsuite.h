@@ -5,7 +5,6 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 /**
@@ -52,19 +51,34 @@ void run_tests(const Test *tests, const size_t n);
  * the values being pointed to by the pointers in the arrays.
  */
 
+void __set_last_file(const char *filename);
+
+void __set_last_caller(const char *caller);
+
+void __set_last_line(const int line);
+
+#define __gen_assert__(name, ...) {\
+    __set_last_file(__FILE__);\
+    __set_last_caller(__func__);\
+    __set_last_line(__LINE__);\
+    name(__VA_ARGS__);\
+}
+
 /**
  * Assert that a condition holds.
  *
  * @param condition The condition to check.
  */
-void assert_true(const bool condition);
+void __assert_true(const bool condition);
+#define assert_true(condition) __gen_assert__(__assert_true, condition)
 
 /**
  * Assert that a condition does not hold.
  *
  * @param condition The condition to check.
  */
-void assert_false(const bool condition);
+void __assert_false(const bool condition);
+#define assert_false(condition) __gen_assert__(__assert_false, condition)
 
 /**
  * Assert that two unsigned integers are equal.
@@ -73,7 +87,8 @@ void assert_false(const bool condition);
  * @param a First unsigned integer.
  * @param b Second unsigned integer.
  */
-void assert_uint_equals(uint64_t a, uint64_t b);
+void __assert_uint_equals(uint64_t a, uint64_t b);
+#define assert_uint_equals(a, b) __gen_assert__(__assert_uint_equals, a, b)
 
 /**
  * Assert that two unsigned integers are not equal.
@@ -82,7 +97,8 @@ void assert_uint_equals(uint64_t a, uint64_t b);
  * @param a First unsigned integer.
  * @param b Second unsigned integer.
  */
-void assert_uint_not_equals(uint64_t a, uint64_t b);
+void __assert_uint_not_equals(uint64_t a, uint64_t b);
+#define assert_uint_not_equals(a, b) __gen_assert__(__assert_uint_not_equals, a, b)
 
 /**
  * Assert that two signed integers are equal.
@@ -91,7 +107,8 @@ void assert_uint_not_equals(uint64_t a, uint64_t b);
  * @param a First signed integer.
  * @param b Second signed integer.
  */
-void assert_sint_equals(int64_t a, int64_t b);
+void __assert_sint_equals(int64_t a, int64_t b);
+#define assert_sint_equals(a, b) __gen_assert__(__assert_sint_equals, a, b)
 
 /**
  * Assert that two signed integers are not equal.
@@ -100,7 +117,8 @@ void assert_sint_equals(int64_t a, int64_t b);
  * @param a First signed integer.
  * @param b Second signed integer.
  */
-void assert_sint_not_equals(int64_t a, int64_t b);
+void __assert_sint_not_equals(int64_t a, int64_t b);
+#define assert_sint_not_equals(a, b) __gen_assert__(__assert_sint_not_equals, a, b)
 
 /**
  * Assert that two floats are "close enough to be equal".
@@ -110,7 +128,8 @@ void assert_sint_not_equals(int64_t a, int64_t b);
  * @param b       Second single-precision floating point number.
  * @param epsilon Maximum difference (exclusive) between the two numbers.
  */
-void assert_float_equals(float a, float b, float epsilon);
+void __assert_float_equals(float a, float b, float epsilon);
+#define assert_float_equals(a, b, epsilon) __gen_assert__(__assert_float_equals, a, b, epsilon)
 
 /**
  * Assert that two floats are not "close enough to be equal".
@@ -120,7 +139,8 @@ void assert_float_equals(float a, float b, float epsilon);
  * @param b       Second single-precision floating point number.
  * @param epsilon Minimum difference (inclusive) between the two numbers.
  */
-void assert_float_not_equals(float a, float b, float epsilon);
+void __assert_float_not_equals(float a, float b, float epsilon);
+#define assert_float_not_equals(a, b, epsilon) __gen_assert__(__assert_float_not_equals, a, b, epsilon)
 
 /**
  * Assert that two doubles are "close enough to be equal".
@@ -130,7 +150,8 @@ void assert_float_not_equals(float a, float b, float epsilon);
  * @param b       Second double-precision floating point number.
  * @param epsilon Maximum difference (exclusive) between the two numbers.
  */
-void assert_double_equals(double a, double b, double epsilon);
+void __assert_double_equals(double a, double b, double epsilon);
+#define assert_double_equals(a, b, epsilon) __gen_assert__(__assert_double_equals, a, b, epsilon)
 
 /**
  * Assert that two doubles are not "close enough to be equal".
@@ -140,7 +161,8 @@ void assert_double_equals(double a, double b, double epsilon);
  * @param b       Second double-precision floating point number.
  * @param epsilon Minimum difference (inclusive) between the two numbers.
  */
-void assert_double_not_equals(double a, double b, double epsilon);
+void __assert_double_not_equals(double a, double b, double epsilon);
+#define assert_double_not_equals(a, b, epsilon) __gen_assert__(__assert_double_not_equals, a, b, epsilon)
 
 /**
  * Assert that two (null-terminated) strings are equal (contain the same characters).
@@ -148,7 +170,8 @@ void assert_double_not_equals(double a, double b, double epsilon);
  * @param str1 First string.
  * @param str2 String to compare with first.
  */
-void assert_string_equals(const char *str1, const char *str2);
+void __assert_string_equals(const char *str1, const char *str2);
+#define assert_string_equals(str1, str2) __gen_assert__(__assert_string_equals, str1, str2)
 
 /**
  * Assert that two (null-terminated) strings are not equal (have differences in their characters).
@@ -156,7 +179,8 @@ void assert_string_equals(const char *str1, const char *str2);
  * @param str1 First string.
  * @param str2 String to compare with first.
  */
-void assert_string_not_equals(const char *str1, const char *str2);
+void __assert_string_not_equals(const char *str1, const char *str2);
+#define assert_string_not_equals(str1, str2) __gen_assert__(__assert_string_not_equals, str1, str2)
 
 /**
  * Assert that two objects are equal.
@@ -168,7 +192,8 @@ void assert_string_not_equals(const char *str1, const char *str2);
  * @param obj2 Pointer to the second object to compare.
  * @param size Size of both objects.
  */
-void assert_equals(const void *obj1, const void *obj2, const size_t size);
+void __assert_equals(const void *obj1, const void *obj2, const size_t size);
+#define assert_equals(obj1, obj2, size) __gen_assert__(__assert_equals, obj1, obj2, size)
 
 /**
  * Assert that two objects are not equal.
@@ -180,7 +205,8 @@ void assert_equals(const void *obj1, const void *obj2, const size_t size);
  * @param obj2 Pointer to the second object to compare.
  * @param size Size of both objects.
  */
-void assert_not_equals(const void *obj1, const void *obj2, const size_t size);
+void __assert_not_equals(const void *obj1, const void *obj2, const size_t size);
+#define assert_not_equals(obj1, obj2, size) __gen_assert__(__assert_not_equals, obj1, obj2, size)
 
 /**
  * Assert that two arrays are equal (that is, they contain the same items).
@@ -194,7 +220,8 @@ void assert_not_equals(const void *obj1, const void *obj2, const size_t size);
  * @param n    Number of items to check.
  * @param size Size of objects in both arrays.
  */
-void assert_array_equals(const void *arr1, const void *arr2, const size_t n, const size_t size);
+void __assert_array_equals(const void *arr1, const void *arr2, const size_t n, const size_t size);
+#define assert_array_equals(arr1, arr2, n, size) __gen_assert__(__assert_array_equals, arr1, arr2, n, size)
 
 /**
  * Assert that two arrays are not equal (that is, they do not contain the same items).
@@ -208,21 +235,24 @@ void assert_array_equals(const void *arr1, const void *arr2, const size_t n, con
  * @param n    Number of items to check.
  * @param size Size of objects in both arrays.
  */
-void assert_array_not_equals(const void *arr1, const void *arr2, const size_t n, const size_t size);
+void __assert_array_not_equals(const void *arr1, const void *arr2, const size_t n, const size_t size);
+#define assert_array_not_equals(arr1, arr2, n, size) __gen_assert__(__assert_array_not_equals, arr1, arr2, n, size)
 
 /**
  * Assert that a pointer is not null.
  *
  * @param ptr Pointer to check.
  */
-void assert_not_null(const void *ptr);
+void __assert_not_null(const void *ptr);
+#define assert_not_null(ptr) __gen_assert__(__assert_not_null, ptr)
 
 /**
  * Assert that a pointer is null.
  *
  * @param ptr Pointer to check.
  */
-void assert_null(const void *ptr);
+void __assert_null(const void *ptr);
+#define assert_null(ptr) __gen_assert__(__assert_null, ptr)
 
 #endif  // __TESTSUITE_H__
 

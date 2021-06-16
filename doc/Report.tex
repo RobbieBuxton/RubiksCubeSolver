@@ -5,6 +5,9 @@
 \usepackage{xcolor}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{wrapfig}
+\usepackage{titlesec}
+\setcounter{secnumdepth}{4}
 \graphicspath{ {./pictures/} }
 \usepackage[a4paper,bindingoffset=0.2in,%
             left=0.75in,right=1in,top=1in,bottom=1in,%
@@ -49,7 +52,7 @@
     \item \textbf{Query Result} (\texttt{QueryResult}) a strut returned when searching the map
     holding the if a result was found and what it is if it was.
     
-    \end{itemize}
+\end{itemize}
 
 \begin{minipage}{0.45\textwidth}
 \subsection{Program Structure}
@@ -72,6 +75,7 @@
 \hfill
 \begin{minipage}{0.45\textwidth}
 
+\begin{figure}[H]
 \begin{tikzpicture}[node distance=2cm]
     \node (start) [scale=0.5, startstop, align=center] at (0,0) {Start};
     \node (init_map) [scale=0.5, process, align=center] at (2,0) {Initialise the translation map};
@@ -93,8 +97,6 @@
     \node (get_line2) [scale=0.5, io, align=center] at (0.25,-5.75) {get the \\ next line};
     \node (close) [scale=0.5, io, align=center] at (2,-9) {close input \\ and output \\file};
     \node (finish) [scale=0.5, startstop, align=center] at (2,-10) {finish};
-    \node (desc) [scale = 0.6, align=center, below of=finish, yshift = -0.5cm, xshift = -2cm]
-    {flowchart demonstrating program flow in assembler.c};
 
     \draw [arrow] (start) -- (init_map);
     \draw [arrow] (init_map) -- (open_file);
@@ -123,6 +125,8 @@
      (4.75,-4.75) -- (4.75,-9) -- (close);
     \draw [arrow] (close) -- (finish);
 \end{tikzpicture}
+\caption{A flowchart demonstrating program flow in assembler.c.}
+\end{figure}
 \end{minipage}
 
 \section{Extension: Rubik's Cube solver}
@@ -133,12 +137,152 @@ cube in under \textcolor{red}{insert here} seconds. To complete the project we s
 into two sections with Robert working on the physical side of the project, designing 
 and building the robot and Fawwaz, Edward and Wojtek working on the algorithm behind 
 solving the cube.
-\subsection{Robot Design} 
 
+\subsection{The Machine}
+
+\subsubsection{Design} 
+
+We decided to build the robot using primarily VEX Robotics parts we already owned which helped
+reduce the cost of the robot significantly. The machine uses an ARM Cortex-A9 with 
+128 MB of RAM and 6 motors with built in encoders to rotate and track the
+positions of the 6 faces of the Rubik's cube. The program takes the current cube state 
+as an input, calculated a solution then generates a list of rotations which are sent 
+to the motors to be executed.
+    
+
+\begin{minipage}{0.45\textwidth}
 \begin{figure}[H]
-    \caption{A CAD rendering of the robot created in Autodesk Fusion 360}
-    \begin{center}
-        \includegraphics[scale=0.12]{main cad.jpg}
-    \end{center}
-  \end{figure}
+
+\includegraphics[scale=0.05]{main cad.jpg}
+\caption{A CAD rendering of the machine created in Autodesk Fusion 360 created 
+before building the robot.}
+\end{figure}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.45\textwidth}
+\begin{figure}[H]
+
+\includegraphics[scale=0.05]{final machine.jpg}
+\caption{The final finished machine \textcolor{red}{replace this image}}
+\end{figure}
+\end{minipage}
+
+\subsubsection{Building process} 
+
+The machine was built over a few days using the facilities at the advanced 
+hackspace in the White City campus to print custom 3D parts. We created a simple
+aluminium frame to which we attached the 6 motors. We used a Markforged 
+3D printer to create strengthened nylon parts that we used as intermediaries 
+between the axels and Rubik's cube centre pieces we rotate. It was important that 
+they were very strong as the pieces undergo quite a bit of stress when rotated in 
+multiple directions and short notice at a high speed.
+\subsubsection{Challenges} 
+
+The main challenge we came across was making sure the motors didn't over or under 
+rotate the faces. When they did it would cause catastrophic failure as the next 
+cube face would not be able to rotate and the cube would explode into lots of small 
+pieces. It was also quite difficult securing the cube in the middle of the machine 
+as you had to be very precise and if the cube was not completely secured the cube 
+would not rotate.
+
+\subsubsection{Future improvements}
+
+If we were to keep working on this project the main things we would focus 
+on improving would be firstly the frame. Currently it is quite unstable and we 
+could definitely rebuild it to be more sturdy. It would also be interesting to 
+add a camera to the machine to detect the current robot state automatically rather 
+than having to rely on user input. We also would like to replace the cube we currently 
+use with another that is a bit more forgiving with the minimum angle required to 
+rotate
+
+\subsection{The solving algorithm}
+\subsubsection{Data Structures}
+
+\begin{itemize}
+
+    \item \textbf{Cube Movement} (\texttt{Movement}) A struct holding the face to 
+    be moved and the direction to be moved (clockwise or anti-clockwise)
+    
+    \item \textbf{Cube State} (\texttt{CubeState}) Holds the current face state 
+    how much of the history has been filled and list of all movements that have 
+    been applied to the cube.
+
+    \item \textbf{Unfolding Template} (\texttt{UnfoldTemplate}) A template describing 
+    how each face connects to it's neighbours  \textcolor{red}{I don't really 
+    understand this can someone else fill this in}
+    
+\end{itemize}
+
+\subsubsection{Program structure}
+
+\begin{minipage}{0.45\textwidth}
+    \begin{itemize}
+        \item \texttt{solver.c} \\ Initialises the priority queue and hash tree then 
+        evaluates states from the priority queue until either there are no states 
+        left in the queue or if the loop exceeds a certain amount of states. This is an 
+        implementation of A* graph search.
+        \item \texttt{cubestate.c} \\ Holds all the function used to modify and interact 
+        with cube states.
+        \item \texttt{hashtree.c}\\  All the functions used in the red black tree we 
+        use for hashing.
+        \item \texttt{movequeue.c}\\ All the functions used in the priority queue we use 
+        for deciding the next state to visit.
+        \item \texttt{testcubestate.c}\\ Tests to make sure cube state functions 
+        function as intended.
+        \item \texttt{testmovequeue.c}\\ Tests to make sure the move priority queue 
+        works correctly.
+        \item \texttt{testsolver.c}\\ Tests to make sure the whole program is working as 
+        intended.
+    \end{itemize}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+    
+    \begin{figure}[H]
+    \begin{tikzpicture}[node distance=2cm]
+        \node (start) [scale=0.5, startstop, align=center] at (0,0) {Start};
+        \node (starting_state) [scale=0.5, io, align=center] at (1.5,0) {Get the 
+        starting \\ state of the cube};
+        \node (init_main) [scale=0.5, process, align=center] at (3.5,0) {Initialise the\\ 
+        priority queue \\ and hash tree};
+        \node (check_empty) [scale=0.5, decision, align=center] at (3.5,-1.5)
+        {Can fetch \\ from \\ queue?};
+        \node (not_solved) [scale=0.5, io, align=center] at (1.5,-1.5) 
+        {Solution could \\ not be found};
+        \node (finish) [scale=0.5, startstop, align=center] at (0,-1.5) {Finish};
+        \node (pop) [scale=0.5, process, align=center] at (3.5,-3) {Take and remove 
+        \\ the highest priority \\ state from queue};
+        \node (check_visited) [scale=0.5, decision, align=center] at (3.5,-4.5)
+        {Have already \\ visited this \\ state?};
+        \node (add_hash) [scale=0.5, process, align=center] at (1.5,-4.5) 
+        {Adds state to \\ visited hash tree};
+        \node (check_solved) [scale=0.5, decision, align=center] at (3.5,-6.5)
+        {Is the cube \\ in a solved \\ state?};
+        \node (solved) [scale=0.5, io, align=center] at (1.5, -6.5) 
+        {Return the \\ solution};
+        \node (expand_move) [scale=0.5, process, align=center] at (3.5,-8) 
+        {Add all adjacent states \\ not already visited\\ to the queue };
+
+
+        \draw [arrow] (start) -- (starting_state);
+        \draw [arrow] (starting_state) -- (init_main);
+        \draw [arrow] (init_main) -- (check_empty);
+        \draw [arrow] (check_empty) -- node[scale=0.5, yshift=0.3cm] {no} (not_solved);
+        \draw [arrow] (not_solved) -- (finish);
+        \draw [arrow] (check_empty) -- node[scale=0.5, xshift=0.5cm] {yes} (pop);
+        \draw [arrow] (pop) -- (check_visited);
+        \draw [arrow] (check_visited) -- node[scale=0.5, yshift=0.3cm] {no} (add_hash);
+        \draw [arrow] (check_visited) -- node[scale=0.5, xshift=0.5cm] {yes} (check_solved);
+        \draw [arrow] (add_hash) -- (1.5,-5) -- (check_solved);
+        \draw [arrow] (check_solved) -- node[scale=0.5, yshift=0.3cm] {yes} (solved);
+        \draw [arrow] (solved) -| (finish);
+        \draw [arrow] (check_solved) -- node[scale=0.5, xshift=0.5cm] {no} (expand_move);
+        \draw [arrow] (expand_move) -- (5,-8) -- (5,-1.5) -- (check_empty);
+
+
+    \end{tikzpicture}
+    \caption{A flowchart demonstrating program flow in solver.c.}
+    \end{figure}
+    \end{minipage}
+
 \end{document}

@@ -27,6 +27,7 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
         }
         count2++;
 
+#ifndef MAIN_IS_CALLING
         if (queue->count > 4000000) {
             free_hash_tree(visitedHashes);
             free_move_priority_queue(queue);
@@ -34,12 +35,12 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
         }
 
         if (query_result.state.history_count > count) {
-
             printf("%d count\t", ++count);
             printf("%d count\t", count2);
             printf("%ld in queue\n", queue->count);
             // printCubeState(&(query_result.state));
         }
+#endif
 
         if (!visit(&(query_result.state), visitedHashes)) {
             fprintf(stderr, "visited before, shouldn't have been in queue!\n");
@@ -226,7 +227,7 @@ static bool within_g1(CubeState *state) {
 
         && MATCHES_EITHER_CENTRE(BACK, FRONT, 1, 2, state)
         && MATCHES_EITHER_CENTRE(BACK, FRONT, 2, 1, state)
-        ) 
+        )
     {
         return true;
     }
