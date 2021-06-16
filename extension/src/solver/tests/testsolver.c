@@ -137,6 +137,7 @@ int main(void) {
     fprintf(stderr, "--- %s ---\n", __FILE__);
 
     start = (CubeState *) calloc(1, sizeof(CubeState));
+    assert(start);
 
     run_tests(TESTS, sizeof(TESTS) / sizeof(Test));
 
