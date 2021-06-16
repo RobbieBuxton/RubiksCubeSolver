@@ -52,3 +52,6 @@ massif*
 #ignore vscode junk
 *.vscode*
 
+doc/Report.synctex.gz
+doc/Report.fls
+doc/Report.fdb_latexmk
