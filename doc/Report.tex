@@ -264,10 +264,15 @@ rotate
         {is sub \\ queue  \\ empty?};
         \node (take_move) [scale=0.5, process, align=center] at (3.5,-10) 
         {Take move \\ from queue \\ and apply to \\ parent state};
-        \node (move_in_queue?) [scale=0.5, decision, align=center] at (3.5,-11.5) 
-        {new state \\ visted hash \\ tree already?};
-        \node (move_in_queue?) [scale=0.5, decision, align=center] at (3.5,-11.5) 
-        {new state \\ visted hash \\ tree already?};
+        \node (move_in_queue?) [scale=0.5, decision, align=center] at (3.5,-11.75) 
+        {new state \\in visted hash \\ tree already?};
+        \node (in_main_queue?) [scale=0.5, decision, align=center] at (3.5,-14) 
+        {new state \\ in main\\ queue already?};
+        \node (update_cost) [scale=0.5, process, align=center] at (1.5,-14) 
+        {updated cost \\ in queue \\ if lower};
+        \node (add_to_queue) [scale=0.5, process, align=center] at (5.5,-14) 
+        {calculate cost \\and add \\ to queue};
+
 
 
         \draw [arrow] (start) -- (starting_state);
@@ -282,11 +287,14 @@ rotate
         \draw [arrow] (solved) -| (finish);
         \draw [arrow] (check_solved) -- node[scale=0.5, xshift=0.5cm] {no} (expand_move);
         \draw [arrow] (expand_move) -- (sub_queue_empty?);
-        \draw [arrow] (sub_queue_empty?) -- node[scale=0.5, yshift=0.3cm] {yes} (5,-8.5) -- (5,-1.5) -- (check_empty);
+        \draw [arrow] (sub_queue_empty?) -- node[scale=0.5, yshift=0.3cm] {yes} (5.5,-8.5) -- (5.5,-1.5) -- (check_empty);
         \draw [arrow] (sub_queue_empty?) -- node[scale=0.5, xshift=0.5cm] {no} (take_move);
         \draw [arrow] (take_move) -- (move_in_queue?);
-        \draw [arrow] (move_in_queue?) -- node[scale=0.5, yshift=0.3cm] {yes} (1.5,-11.5) -- (1.5,-8.5) -- (sub_queue_empty?);
-
+        \draw [arrow] (move_in_queue?) -- node[scale=0.5, yshift=0.3cm] {yes} (1.5,-11.75) -- (1.5,-8.5) -- (sub_queue_empty?);
+        \draw [arrow] (in_main_queue?) -- node[scale=0.5, yshift=0.3cm] {yes} (update_cost);
+        \draw [arrow] (update_cost) -- (1.5,-11.75);
+        \draw [arrow] (in_main_queue?) -- node[scale=0.5, yshift=0.3cm] {no} (add_to_queue);
+        \draw [arrow] (add_to_queue) -- (5.5,-10) -- (sub_queue_empty?);
 
     \end{tikzpicture}
     \caption{A flowchart demonstrating program flow in solver.c.}
