@@ -170,8 +170,8 @@ double heuristic(CubeState *state) {
     // h += spot_colour_heuristic(state) * 0;
     // h += edge_piece_heuristic(state) * 0;
     // h += corner_piece_heuristic(state) * 0;
-    h += misplaced_pieces_heuristic(state) * 0;
-    h += kociemba_heuristic(state);
+    h += misplaced_pieces_heuristic(state);
+    h += kociemba_heuristic(state) * 0;
     return h;
 }
 
