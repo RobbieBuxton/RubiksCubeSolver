@@ -10,7 +10,6 @@
 StateStack *new_stack() {
     StateStack *stack = (StateStack *) malloc(sizeof(StateStack));
     stack->top_index = -1;
-    puts("created stack successfully");
     return stack;
 }
 
@@ -67,7 +66,7 @@ int comp_states(const void *s1, const void *s2) {
 }
 
 void sort_by_heuristic(CubeState *arr, int nmemb) {
-    qsort(arr, nmemb, sizeof(CubeState *), comp_states);
+    qsort(arr, nmemb, sizeof(CubeState), comp_states);
 }
 
 bool successors(CubeState *state, CubeState *dest) {
