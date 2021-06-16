@@ -164,7 +164,7 @@ before building the robot.}
 
 \includegraphics[scale=0.05]{final machine.jpg}
 \caption{The final finished machine \textcolor{red}{replace this image}}
-\end{figure}
+\end{figure}    
 \end{minipage}
 
 \subsubsection{Building process} 
@@ -252,16 +252,22 @@ rotate
         \node (finish) [scale=0.5, startstop, align=center] at (0,-1.5) {Finish};
         \node (pop) [scale=0.5, process, align=center] at (3.5,-3) {Take and remove 
         \\ the highest priority \\ state from queue};
-        \node (check_visited) [scale=0.5, decision, align=center] at (3.5,-4.5)
-        {Have already \\ visited this \\ state?};
-        \node (add_hash) [scale=0.5, process, align=center] at (1.5,-4.5) 
+        \node (add_hash) [scale=0.5, process, align=center] at (3.5,-4)
         {Adds state to \\ visited hash tree};
-        \node (check_solved) [scale=0.5, decision, align=center] at (3.5,-6.5)
+        \node (check_solved) [scale=0.5, decision, align=center] at (3.5,-5.5)
         {Is the cube \\ in a solved \\ state?};
-        \node (solved) [scale=0.5, io, align=center] at (1.5, -6.5) 
+        \node (solved) [scale=0.5, io, align=center] at (1.5, -5.5) 
         {Return the \\ solution};
-        \node (expand_move) [scale=0.5, process, align=center] at (3.5,-8) 
-        {Add all adjacent states \\ not already visited\\ to the queue };
+        \node (expand_move) [scale=0.5, process, align=center] at (3.5,-7) 
+        {Add all possible \\ moves\\ to a sub queue };
+        \node (sub_queue_empty?) [scale=0.5, decision, align=center] at (3.5,-8.5) 
+        {is sub \\ queue  \\ empty?};
+        \node (take_move) [scale=0.5, process, align=center] at (3.5,-10) 
+        {Take move \\ from queue \\ and apply to \\ parent state};
+        \node (move_in_queue?) [scale=0.5, decision, align=center] at (3.5,-11.5) 
+        {new state \\ visted hash \\ tree already?};
+        \node (move_in_queue?) [scale=0.5, decision, align=center] at (3.5,-11.5) 
+        {new state \\ visted hash \\ tree already?};
 
 
         \draw [arrow] (start) -- (starting_state);
@@ -270,14 +276,16 @@ rotate
         \draw [arrow] (check_empty) -- node[scale=0.5, yshift=0.3cm] {no} (not_solved);
         \draw [arrow] (not_solved) -- (finish);
         \draw [arrow] (check_empty) -- node[scale=0.5, xshift=0.5cm] {yes} (pop);
-        \draw [arrow] (pop) -- (check_visited);
-        \draw [arrow] (check_visited) -- node[scale=0.5, yshift=0.3cm] {no} (add_hash);
-        \draw [arrow] (check_visited) -- node[scale=0.5, xshift=0.5cm] {yes} (check_solved);
-        \draw [arrow] (add_hash) -- (1.5,-5) -- (check_solved);
+        \draw [arrow] (pop) -- (add_hash);
+        \draw [arrow] (add_hash) -- (check_solved);
         \draw [arrow] (check_solved) -- node[scale=0.5, yshift=0.3cm] {yes} (solved);
         \draw [arrow] (solved) -| (finish);
         \draw [arrow] (check_solved) -- node[scale=0.5, xshift=0.5cm] {no} (expand_move);
-        \draw [arrow] (expand_move) -- (5,-8) -- (5,-1.5) -- (check_empty);
+        \draw [arrow] (expand_move) -- (sub_queue_empty?);
+        \draw [arrow] (sub_queue_empty?) -- node[scale=0.5, yshift=0.3cm] {yes} (5,-8.5) -- (5,-1.5) -- (check_empty);
+        \draw [arrow] (sub_queue_empty?) -- node[scale=0.5, xshift=0.5cm] {no} (take_move);
+        \draw [arrow] (take_move) -- (move_in_queue?);
+        \draw [arrow] (move_in_queue?) -- node[scale=0.5, yshift=0.3cm] {yes} (1.5,-11.5) -- (1.5,-8.5) -- (sub_queue_empty?);
 
 
     \end{tikzpicture}
