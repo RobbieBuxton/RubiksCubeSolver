@@ -2,6 +2,7 @@
 #include "../cubestate.h"
 #include "../movequeue.h"
 #include "../solver.h"
+#include "../ida_star.h"
 
 #include <assert.h>
 #include <stddef.h>
@@ -73,7 +74,7 @@ static void test_solver_scrambled(void) {
 
         memcpy(start->data, &nMoves, sizeof(FaceData));
 
-        if (solve(start, &move_count, solution)) {
+        if (ida_solve(start, &move_count, solution)) {
             solved_count++;
             fprintf(stderr, "solved\n");
         }
