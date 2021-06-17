@@ -208,9 +208,10 @@ for the rotations.
     a history of all movements that have been applied to the cube and how many moves
     are in that list.
 
-    \item \textbf{Unfolding Template} (\texttt{UnfoldTemplate}) A template describing 
-    how each face connects to its neighbouring faces with regards to the arrays we
-    use to store them.
+    \item \textbf{Unfolding Template} (\texttt{UnfoldTemplate}) These precomputed
+    structures hold information describing how each face connects to its neighbouring
+    edges with regards to their array represeantation. When a face of the cube is rotated, this
+    information is used to rotate the neighbouring edges along with it.
     
 \end{itemize}
 
@@ -302,6 +303,36 @@ for the rotations.
     \caption{A flowchart demonstrating program flow in solver.c.}
     \end{figure}
 \end{minipage}
+
+\subsection{Challenges and Alternative Algorithms}
+
+Our Rubik's cube solver uses the A* path finding algorithm to find the shortest path
+from the cube's inintial state to a solved cube. When we first implemented this, 
+the algorithm's memory usage presented a major challenge. <<<TODO: SUMMERISE HOW MUCH RAM
+THE INITIAL DESIGN USED>>>
+
+One way we remedied this issue is by testing a variety of heuristics in an attemp to 
+increase the likelihood of the A* algorithm finding the solution early. We also attempted
+the following alternative algorithms:
+\begin{itemize}
+    \item \texttt{Kociemba's algorithm} \\ This algorithm created by Herbert Kociemba
+    is a two-phase approach. In the first phase, a searching algorithm (such as A*)
+    is used to find a path from the initial state to a subgroup of states referred to as G1.
+    This subgroup is characterised by the fact that, once a cube is in G1, a solution can 
+    be obtained using only 10 different moves as opposed to the usual 18. This speeds up 
+    the second phase which is finding a path from G1 to a solved state.
+    \item \texttt{Iterative Deepening A* (IDA*)} \\ This is a variant of the A* algorithm
+    which uses a stack instead of a queue. It starts with an expected upper bound on
+    the length of the solution, searches for solutions of length up to that bound in a
+    depth-first fashion and, if no solution is found, the upper bound is increased.
+    Many paths are explored multiple times which makes the algorithm slower but the use
+    of a stack and the depth-first nature of the search makes it more memory efficient than A*.
+\end{itemize}
+
+The use of Kociemba's algorithm allowed us to solve more scrambled cubes more reliably but 
+it also resulted in solutions which took more moves than necessary. Due to time constraints,
+we weren't able to fully implement IDA*. Were we able to do that, the next step would have been 
+to combine IDA* with Kociemba's two-phase approach.
 
 \subsection{Testing and Debugging}
 
