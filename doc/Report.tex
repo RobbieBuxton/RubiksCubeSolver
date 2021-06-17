@@ -367,11 +367,38 @@ A \texttt{setjmp} / \texttt{longjmp} pair was used to provide this functionality
 This easily modifiable, modular testing suite meant any member of the team could add a test to check that the code they created worked.
 We had a range of tests that covered different scopes of functions so that problems could be diagnosed by looking at exactly which tests passed and failed.
 Finally, while for completed code much of the testsuite was automated and used to ensure previous code remained valid, we also found functions such as 
-\texttt{print_cubestate} useful during production (e.g. when programming the application of rotations to a cube).
+\texttt{print\_cubestate} useful during production (e.g. when programming the application of rotations to a cube).
 
 \subsubsection{Debugging}
 
 GDB was used in order to help track down infinite loops and errant logic errors in our code, and Valgrind was used to help point out where memory was leaking, as the program deals with a lot of recursive data structures in the form of the \texttt{HashTree} type (used for backing the solver and the move queue).
+
+\subsection{Group Reflection}
+
+We believe we've split the work well, playing to each other's strengths and different interests
+as well as accounting for varying timetables. We didn't follow a tight schedule and,
+when parts of the project proved more challenging than we previously thought, we were
+flexible enough to adapt to most of the challenges we faced.
+
+Our regular video meetings and frequent use of the chat on Discord kept everyone on track
+and up to date on the state of the project while ensuring that any issues were resolved quickly.
+
+Reviewing and refactoring each other's code (as opposed to doing our parts in isolation) was
+a good idea although, on a few occasions, it did make it more difficult to keep track of 
+who was doing what and make sure multiple people weren't working on the same thing.
+This issue could have been prevented by making more extensive use of the Issues page
+on GitHub.
+
+We've managed to effectively plan the structure of our programs at the start and divide them
+into multiple files so that we rarely had to work on the same file at the same time.
+However, when working on the emulator, we hadn't planned the directory structure of the project
+adequately which meant it had to be reorganised later on. The assembler and extension were
+a lot more organised from the start.
+
+One way we could have improved our strategy would be to research Rubik's cubes and
+existing cube solving algorithms more thoroughly before attempting the extension.
+Some of the challenges we faced could have been avoided had we, for instance, known about
+the IDA* algorithm earlier.
 
 \subsection{Individual Reflections}
 
