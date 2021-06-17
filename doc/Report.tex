@@ -364,6 +364,11 @@ The main function in a test file effectively iterates through all the tagged fun
 If a test function fails (i.e. an ``assertion" fails), the test function terminates and the next test function is executed.
 A \texttt{setjmp} / \texttt{longjmp} pair was used to provide this functionality, in order to avoid using C's default \texttt{assert} function.
 
+This easily modifiable, modular testing suite meant any member of the team could add a test to check that the code they created worked.
+We had a range of tests that covered different scopes of functions so that problems could be diagnosed by looking at exactly which tests passed and failed.
+Finally, while for completed code much of the testsuite was automated and used to ensure previous code remained valid, we also found functions such as 
+\texttt{print_cubestate} useful during production (e.g. when programming the application of rotations to a cube).
+
 \subsubsection{Debugging}
 
 GDB was used in order to help track down infinite loops and errant logic errors in our code, and Valgrind was used to help point out where memory was leaking, as the program deals with a lot of recursive data structures in the form of the \texttt{HashTree} type (used for backing the solver and the move queue).
