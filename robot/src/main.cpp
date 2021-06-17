@@ -24,7 +24,7 @@ void on_center_button() {
  */
 void initialize() {
 	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Fuck off wankface");
+	pros::lcd::set_text(1, "Rubik's cube solver");
 
 	pros::lcd::register_btn1_cb(on_center_button);
 }
@@ -73,36 +73,88 @@ void autonomous() {}
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
- #define TIME 750
- #define ONE_TURN 250
-void opcontrol() {
-	//First val is the motor the second val is the direction, 0 = none, 1 = clockwise, 2 = counter clockwise;
-	pros::c::motor_set_brake_mode(11,MOTOR_BRAKE_COAST);
-	pros::c::motor_set_brake_mode(12,MOTOR_BRAKE_COAST);
-	pros::c::motor_set_brake_mode(13,MOTOR_BRAKE_COAST);
-	pros::c::motor_set_brake_mode(14,MOTOR_BRAKE_COAST);
-	pros::c::motor_set_brake_mode(15,MOTOR_BRAKE_COAST);
-	pros::c::motor_set_brake_mode(16,MOTOR_BRAKE_COAST);
-	int instr[20][2] = {{0,0},{1,0},{2,0}};
-	pros::c::motor_move_relative(11,ONE_TURN,30);
-	pros::delay(TIME);
-	pros::c::motor_move_relative(12,ONE_TURN,30);
-	pros::delay(TIME);
-	pros::c::motor_move_relative(13,ONE_TURN,30);
-	pros::delay(TIME);
-	pros::c::motor_move_relative(14,ONE_TURN,30);
-	pros::delay(TIME);
-	pros::c::motor_move_relative(15,ONE_TURN,30);
-	pros::delay(TIME);
-	pros::c::motor_move_relative(16,ONE_TURN,30);
+ #define TIME 500
+ #define MAX_SPEED 127
 
+typedef enum {
+	RED = 11,    //0
+	WHITE = 12,  //1
+	GREEN = 13,  //2
+	YELLOW = 14, //3
+	BLUE = 15,   //4
+	ORANGE = 16  //5
+} MotorColour;
 
-	/*
-	while (true) {
-		for (int i = 0; i < 20; i++) {
-			pros::c::motor_move_relative(instr[i][0]+1,ONE_TURN * instr[i][1],30);
-			pros::delay(20);
-		}
+int get_rotate_amount(int colour) {
+	switch(colour){
+		case RED:
+			return 225;
+		case WHITE:
+			return 230;
+		case GREEN:
+			return 225;
+		case YELLOW:
+			return 225;
+		case BLUE:
+			return 230;
+		case ORANGE:
+			return 227;
+		default:
+			return 225;
 	}
-	*/
+
+}
+
+void opcontrol() {
+	//From one of the tests done solving the cube using IDA*
+	int scramble[30][2] {{1,2},
+											 {2,0},
+											 {2,0},
+											 {0,1},
+											 {2,4},
+											 {2,5},
+											 {1,3},
+											 {2,5},
+											 {1,4},
+											 {1,1},
+											 {1,2},
+											 {0,4},
+											 {0,3},
+											 //solve
+											 {2,3},
+											 {1,2},
+											 {2,4},
+											 {1,1},
+											 {1,4},
+											 {0,5},
+											 {1,3},
+											 {0,5},
+											 {0,4},
+											 {2,1},
+											 {1,0},
+											 {1,2}};
+
+
+
+	pros::c::motor_set_brake_mode(11,MOTOR_BRAKE_HOLD);
+	pros::c::motor_set_brake_mode(12,MOTOR_BRAKE_HOLD);
+	pros::c::motor_set_brake_mode(13,MOTOR_BRAKE_HOLD);
+	pros::c::motor_set_brake_mode(14,MOTOR_BRAKE_HOLD);
+	pros::c::motor_set_brake_mode(15,MOTOR_BRAKE_HOLD);
+	pros::c::motor_set_brake_mode(16,MOTOR_BRAKE_HOLD);
+
+
+	pros::delay(3000);
+	int accumulator[6] = {0,0,0,0,0,0};
+	int colour;
+	for (int i = 0; i < 0; i++) {
+		accumulator[scramble[i][1]] += (scramble[i][0] + 1);
+		colour = scramble[i][1]+11;
+		pros::c::motor_move_absolute(colour,
+			                           (accumulator[scramble[i][1]] % 4) *
+																 get_rotate_amount(colour)
+																 ,MAX_SPEED/2);
+		pros::delay(TIME*2);
+	}
+	pros::delay(3000);
 }
