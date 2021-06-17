@@ -1,7 +1,6 @@
 #ifndef __TESTSUITE_H__
 #define __TESTSUITE_H__
 
-#include <bits/stdint-uintn.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdint.h>
