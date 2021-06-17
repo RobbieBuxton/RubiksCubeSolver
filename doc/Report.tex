@@ -35,7 +35,7 @@
 
     \item \textbf{Map} (\texttt{StringUintMap}) A map implemented using an
     red-black tree and hashing function to allow strings to be mapped to unsigned
-    32 bit intergers. This is used in two cases. Firstly to map branch tags to 
+    32 bit integers. This is used in two cases. Firstly to map branch tags to 
     memory locations and secondly to translate assembly inputs to their respective
     enum representations to be parsed. The root (a MapNode) and number of nodes is stored.
     
@@ -44,13 +44,13 @@
     a list of symbols (\_\_StringUintPair\_\_), the colour of the node which is used for balancing, the 
     parent node, and the left and right children.
 
-    \item \textbf{Symbol Pair} (\texttt{\_\_StringUintPair\_\_}) a strut holding a
+    \item \textbf{Symbol Pair} (\texttt{\_\_StringUintPair\_\_}) A strut holding a
     string (identifier of the symbol) and a corresponding value (either an 
     address or enum value). 
 
     
-    \item \textbf{Query Result} (\texttt{QueryResult}) a strut returned when searching the map
-    holding the if a result was found and what it is if it was.
+    \item \textbf{Query Result} (\texttt{QueryResult}) A strut returned when searching the map;
+    it holds a Boolean describing whether a result was found and has a field for storing that result.
     
 \end{itemize}
 
@@ -59,17 +59,17 @@
 
 \begin{itemize}
     \item \texttt{parser.c} \\Contains the function that collects the symbols in the first pass of the
-    input data and resets the file to be reread for the second pass
+    input data and resets the file to be reread for the second pass.
     \item \texttt{symbols.c} \\Contains the functions that create and interact with the
     symbol map used to map labels to memory addresses.
     \item \texttt{assemble.c} \\Initalises the maps used in the assembler. Then 
     passes over the file twice mapping labels to memory addresses and converting
     instructions into binary.
-    \item \texttt{branch.c} \\Handles converting the branch instruction
+    \item \texttt{branch.c} \\Handles converting the branch instruction.
     \item \texttt{dataprocessing.c} \\Handles converting the data processing
-    instructions
-    \item \texttt{multiply.c} \\Handles the multiply instructions
-    \item \texttt{singledatatransfer.c} \\Handles the single data transfer instructions
+    instructions.
+    \item \texttt{multiply.c} \\Handles the multiply instructions.
+    \item \texttt{singledatatransfer.c} \\Handles the single data transfer instructions.
 \end{itemize}
 \end{minipage}%
 \hfill
@@ -146,7 +146,7 @@ We decided to build the robot using primarily VEX Robotics parts we already owne
 reduce the cost of the robot significantly. The machine uses an ARM Cortex-A9 with 
 128 MB of RAM and 6 motors with built in encoders to rotate and track the
 positions of the 6 faces of the Rubik's cube. The program takes the current cube state 
-as an input, calculated a solution then generates a list of rotations which are sent 
+as an input, calculates a solution and then generates a list of rotations which are sent 
 to the motors to be executed.
     
 
@@ -173,9 +173,9 @@ The machine was built over a few days using the facilities at the advanced
 hackspace in the White City campus to print custom 3D parts. We created a simple
 aluminium frame to which we attached the 6 motors. We used a Markforged 
 3D printer to create strengthened nylon parts that we used as intermediaries 
-between the axels and Rubik's cube centre pieces we rotate. It was important that 
-they were very strong as the pieces undergo quite a bit of stress when rotated in 
-multiple directions and short notice at a high speed.
+between the axels and the Rubik's cube centre pieces we rotate. It was important that 
+they were very strong as the pieces undergo high stress when rotated in 
+multiple directions, at short notice and at a high speed.
 \subsubsection{Challenges} 
 
 The main challenge we came across was making sure the motors didn't over or under 
@@ -192,8 +192,8 @@ on improving would be firstly the frame. Currently it is quite unstable and we
 could definitely rebuild it to be more sturdy. It would also be interesting to 
 add a camera to the machine to detect the current robot state automatically rather 
 than having to rely on user input. We also would like to replace the cube we currently 
-use with another that is a bit more forgiving with the minimum angle required to 
-rotate
+use with another that is a bit more forgiving with a wider margin of error allowed
+for the rotations.
 
 \subsection{The solving algorithm}
 \subsubsection{Data Structures}
@@ -201,15 +201,16 @@ rotate
 \begin{itemize}
 
     \item \textbf{Cube Movement} (\texttt{Movement}) A struct holding the face to 
-    be moved and the direction to be moved (clockwise or anti-clockwise)
+    be moved and the direction to be moved (clockwise, anti-clockwise or double).
     
-    \item \textbf{Cube State} (\texttt{CubeState}) Holds the current face state 
-    how much of the history has been filled and list of all movements that have 
-    been applied to the cube.
+    \item \textbf{Cube State} (\texttt{CubeState}) Holds the current state of the 
+    faces of the cube as six two-dimensional arrays of Colours. It also contains 
+    a history of all movements that have been applied to the cube and how many moves
+    are in that list.
 
     \item \textbf{Unfolding Template} (\texttt{UnfoldTemplate}) A template describing 
-    how each face connects to it's neighbours  \textcolor{red}{I don't really 
-    understand this can someone else fill this in}
+    how each face connects to its neighbouring faces with regards to the arrays we
+    use to store them.
     
 \end{itemize}
 
@@ -218,14 +219,14 @@ rotate
 \begin{minipage}{0.45\textwidth}
     \begin{itemize}
         \item \texttt{solver.c} \\ Initialises the priority queue and hash tree then 
-        evaluates states from the priority queue until either there are no states 
-        left in the queue or if the loop exceeds a certain amount of states. This is an 
-        implementation of A* graph search.
-        \item \texttt{cubestate.c} \\ Holds all the function used to modify and interact 
+        evaluates and expands states from the priority queue until either there are no states 
+        left in the queue or a solution has been found. This is an 
+        implementation of an A* graph search.
+        \item \texttt{cubestate.c} \\ Holds all the functions used to modify and interact 
         with cube states.
-        \item \texttt{hashtree.c}\\  All the functions used in the red black tree we 
-        use for hashing.
-        \item \texttt{movequeue.c}\\ All the functions used in the priority queue we use 
+        \item \texttt{hashtree.c}\\  Contains an implementation for the red black tree we 
+        use for storing which cube state hashes we have visited.
+        \item \texttt{movequeue.c}\\ Contains an implementation for the priority queue we use 
         for deciding the next state to visit.
         \item \texttt{testcubestate.c}\\ Tests to make sure cube state functions 
         function as intended.
@@ -291,6 +292,7 @@ rotate
         \draw [arrow] (sub_queue_empty?) -- node[scale=0.5, xshift=0.5cm] {no} (take_move);
         \draw [arrow] (take_move) -- (move_in_queue?);
         \draw [arrow] (move_in_queue?) -- node[scale=0.5, yshift=0.3cm] {yes} (1.5,-11.75) -- (1.5,-8.5) -- (sub_queue_empty?);
+        \draw [arrow] (move_in_queue?) -- node[scale=0.5, xshift=0.5cm] {no} (in_main_queue?);
         \draw [arrow] (in_main_queue?) -- node[scale=0.5, yshift=0.3cm] {yes} (update_cost);
         \draw [arrow] (update_cost) -- (1.5,-11.75);
         \draw [arrow] (in_main_queue?) -- node[scale=0.5, yshift=0.3cm] {no} (add_to_queue);

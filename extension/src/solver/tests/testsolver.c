@@ -53,23 +53,27 @@ static void test_solver_scrambled(void) {
     int solved_count = 0;
     srand(time(NULL));
 
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 1; i++) {
         memcpy(start->data, &EXAMPLE_SOLVED_STATE, sizeof(FaceData));
 
         // srand(1u);
-        int length = 5;
+        int length = 13;
         fprintf(stderr, "Solve cube length %d\n", length);
         CubeState temp = *start;
         CubeState nMoves;
+        Movement movement;
 
         for (int n = 0; n < length; n++) {
-            nMoves = apply_movement(&temp, (Movement) { .face = (rand() % 6), .direction = (rand() % 3)});
+            movement.face = (rand() % 6);
+            movement.direction = (rand() % 3);
+            fprintf(stderr, "direction: %u, face: %u\n", movement.direction, movement.face);
+            nMoves = apply_movement(&temp, movement);
             memcpy(temp.data, &nMoves, sizeof(FaceData));
         }
 
         memcpy(start->data, &nMoves, sizeof(FaceData));
 
-        if (ida_solve(start, &move_count, solution)) {
+        if (solve(start, &move_count, solution)) {
             solved_count++;
             fprintf(stderr, "solved\n");
         }
@@ -83,7 +87,7 @@ static void test_solver_scrambled(void) {
         fprintf(stderr, "direction: %u, face: %u\n", solution[move].direction, solution[move].face);
     }
 
-    fprintf(stderr, "solved this many out of 5: %d\n", solved_count);
+    fprintf(stderr, "solved this many out of 1: %d\n", solved_count);
 }
 
 static void test_k_solve_scrambled(void) {
@@ -91,11 +95,11 @@ static void test_k_solve_scrambled(void) {
     int solved_count = 0;
     srand(time(NULL));
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 0; i++) {
         memcpy(start->data, &EXAMPLE_SOLVED_STATE, sizeof(FaceData));
 
         // srand(1u);
-        int length = 13;
+        int length = 10;
         fprintf(stderr, "Solve cube length %d\n", length);
         CubeState temp = *start;
         CubeState nMoves;
