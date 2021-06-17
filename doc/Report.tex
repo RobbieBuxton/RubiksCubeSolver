@@ -17,8 +17,8 @@
 \tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum height=0.8cm, text centered, draw=black, fill=blue!30]
 \tikzstyle{process} = [rectangle, minimum width=1cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
 \tikzstyle{decision} = [diamond, minimum width=1cm, minimum height=1cm, text centered, draw=black, fill=green!30]
-\tikzstyle{arrow} = [thick,->,>=stealth]    
-\tikzstyle{line} = [thick,-,>=stealth] 
+\tikzstyle{arrow} = [thick,->,>=stealth]
+\tikzstyle{line} = [thick,-,>=stealth]
 
 \begin{document}
 
@@ -35,23 +35,23 @@
 
     \item \textbf{Map} (\texttt{StringUintMap}) A map implemented using an
     red-black tree and hashing function to allow strings to be mapped to unsigned
-    32 bit integers. This is used in two cases. Firstly to map branch tags to 
+    32 bit integers. This is used in two cases. Firstly to map branch tags to
     memory locations and secondly to translate assembly inputs to their respective
     enum representations to be parsed. The root (a MapNode) and number of nodes is stored.
-    
-    \item \textbf{Tree Node} (\texttt{MapNode}) A node in the red-black tree that 
-    stores the hash identifier of the node, the number of symbols with this hash, 
-    a list of symbols (\_\_StringUintPair\_\_), the colour of the node which is used for balancing, the 
+
+    \item \textbf{Tree Node} (\texttt{MapNode}) A node in the red-black tree that
+    stores the hash identifier of the node, the number of symbols with this hash,
+    a list of symbols (\_\_StringUintPair\_\_), the colour of the node which is used for balancing, the
     parent node, and the left and right children.
 
     \item \textbf{Symbol Pair} (\texttt{\_\_StringUintPair\_\_}) A strut holding a
-    string (identifier of the symbol) and a corresponding value (either an 
-    address or enum value). 
+    string (identifier of the symbol) and a corresponding value (either an
+    address or enum value).
 
-    
+
     \item \textbf{Query Result} (\texttt{QueryResult}) A strut returned when searching the map;
     it holds a Boolean describing whether a result was found and has a field for storing that result.
-    
+
 \end{itemize}
 
 \begin{minipage}{0.45\textwidth}
@@ -62,7 +62,7 @@
     input data and resets the file to be reread for the second pass.
     \item \texttt{symbols.c} \\Contains the functions that create and interact with the
     symbol map used to map labels to memory addresses.
-    \item \texttt{assemble.c} \\Initalises the maps used in the assembler. Then 
+    \item \texttt{assemble.c} \\Initalises the maps used in the assembler. Then
     passes over the file twice mapping labels to memory addresses and converting
     instructions into binary.
     \item \texttt{branch.c} \\Handles converting the branch instruction.
@@ -130,31 +130,31 @@
 \end{minipage}
 
 \section{Extension: Rubik's Cube solver}
-\subsection{Description} 
+\subsection{Description}
 Our group chose to build a Rubik's cube solving robot as our extension. The robot
-would be able to solve a scrambled Rubik's cube. The robot can solve a 3 $\times$ 3 
-cube in under \textcolor{red}{insert here} seconds. To complete the project we split the team 
-into two sections with Robert working on the physical side of the project, designing 
-and building the robot and Fawwaz, Edward and Wojtek working on the algorithm behind 
+would be able to solve a scrambled Rubik's cube. The robot can solve a 3 $\times$ 3
+cube in under \textcolor{red}{insert here} seconds. To complete the project we split the team
+into two sections with Robert working on the physical side of the project, designing
+and building the robot and Fawwaz, Edward and Wojtek working on the algorithm behind
 solving the cube.
 
 \subsection{The Machine}
 
-\subsubsection{Design} 
+\subsubsection{Design}
 
 We decided to build the robot using primarily VEX Robotics parts we already owned which helped
-reduce the cost of the robot significantly. The machine uses an ARM Cortex-A9 with 
+reduce the cost of the robot significantly. The machine uses an ARM Cortex-A9 with
 128 MB of RAM and 6 motors with built in encoders to rotate and track the
-positions of the 6 faces of the Rubik's cube. The program takes the current cube state 
-as an input, calculates a solution and then generates a list of rotations which are sent 
+positions of the 6 faces of the Rubik's cube. The program takes the current cube state
+as an input, calculates a solution and then generates a list of rotations which are sent
 to the motors to be executed.
-    
+
 
 \begin{minipage}{0.45\textwidth}
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.05]{main cad.jpg}
-\caption{A CAD rendering of the machine created in Autodesk Fusion 360 created 
+\caption{A CAD rendering of the machine created in Autodesk Fusion 360 created
 before building the robot.}
 \end{figure}
 \end{minipage}%
@@ -164,34 +164,34 @@ before building the robot.}
 \centering
 \includegraphics[scale=0.11]{final machine.jpg}
 \caption{The final finished machine}
-\end{figure}    
+\end{figure}
 \end{minipage}
 
-\subsubsection{Building process} 
+\subsubsection{Building process}
 
-The machine was built over a few days using the facilities at the advanced 
+The machine was built over a few days using the facilities at the advanced
 hackspace in the White City campus to print custom 3D parts. We created a simple
-aluminium frame to which we attached the 6 motors. We used a Markforged 
-3D printer to create strengthened nylon parts that we used as intermediaries 
-between the axels and the Rubik's cube centre pieces we rotate. It was important that 
-they were very strong as the pieces undergo high stress when rotated in 
+aluminium frame to which we attached the 6 motors. We used a Markforged
+3D printer to create strengthened nylon parts that we used as intermediaries
+between the axels and the Rubik's cube centre pieces we rotate. It was important that
+they were very strong as the pieces undergo high stress when rotated in
 multiple directions, at short notice and at a high speed.
-\subsubsection{Challenges} 
+\subsubsection{Challenges}
 
-The main challenge we came across was making sure the motors didn't over or under 
-rotate the faces. When they did it would cause catastrophic failure as the next 
-cube face would not be able to rotate and the cube would explode into lots of small 
-pieces. It was also quite difficult securing the cube in the middle of the machine 
-as you had to be very precise and if the cube was not completely secured the cube 
+The main challenge we came across was making sure the motors didn't over or under
+rotate the faces. When they did it would cause catastrophic failure as the next
+cube face would not be able to rotate and the cube would explode into lots of small
+pieces. It was also quite difficult securing the cube in the middle of the machine
+as you had to be very precise and if the cube was not completely secured the cube
 would not rotate.
 
 \subsubsection{Future improvements}
 
-If we were to keep working on this project the main things we would focus 
-on improving would be firstly the frame. Currently it is quite unstable and we 
-could definitely rebuild it to be more sturdy. It would also be interesting to 
-add a camera to the machine to detect the current robot state automatically rather 
-than having to rely on user input. We also would like to replace the cube we currently 
+If we were to keep working on this project the main things we would focus
+on improving would be firstly the frame. Currently it is quite unstable and we
+could definitely rebuild it to be more sturdy. It would also be interesting to
+add a camera to the machine to detect the current robot state automatically rather
+than having to rely on user input. We also would like to replace the cube we currently
 use with another that is a bit more forgiving with a wider margin of error allowed
 for the rotations.
 
@@ -200,11 +200,11 @@ for the rotations.
 
 \begin{itemize}
 
-    \item \textbf{Cube Movement} (\texttt{Movement}) A struct holding the face to 
+    \item \textbf{Cube Movement} (\texttt{Movement}) A struct holding the face to
     be moved and the direction to be moved (clockwise, anti-clockwise or double).
-    
-    \item \textbf{Cube State} (\texttt{CubeState}) Holds the current state of the 
-    faces of the cube as six two-dimensional arrays of Colours. It also contains 
+
+    \item \textbf{Cube State} (\texttt{CubeState}) Holds the current state of the
+    faces of the cube as six two-dimensional arrays of Colours. It also contains
     a history of all movements that have been applied to the cube and how many moves
     are in that list.
 
@@ -212,67 +212,67 @@ for the rotations.
     structures hold information describing how each face connects to its neighbouring
     edges with regards to their array represeantation. When a face of the cube is rotated, this
     information is used to rotate the neighbouring edges along with it.
-    
+
 \end{itemize}
 
 \subsubsection{Program structure}
 
 \begin{minipage}{0.45\textwidth}
     \begin{itemize}
-        \item \texttt{solver.c} \\ Initialises the priority queue and hash tree then 
-        evaluates and expands states from the priority queue until either there are no states 
-        left in the queue or a solution has been found. This is an 
+        \item \texttt{solver.c} \\ Initialises the priority queue and hash tree then
+        evaluates and expands states from the priority queue until either there are no states
+        left in the queue or a solution has been found. This is an
         implementation of an A* graph search.
-        \item \texttt{cubestate.c} \\ Holds all the functions used to modify and interact 
+        \item \texttt{cubestate.c} \\ Holds all the functions used to modify and interact
         with cube states.
-        \item \texttt{hashtree.c}\\  Contains an implementation for the red black tree we 
+        \item \texttt{hashtree.c}\\  Contains an implementation for the red black tree we
         use for storing which cube state hashes we have visited.
-        \item \texttt{movequeue.c}\\ Contains an implementation for the priority queue we use 
+        \item \texttt{movequeue.c}\\ Contains an implementation for the priority queue we use
         for deciding the next state to visit.
-        \item \texttt{testcubestate.c}\\ Tests to make sure cube state functions 
+        \item \texttt{testcubestate.c}\\ Tests to make sure cube state functions
         function as intended.
-        \item \texttt{testmovequeue.c}\\ Tests to make sure the move priority queue 
+        \item \texttt{testmovequeue.c}\\ Tests to make sure the move priority queue
         works correctly.
-        \item \texttt{testsolver.c}\\ Tests to make sure the whole program is working as 
+        \item \texttt{testsolver.c}\\ Tests to make sure the whole program is working as
         intended.
     \end{itemize}
     \end{minipage}%
     \hfill
     \begin{minipage}{0.45\textwidth}
-    
+
     \begin{figure}[H]
     \begin{tikzpicture}[node distance=2cm]
         \node (start) [scale=0.5, startstop, align=center] at (0,0) {Start};
-        \node (starting_state) [scale=0.5, io, align=center] at (1.5,0) {Get the 
+        \node (starting_state) [scale=0.5, io, align=center] at (1.5,0) {Get the
         starting \\ state of the cube};
-        \node (init_main) [scale=0.5, process, align=center] at (3.5,0) {Initialise the\\ 
+        \node (init_main) [scale=0.5, process, align=center] at (3.5,0) {Initialise the\\
         priority queue \\ and hash tree};
         \node (check_empty) [scale=0.5, decision, align=center] at (3.5,-1.5)
         {Can fetch \\ from \\ queue?};
-        \node (not_solved) [scale=0.5, io, align=center] at (1.5,-1.5) 
+        \node (not_solved) [scale=0.5, io, align=center] at (1.5,-1.5)
         {Solution could \\ not be found};
         \node (finish) [scale=0.5, startstop, align=center] at (0,-1.5) {Finish};
-        \node (pop) [scale=0.5, process, align=center] at (3.5,-3) {Take and remove 
+        \node (pop) [scale=0.5, process, align=center] at (3.5,-3) {Take and remove
         \\ the highest priority \\ state from queue};
         \node (add_hash) [scale=0.5, process, align=center] at (3.5,-4)
         {Adds state to \\ visited hash tree};
         \node (check_solved) [scale=0.5, decision, align=center] at (3.5,-5.5)
         {Is the cube \\ in a solved \\ state?};
-        \node (solved) [scale=0.5, io, align=center] at (1.5, -5.5) 
+        \node (solved) [scale=0.5, io, align=center] at (1.5, -5.5)
         {Return the \\ solution};
-        \node (expand_move) [scale=0.5, process, align=center] at (3.5,-7) 
+        \node (expand_move) [scale=0.5, process, align=center] at (3.5,-7)
         {Add all possible \\ moves\\ to a sub queue };
-        \node (sub_queue_empty?) [scale=0.5, decision, align=center] at (3.5,-8.5) 
+        \node (sub_queue_empty?) [scale=0.5, decision, align=center] at (3.5,-8.5)
         {is sub \\ queue  \\ empty?};
-        \node (take_move) [scale=0.5, process, align=center] at (3.5,-10) 
+        \node (take_move) [scale=0.5, process, align=center] at (3.5,-10)
         {Take move \\ from queue \\ and apply to \\ parent state};
-        \node (move_in_queue?) [scale=0.5, decision, align=center] at (3.5,-11.75) 
+        \node (move_in_queue?) [scale=0.5, decision, align=center] at (3.5,-11.75)
         {new state \\in visted hash \\ tree already?};
-        \node (in_main_queue?) [scale=0.5, decision, align=center] at (3.5,-14) 
+        \node (in_main_queue?) [scale=0.5, decision, align=center] at (3.5,-14)
         {new state \\ in main\\ queue already?};
-        \node (update_cost) [scale=0.5, process, align=center] at (1.5,-14) 
+        \node (update_cost) [scale=0.5, process, align=center] at (1.5,-14)
         {updated cost \\ in queue \\ if lower};
-        \node (add_to_queue) [scale=0.5, process, align=center] at (5.5,-14) 
+        \node (add_to_queue) [scale=0.5, process, align=center] at (5.5,-14)
         {calculate cost \\and add \\ to queue};
 
 
@@ -307,19 +307,23 @@ for the rotations.
 \subsubsection{Challenges and Alternative Algorithms}
 
 Our Rubik's cube solver uses the A* path finding algorithm to find the shortest path
-from the cube's inintial state to a solved cube. When we first implemented this, 
-the algorithm's memory usage presented a major challenge. <<<TODO: SUMMERISE HOW MUCH RAM
-THE INITIAL DESIGN USED>>>
+from the cube's inintial state to a solved cube. When we first implemented this,
+the algorithm's memory usage presented a major challenge.
 
-One way we remedied this issue is by testing a variety of heuristics in an attemp to 
+Due to the way we have used a priority queue in order to track incoming cube states,
+and every move exponentially increases the number of potential next cube states, the
+program consumed 4 GB of heap space faster than it can even solve some basic cubes.
+This was a problem, as our intended motor controller only had around 200 MB of total RAM.
+
+One way we remedied this issue is by testing a variety of heuristics in an attemp to
 increase the likelihood of the A* algorithm finding the solution early. We also attempted
 the following alternative algorithms:
 \begin{itemize}
     \item \texttt{Kociemba's algorithm} \\ This algorithm created by Herbert Kociemba
     is a two-phase approach. In the first phase, a searching algorithm (such as A*)
     is used to find a path from the initial state to a subgroup of states referred to as G1.
-    This subgroup is characterised by the fact that, once a cube is in G1, a solution can 
-    be obtained using only 10 different moves as opposed to the usual 18. This speeds up 
+    This subgroup is characterised by the fact that, once a cube is in G1, a solution can
+    be obtained using only 10 different moves as opposed to the usual 18. This speeds up
     the second phase which is finding a path from G1 to a solved state.
     \item \texttt{Iterative Deepening A* (IDA*)} \\ This is a variant of the A* algorithm
     which uses a stack instead of a queue. It starts with an expected upper bound on
@@ -329,10 +333,24 @@ the following alternative algorithms:
     of a stack and the depth-first nature of the search makes it more memory efficient than A*.
 \end{itemize}
 
-The use of Kociemba's algorithm allowed us to solve more scrambled cubes more reliably but 
+The use of Kociemba's algorithm allowed us to solve more scrambled cubes more reliably but
 it also resulted in solutions which took more moves than necessary. Due to time constraints,
-we weren't able to fully implement IDA*. Were we able to do that, the next step would have been 
+we weren't able to fully implement IDA*. Were we able to do that, the next step would have been
 to combine IDA* with Kociemba's two-phase approach.
+
+Another way we partially remedied the issue was to go through and shrink down as many of the structs as possible
+while still being able to store all the necessary data.
+For example, the cube state field that held the colour data was shortened to use an array of unsigned
+8-bit values instead of the default enum size, and how the movement structure used bit fields to squeeze
+the fields that define what face its rotating (and in what direction) into a single 8-bit value.
+By doing this, we extended the number of items that can be held inside the queue before it overflowed.
+
+One avenue we didn't explore was to rewrite the hash tree as an array instead of a discrete tree structure.
+This would have reduced the number of fields inside a single tree node, which would have reduced the tree's overall size.
+Another way we didn't consider was to use a smaller integer as a hash. That has an issue, as the number of possible cube states
+is about four times as many as there are 64-bit integers. Therefore using something like a 32-bit integer would have exponentially
+increased the possible errors generated by hash collisions (as our queue insertion depended on a tree to prevent duplicates, and to
+allow an \texttt{O(log n)} update key operation instead of an O(n) operation).
 
 \subsection{Testing and Debugging}
 
