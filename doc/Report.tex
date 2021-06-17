@@ -313,7 +313,7 @@ the algorithm's memory usage presented a major challenge.
 Due to the way we have used a priority queue in order to track incoming cube states,
 and every move exponentially increases the number of potential next cube states, the
 program consumed 4 GB of heap space faster than it can even solve some basic cubes.
-This was a problem, as our intended motor controller only had around 200 MB of total RAM.
+This was a problem, as our intended motor controller only had around 128 MB of total RAM.
 
 One way we remedied this issue is by testing a variety of heuristics in an attemp to
 increase the likelihood of the A* algorithm finding the solution early. We also attempted
