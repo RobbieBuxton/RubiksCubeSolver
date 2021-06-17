@@ -28,13 +28,13 @@ bool solve(CubeState *start, int *move_count, Movement *solution) {
         count2++;
 
 #ifndef MAIN_IS_CALLING
-        if (queue->count > 4000000) {
+        if (queue->count > 4000000 && 0) {
             free_hash_tree(visitedHashes);
             free_move_priority_queue(queue);
             return false;
         }
 
-        if (query_result.state.history_count > count) {
+        if (query_result.state.history_count > count && 0) {
             printf("%d count\t", ++count);
             printf("%d count\t", count2);
             printf("%ld in queue\n", queue->count);
@@ -253,13 +253,13 @@ CubeState k_solve(CubeState *start, int *move_count, Movement *solution) {
         }
         count2++;
 
-        if (queue->count > 4000000) {
+        if ((queue->count > 4000000) && 0) {
             free_hash_tree(visitedHashes);
             free_move_priority_queue(queue);
             return *start;
         }
 
-        if (query_result.state.history_count > count) {
+        if ((query_result.state.history_count > count) && 0) {
 
             printf("%d count\t", ++count);
             printf("%d count\t", count2);
