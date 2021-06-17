@@ -131,10 +131,9 @@
 
 \section{Extension: Rubik's Cube solver}
 \subsection{Description}
-Our group chose to build a Rubik's cube solving robot as our extension. The robot
-would be able to solve a scrambled Rubik's cube. The robot can solve a 3 $\times$ 3
-cube in under \textcolor{red}{insert here} seconds. To complete the project we split the team
-into two sections with Robert working on the physical side of the project, designing
+Our group chose to build a Rubik's cube solving machine as our extension. The machine
+needed to be able to scramble and solve 3 $\times$ 3 Rubik's cube. To complete this project we split the team
+in two sections with Robert working on the physical side of the project, designing
 and building the robot and Fawwaz, Edward and Wojtek working on the algorithm behind
 solving the cube.
 
@@ -143,11 +142,9 @@ solving the cube.
 \subsubsection{Design}
 
 We decided to build the robot using primarily VEX Robotics parts we already owned which helped
-reduce the cost of the robot significantly. The machine uses an ARM Cortex-A9 with
-128 MB of RAM and 6 motors with built in encoders to rotate and track the
-positions of the 6 faces of the Rubik's cube. The program takes the current cube state
-as an input, calculates a solution and then generates a list of rotations which are sent
-to the motors to be executed.
+reduce the cost of the robot significantly. The machine was controlled by an ARM Cortex-A9 and
+used 6 motors with built in encoders to rotate and track the positions of the 6 faces of the 
+Rubik's cube. The program took a solved Rubik's cube, scrambled it, then solved it.
 
 
 \begin{minipage}{0.45\textwidth}
@@ -169,31 +166,31 @@ before building the robot.}
 
 \subsubsection{Building process}
 
-The machine was built over a few days using the facilities at the advanced
-hackspace in the White City campus to print custom 3D parts. We created a simple
-aluminium frame to which we attached the 6 motors. We used a Markforged
-3D printer to create strengthened nylon parts that we used as intermediaries
-between the axels and the Rubik's cube centre pieces we rotate. It was important that
-they were very strong as the pieces undergo high stress when rotated in
-multiple directions, at short notice and at a high speed.
+We created a simple frame out of aluminum to which we attached the 6 motors at perpendicular angles.
+We used a UP mini 2 3D printer at the White City Campus advanced hackspace to create parts
+that we used to connect axels and Rubik's cube centre pieces to allow face rotation by motor.
+It was important that the pieces were strong as they would would undergo high stress.
 \subsubsection{Challenges}
 
-The main challenge we came across was making sure the motors didn't over or under
-rotate the faces. When they did it would cause catastrophic failure as the next
-cube face would not be able to rotate and the cube would explode into lots of small
-pieces. It was also quite difficult securing the cube in the middle of the machine
-as you had to be very precise and if the cube was not completely secured the cube
-would not rotate.
+The main problem we came across was that when rotating faces there could be an up
+to 20 degree error in the final position of the face. This is because a standard rubik's cubes
+construction from loose and interlocking parts means that there is a lot of give 
+between the centre pieces and the surrounding ones. This meant that even if we rotated 
+the centre perfectly we could not guarantee the rest of face was in the correct place.
+If a face was not within a certain position when attempting to rotate the whole 
+machine would seize up and we would have to manually reset it. This meant that we could not
+reliably solve cube with solutions longer than about 6 moves. 
+
 
 \subsubsection{Future improvements}
 
-If we were to keep working on this project the main things we would focus
-on improving would be firstly the frame. Currently it is quite unstable and we
-could definitely rebuild it to be more sturdy. It would also be interesting to
-add a camera to the machine to detect the current robot state automatically rather
-than having to rely on user input. We also would like to replace the cube we currently
-use with another that is a bit more forgiving with a wider margin of error allowed
-for the rotations.
+If we were to keep working on this project the first thing we would need to fix 
+would be the face arraignment issue. This could be done relatively easy by replacing
+our current Rubik's cube with one that has magnets inside to assist with alignment.
+It is a shame we didn't know these existed before we started the project. Currently 
+the machine is also quite unstable and we could definitely rebuild it to be more sturdy. 
+It would also be interesting to add a camera to the machine to detect the current cube state
+automatically rather than having to rely on manual input. 
 
 \subsection{The solving algorithm}
 \subsubsection{Data Structures}
