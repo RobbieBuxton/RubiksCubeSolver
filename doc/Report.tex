@@ -33,7 +33,7 @@
 
 \begin{itemize}
 
-    \item \textbf{Map} (\texttt{StringUintMap}) A map implemented using an
+    \item \textbf{Map} (\texttt{StringUintMap}) A map implemented using a
     red-black tree and hashing function to allow strings to be mapped to unsigned
     32 bit integers. This is used in two cases. Firstly to map branch tags to
     memory locations and secondly to translate assembly inputs to their respective
@@ -44,12 +44,11 @@
     a list of symbols (\_\_StringUintPair\_\_), the colour of the node which is used for balancing, the
     parent node, and the left and right children.
 
-    \item \textbf{Symbol Pair} (\texttt{\_\_StringUintPair\_\_}) A strut holding a
+    \item \textbf{Symbol Pair} (\texttt{\_\_StringUintPair\_\_}) A struct holding a
     string (identifier of the symbol) and a corresponding value (either an
     address or enum value).
 
-
-    \item \textbf{Query Result} (\texttt{QueryResult}) A strut returned when searching the map;
+    \item \textbf{Query Result} (\texttt{QueryResult}) A struct returned when searching the map;
     it holds a Boolean describing whether a result was found and has a field for storing that result.
 
 \end{itemize}
@@ -132,7 +131,7 @@
 \section{Extension: Rubik's Cube solver}
 \subsection{Description}
 Our group chose to build a Rubik's cube solving machine as our extension. The machine
-needed to be able to scramble and solve 3 $\times$ 3 Rubik's cube. To complete this project we split the team
+needed to be able to scramble and solve a 3 $\times$ 3 Rubik's cube. To complete this project we split the team
 in two sections with Robert working on the physical side of the project, designing
 and building the robot and Fawwaz, Edward and Wojtek working on the algorithm behind
 solving the cube.
@@ -226,12 +225,12 @@ automatically rather than having to rely on manual input.
         use for storing which cube state hashes we have visited.
         \item \texttt{movequeue.c}\\ Contains an implementation for the priority queue we use
         for deciding the next state to visit.
-        \item \texttt{ida\_star.c (unused)}\\ An unfinished alternative implementation
-        of the solver using an IDA* graph search.
+        \item \texttt{ida\_star.c (unused)}\\ An alternative implementation
+        of the solver using an IDA* graph search (unfinished due to time constraints).
         \item \texttt{testcubestate.c}\\ Tests to make sure cube state functions
-        function as intended.
+        work as intended.
         \item \texttt{testmovequeue.c}\\ Tests to make sure the move priority queue
-        works correctly.
+        functions correctly.
         \item \texttt{testsolver.c}\\ Tests to make sure the whole program is working as
         intended.
     \end{itemize}
@@ -319,9 +318,9 @@ increase the likelihood of the A* algorithm finding the solution early. We also 
 the following alternative algorithms:
 \begin{itemize}
     \item \texttt{Kociemba's algorithm} \\ This algorithm created by Herbert Kociemba
-    is a two-phase approach. In the first phase, a searching algorithm (such as A*)
-    is used to find a path from the initial state to a subgroup of states referred to as G1.
-    This subgroup is characterised by the fact that, once a cube is in G1, a solution can
+    has two phases. In the first phase, a searching algorithm (such as A*)
+    is used to find a path from the initial state to a subset of states referred to as G1.
+    This subset is characterised by the fact that, once a cube is in G1, a solution can
     be obtained using only 10 different moves as opposed to the usual 18. This speeds up
     the second phase which is finding a path from G1 to a solved state.
     \item \texttt{Iterative Deepening A* (IDA*)} \\ This is a variant of the A* algorithm
