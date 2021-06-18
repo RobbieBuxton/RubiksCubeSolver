@@ -132,8 +132,8 @@
 \subsection{Description}
 Our group chose to build a Rubik's cube solving machine as our extension. The machine
 needed to be able to scramble and solve a 3 $\times$ 3 Rubik's cube. To complete this project, we split the team
-in two sections with Robert working on the physical side, designing.
-and building the machine while Fawwaz, Edward and Wojtek worked on the algorithm behind
+in two sections with Robert working on the physical side, designing
+and building the machine, while Fawwaz, Edward and Wojtek worked on the algorithm behind
 solving the cube.
 
 \subsection{The Machine}
@@ -143,7 +143,7 @@ solving the cube.
 We decided to build the robot using primarily VEX Robotics parts we already had which helped
 reduce the cost of the robot significantly. The machine was controlled by an ARM Cortex-A9 processor and
 used 6 motors with built-in encoders to rotate and track the positions of the 6 faces of the 
-Rubik's cube. The program took a scrambled Rubik's cube solved it by rotating its faces accordingly. 
+Rubik's cube. The program took a scrambled Rubik's cube and solved it by rotating its faces according to our solver's output. 
 
 \begin{minipage}{0.45\textwidth}
 \begin{figure}[H]
@@ -180,13 +180,13 @@ up to 20 degree error in the final position. This was because a standard rubik's
  perfectly we could not guarantee the rest of face was in the correct place. If 
  a face was not within a certain position when attempting to rotate, the whole 
  machine would seize up and we would have to manually reset it. This meant that
-  we could not reliably solve cube with solutions longer than about 6 moves.
+  we could not reliably physically solve a cube with solutions longer than about 6 moves.
 
 
 \subsubsection{Future improvements}
 
 If we were to keep working on this project the first thing we would need to fix 
-would be the face arraignment issue. This could be done relatively easy by replacing
+would be the face alignment issue. This could be done relatively easy by replacing
 our current Rubik's cube with one that has magnets inside to assist with the alignment.
 It is a shame we didn't know these existed before we started the project. Currently 
 the machine is also quite unstable and we could definitely be rebuilt to be more sturdy. 
@@ -203,7 +203,7 @@ automatically rather than having to rely on manual user input.
     be moved and the direction to be moved (clockwise, anti-clockwise or double).
 
     \item \textbf{Cube State} (\texttt{CubeState}) Holds the current state of the
-    faces of the cube as six two-dimensional arrays of Colours. It also contains
+    faces of the cube as six two-dimensional arrays of Colours (an enum). It also contains
     a history of all movements that have been applied to the cube and how many moves
     are in that list.
 
@@ -235,7 +235,7 @@ automatically rather than having to rely on manual user input.
         \item \texttt{testmovequeue.c}\\ Tests to make sure the move priority queue
         functions correctly.
         \item \texttt{testsolver.c}\\ Tests to make sure the whole program is working as
-        intended.
+        intended. Also used to measure progress in solving ability.
         \item \texttt{estimate\_cost}\\ Estimates the cost of a solution through a particular
         state by summing the weight of the path from the start to there, and any one of a few heuristic functions
         we were experimenting with.
@@ -269,17 +269,17 @@ automatically rather than having to rely on manual user input.
         \node (expand_move) [scale=0.5, process, align=center] at (3.5,-7)
         {Add all possible \\ moves\\ to a sub queue };
         \node (sub_queue_empty?) [scale=0.5, decision, align=center] at (3.5,-8.5)
-        {is sub \\ queue  \\ empty?};
+        {Is sub \\ queue  \\ empty?};
         \node (take_move) [scale=0.5, process, align=center] at (3.5,-10)
         {Take move \\ from queue \\ and apply to \\ parent state};
         \node (move_in_queue?) [scale=0.5, decision, align=center] at (3.5,-11.75)
-        {new state \\in visted hash \\ tree already?};
+        {New state \\in visted hash \\ tree already?};
         \node (in_main_queue?) [scale=0.5, decision, align=center] at (3.5,-14)
-        {new state \\ in main\\ queue already?};
+        {New state \\ in main\\ queue already?};
         \node (update_cost) [scale=0.5, process, align=center] at (1.5,-14)
-        {updated cost \\ in queue \\ if lower};
+        {Updated cost \\ in queue \\ if lower};
         \node (add_to_queue) [scale=0.5, process, align=center] at (5.5,-14)
-        {calculate cost \\and add \\ to queue};
+        {Calculate cost \\and add \\ to queue};
 
 
 
@@ -314,14 +314,14 @@ automatically rather than having to rely on manual user input.
 
 Our Rubik's cube solver uses the A* path finding algorithm to find the shortest path
 from the cube's inintial state to a solved cube. When we first implemented this,
-the algorithm's memory usage presented a major challenge.
+the algorithm's memory usage and speed both presented major challenges.
 
 Due to the way we have used a priority queue in order to track incoming cube states,
 and every move exponentially increases the number of potential next cube states, the
 program consumed 4 GB of heap space faster than it can even solve some basic cubes.
 This was a problem, as our intended motor controller only had around 128 MB of total RAM.
 
-One way we remedied this issue is by testing a variety of heuristics in an attemp to
+One way we remedied this issue is by testing a variety of heuristics in an attempt to
 increase the likelihood of the A* algorithm finding the solution early. We also attempted
 the following alternative algorithms:
 \begin{itemize}
@@ -387,11 +387,11 @@ While working through the projects we used a mixture of group, pair and individu
 programming. When dealing with hard conceptual problems we tended to work as a 
 group. To give a brief overview of the individual things each team member did.
 \begin{itemize}
-    \item Fawwaz: the extension test suite, most data structures and the assembler multiply and parser \textcolor{red}{fill in anything i missed}
+    \item Fawwaz: the extension test suite, most data structures and the assembler multiply and parser sections.
     \item Robert: the machine and CAD, most of the \LaTeX \space diagrams and structure and
     the assembler branch instructions.
-    \item Edward: the plain A* solver structure, research into heuristics, kociemba 
-    solve and assembler single data transfer \textcolor{red}{fill in anything i missed}
+    \item Edward: the plain A* solver, research into heuristics, kociemba 
+    solve and assembler single data transfer and optional instruction support.
     \item Wojtek: the cubestate, implemented IDA*, research into kociemba solve and the 
     assembler data path \textcolor{red}{fill in anything i missed}
 \end{itemize}
