@@ -131,20 +131,19 @@
 \section{Extension: Rubik's Cube solver}
 \subsection{Description}
 Our group chose to build a Rubik's cube solving machine as our extension. The machine
-needed to be able to scramble and solve a 3 $\times$ 3 Rubik's cube. To complete this project we split the team
-in two sections with Robert working on the physical side of the project, designing
-and building the robot and Fawwaz, Edward and Wojtek working on the algorithm behind
+needed to be able to scramble and solve a 3 $\times$ 3 Rubik's cube. To complete this project, we split the team
+in two sections with Robert working on the physical side, designing.
+and building the machine while Fawwaz, Edward and Wojtek worked on the algorithm behind
 solving the cube.
 
 \subsection{The Machine}
 
 \subsubsection{Design}
 
-We decided to build the robot using primarily VEX Robotics parts we already owned which helped
-reduce the cost of the robot significantly. The machine was controlled by an ARM Cortex-A9 and
-used 6 motors with built in encoders to rotate and track the positions of the 6 faces of the 
-Rubik's cube. The program took a solved Rubik's cube, scrambled it, then solved it.
-
+We decided to build the robot using primarily VEX Robotics parts we already had which helped
+reduce the cost of the robot significantly. The machine was controlled by an ARM Cortex-A9 processor and
+used 6 motors with built-in encoders to rotate and track the positions of the 6 faces of the 
+Rubik's cube. The program took a scrambled Rubik's cube solved it by rotating its faces accordingly. 
 
 \begin{minipage}{0.45\textwidth}
 \begin{figure}[H]
@@ -165,31 +164,35 @@ before building the robot.}
 
 \subsubsection{Building process}
 
-We created a simple frame out of aluminum to which we attached the 6 motors at perpendicular angles.
-We used a UP mini 2 3D printer at the White City Campus advanced hackspace to create parts
-that we used to connect axels and Rubik's cube centre pieces to allow face rotation by motor.
-It was important that the pieces were strong as they would would undergo high stress.
+Firstly we designed the machine in CAD using Autodesk Fusion 360. We decided it should 
+consist of a simple frame of aluminum to which we would attach the 6 motors at perpendicular 
+angles. We used an UP mini 2 3D printer at the White City Campus advanced hackspace to create 
+custom parts to connect the axels and Rubik's cube centre pieces to allow the face to be rotated 
+by a motor. It was important that these pieces were strong as they would would undergo 
+high stress. We then put the machine together and started testing it.
+
 \subsubsection{Challenges}
 
-The main problem we came across was that when rotating faces there could be an up
-to 20 degree error in the final position of the face. This is because a standard rubik's cubes
-construction from loose and interlocking parts means that there is a lot of give 
-between the centre pieces and the surrounding ones. This meant that even if we rotated 
-the centre perfectly we could not guarantee the rest of face was in the correct place.
-If a face was not within a certain position when attempting to rotate the whole 
-machine would seize up and we would have to manually reset it. This meant that we could not
-reliably solve cube with solutions longer than about 6 moves. 
+The main problem we came across was that when rotating faces there could be an 
+up to 20 degree error in the final position. This was because a standard rubik's
+ cube is quite loose and this results in quite a bit of give between the centre 
+ pieces and the surrounding ones. This meant that even if we rotated the centre 
+ perfectly we could not guarantee the rest of face was in the correct place. If 
+ a face was not within a certain position when attempting to rotate, the whole 
+ machine would seize up and we would have to manually reset it. This meant that
+  we could not reliably solve cube with solutions longer than about 6 moves.
 
 
 \subsubsection{Future improvements}
 
 If we were to keep working on this project the first thing we would need to fix 
 would be the face arraignment issue. This could be done relatively easy by replacing
-our current Rubik's cube with one that has magnets inside to assist with alignment.
+our current Rubik's cube with one that has magnets inside to assist with the alignment.
 It is a shame we didn't know these existed before we started the project. Currently 
-the machine is also quite unstable and we could definitely rebuild it to be more sturdy. 
+the machine is also quite unstable and we could definitely be rebuilt to be more sturdy. 
 It would also be interesting to add a camera to the machine to detect the current cube state
-automatically rather than having to rely on manual input. 
+automatically rather than having to rely on manual user input.
+
 
 \subsection{The solving algorithm}
 \subsubsection{Data Structures}
@@ -420,13 +423,26 @@ That is something that will aid my team and me on future projects with future te
 
 \subsubsection{Robert Buxton}
 
-\textcolor{red}{Robbie and anyone else than can be bothered go through and fix spelling and grammar mistakes}
-I was pleased with how well the project went. I was expecting it to be quite difficult to pick up C as quickly as we needed to. However, the other members of the team more experienced with C were extremely helpful and allowed me to get up to speed quick enough. I think I fitted into the team well, I thoroughly enjoyed working with my teammates and my DocPA scores suggest they enjoyed working with me. \\
-I think my experience with \LaTeX \space was valuable to the group as it meant we could make intuitive diagrams to explain our code and I do not think we would have been able to create the physical section of our extension without my prior experience in robotics and CAD.  \\
-I think my biggest weakness was my relatively slower uptake of C, it meant that there were a few of times where the group was waiting on me to move on. I think this was more a function of the rest of the group being very competent with C though. \\
-I ended up doing less coding than expected and focusing more on the hardware and documentation side, but this made sense to me as these were my relative strengths, and we had no shortage of extremely competent programmers.  \\
-The project made me also realize I was not as experienced with git as I thought I was. There were times when I was far outside my comfort zone dealing with merge issues and other such problems.  \\
-If I had a different group, I do not think I would change a great deal as I was very happy with the way our team worked but I think it would be worth spending a bit more time planning before jumping into issues. There were a few times two people ended up writing the utility function for example. 
+I was very pleased with how well the project went. I think I fitted into the team well and I thoroughly enjoyed working 
+with my teammates and my DocPA scores suggest they enjoyed working with me. \\ I 
+think my experience with \LaTeX \space was valuable to the group as it allowed us 
+to create intuitive diagrams to explain our code. I also do not think we would have 
+been able to create the physical section of our extension without my knowledge and 
+prior experience in robotics and CAD.\\ I was expecting it to be quite difficult to 
+pick up C as quickly as I needed to, but the other more experienced members of the 
+team were extremely helpful in getting me up to speed. I think my relatively slower 
+uptake of C was probably my greatest weakness. It did mean that there were a few times 
+where the whole group was waiting on me to finish my code to move on. I felt the problem 
+subsided towards the end of the project when I was more confident however it was noticeable 
+throughout. \\ I ended up doing less coding than expected and focusing more on the physical, 
+hardware and documentation sides, but this made sense to me as these were my relative strengths,
+ and we had no shortage of extremely competent programmers. \\The project made me
+also realize I was not as experienced with git as I thought I was. There were 
+many times when I was far outside my comfort zone dealing with merge issues and 
+other such problems.\\ If I had a different group, I do not think I would change 
+a great deal as I was very happy with the way we worked together but I think it would
+ be worth spending a bit more time planning before jumping into issues. There were a
+  few times two people ended up writing the utility function for example. 
 
 
 
